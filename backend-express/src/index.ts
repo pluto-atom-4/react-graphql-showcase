@@ -5,11 +5,20 @@ import uploadRoutes from './routes/upload';
 import webhookRoutes from './routes/webhooks';
 import eventsRoutes from './routes/events';
 import { errorHandler } from './middleware/error';
+import { tracingMiddleware } from './middleware/tracing-middleware';
+import { initializeTracing } from './lib/tracing';
 
 const app = express();
 const PORT = process.env.EXPRESS_PORT || 5000;
 
+// Initialize tracing
+initializeTracing();
+
 // Middleware
+// Register tracing middleware FIRST (before all other middleware)
+// This captures traceparent headers from every request
+app.use(tracingMiddleware);
+
 // Configure CORS to allow credentials from localhost
 app.use(
   cors({

@@ -1,0 +1,1428 @@
+
+> react-grapql-playground@0.1.0 test:express /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground
+> pnpm -F backend-express test --run
+
+
+> backend-express@0.1.0 test /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express
+> vitest run --run
+
+
+ RUN  v2.1.9 /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express
+
+ ✓ src/services/__tests__/event-bus.test.ts (19 tests) 18ms
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 1: High-Throughput > 1.1: handles 1000 events/second for 10 seconds
+
+      ✓ Emitted 100 events in 12ms
+      ✓ Avg latency: 5.66ms (max: 9.93ms)
+      ✓ Memory growth: 0.17MB (start: 11.82MB → end: 11.99MB)
+      ✓ Throughput: 8375 events/sec
+    
+
+ ✓ src/__tests__/integration/sse-tracing.test.ts (10 tests) 72ms
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 1: High-Throughput > 1.2: latency degrades gracefully with increased throughput
+
+        ✓ Latency degradation is linear and acceptable:
+          - 100 events/sec: avg=9.43ms max=11.97ms
+  - 500 events/sec: avg=17.55ms max=19.99ms
+  - 1000 events/sec: avg=27.39ms max=30.00ms
+      
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 1: High-Throughput > 1.3: deduplication performance under load
+
+      ✓ Processed 5000 events with dedup in 16.72ms
+      ✓ New events marked: 1000
+      ✓ Duplicates detected: 4000/4000
+      ✓ Dedup window size: 1000/1000
+      ✓ Avg time/event: 0.003ms
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 2: Memory Leak Detection > 2.1: event bus memory stays stable over sustained load
+
+      ✓ Processed 30000 events over 300s
+      ✓ Memory growth: 8.75% (13.30MB → 14.47MB)
+      ✓ Memory fluctuation: 5.31MB (range: 12.55-17.85MB)
+      ✓ Measurements: 5 points
+    
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should emit event via HTTP POST endpoint
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.923Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should emit event when valid POST received
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.934Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should track emitted event in metrics
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.951Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stdout | __tests__/upload.test.ts > Upload Routes
+📦 Generating large file fixture (55MB)...
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should return 400 when event field missing
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.958Z',
+  event: undefined,
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should handle all four GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.965Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should return 400 when payload field missing
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.966Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should handle all four GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.970Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should return 400 when neither field present
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.971Z',
+  event: undefined,
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should handle all four GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.979Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should handle all GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.982Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 1: Single Client Event Flow > should handle all four GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.985Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should handle all GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.990Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should broadcast event to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.991Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should handle all GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.995Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should handle all GraphQL event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:08.999Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should accept arbitrary event names and payloads
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.008Z',
+  event: 'customEventType',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should handle payload with null values
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.018Z',
+  event: 'testEvent',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit > should return JSON response for valid requests
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.025Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should return 403 when Authorization header is missing
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.031Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: false
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should return 403 when Authorization header is invalid
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.036Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: true
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should return 403 when Authorization header has wrong format
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.043Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: true
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should accept request with valid Authorization header
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.048Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should reject request when only event is provided but no auth header
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.055Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: false
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should preserve event payload during broadcast
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.052Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/events.test.ts > Events Route - POST /events/emit - Authentication > should accept request with valid auth even for missing payload field
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.060Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+
+ ✓ src/routes/__tests__/events.test.ts (14 tests) 177ms
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should handle rapid sequential events to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.124Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should handle rapid sequential events to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.141Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should handle rapid sequential events to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.148Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should handle rapid sequential events to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.158Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 2: Multi-Client Synchronization > should handle rapid sequential events to multiple listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.164Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+ ✓ src/__tests__/lib/trace-context.test.ts (27 tests) 19ms
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 3: Error Handling & Recovery > should reject malformed event payload with 400
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.274Z',
+  event: undefined,
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 3: Error Handling & Recovery > should reject malformed event payload with 400
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.279Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 3: Error Handling & Recovery > should reject unauthorized requests
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.284Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: false
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 3: Error Handling & Recovery > should reject unauthorized requests
+[SECURITY] Event authentication failed {
+  timestamp: '2026-05-20T16:24:09.289Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1',
+  hasAuthHeader: true
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.320Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.324Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.327Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.330Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.332Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.336Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.340Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.344Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.347Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should emit events with minimal latency
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.350Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.354Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.357Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.360Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.366Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.368Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.371Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.374Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.376Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.378Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.381Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.383Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.387Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.391Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.396Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.399Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.402Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.405Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.408Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.411Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.414Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.416Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.419Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.423Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.425Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.427Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.429Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.431Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.433Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.435Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.437Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.439Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.441Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.443Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.447Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.449Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.452Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.455Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.458Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.461Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.467Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.470Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.472Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.475Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.477Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.479Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.482Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.484Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.486Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.488Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should handle rapid sequential emissions without degradation
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.489Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.492Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.494Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.496Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.498Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.500Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.503Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.505Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.507Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.511Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.513Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.514Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.516Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.518Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.520Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+ ✓ src/__tests__/middleware/tracing-middleware.test.ts (12 tests) 17ms
+stderr | __tests__/middleware.test.ts > Error Middleware > errorHandler > should handle AppError with custom status
+[ERROR] AppError: Bad request
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/__tests__/middleware.test.ts:16:14
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at expressInit (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js:40:5)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5) {
+  status: 400,
+  details: undefined
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.521Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.524Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.525Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.527Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.529Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 4: Latency & Performance > should not degrade performance with event bus listeners
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.531Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 5: Metrics Verification > should accumulate metrics when metrics are not reset
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.539Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | __tests__/middleware.test.ts > Error Middleware > errorHandler > should handle AppError with details
+[ERROR] AppError: Validation failed
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/__tests__/middleware.test.ts:31:14
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at expressInit (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js:40:5)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5) {
+  status: 422,
+  details: { field: 'email' }
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 5: Metrics Verification > should track per-event-type counts
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.544Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 5: Metrics Verification > should track per-event-type counts
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.547Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | __tests__/middleware.test.ts > Error Middleware > errorHandler > should handle generic Error as 500
+[ERROR] Error: Something went wrong
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/__tests__/middleware.test.ts:45:14
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at expressInit (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js:40:5)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+
+stderr | __tests__/middleware.test.ts > Error Middleware > errorHandler > should return JSON response
+[ERROR] AppError: Not found
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/__tests__/middleware.test.ts:58:14
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at expressInit (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/middleware/init.js:40:5)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5) {
+  status: 404,
+  details: undefined
+}
+
+stderr | __tests__/middleware.test.ts > Error Middleware > asyncHandler > should catch async errors and pass to error handler
+[ERROR] AppError: Async error
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/__tests__/middleware.test.ts:76:17
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at jsonParser (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/body-parser@1.20.4/node_modules/body-parser/lib/types/json.js:113:7) {
+  status: 400,
+  details: undefined
+}
+
+ ✓ __tests__/middleware.test.ts (14 tests) 132ms
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 6: Concurrent Load > should handle concurrent event emissions
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.613Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.615Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.616Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.616Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.618Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.619Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.621Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.622Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.623Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.624Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.624Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.625Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.626Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.627Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.627Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.628Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.628Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.629Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.629Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.629Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+
+stderr | src/routes/__tests__/integration.test.ts > Phase E1: Event Bus Integration Tests > Suite 6: Concurrent Load > should handle concurrent emissions with various event types
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.655Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.655Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.656Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.657Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.657Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.659Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.660Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.661Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.662Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.662Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.663Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.663Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.664Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.665Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.665Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.666Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.666Z',
+  event: 'buildCreated',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.667Z',
+  event: 'buildStatusChanged',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.667Z',
+  event: 'partAdded',
+  ip: '::ffff:127.0.0.1'
+}
+[SECURITY] Event authenticated {
+  timestamp: '2026-05-20T16:24:09.668Z',
+  event: 'testRunSubmitted',
+  ip: '::ffff:127.0.0.1'
+}
+
+ ✓ src/routes/__tests__/integration.test.ts (23 tests) 824ms
+ ✓ src/__tests__/lib/context-manager.test.ts (17 tests) 42ms
+stderr | __tests__/webhooks.test.ts > Webhooks Routes > POST /webhooks/ci-results > should return 400 if buildId is missing
+[ERROR] AppError: buildId is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/webhooks.ts:36:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:175:3) {
+  status: 400,
+  details: undefined
+}
+
+stderr | __tests__/webhooks.test.ts > Webhooks Routes > POST /webhooks/ci-results > should return 400 if status is missing
+[ERROR] AppError: status is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/webhooks.ts:39:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:175:3) {
+  status: 400,
+  details: undefined
+}
+
+stderr | __tests__/webhooks.test.ts > Webhooks Routes > POST /webhooks/sensor-data > should return 400 if buildId is missing
+[ERROR] AppError: buildId is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/webhooks.ts:77:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:175:3) {
+  status: 400,
+  details: undefined
+}
+
+stderr | __tests__/webhooks.test.ts > Webhooks Routes > POST /webhooks/sensor-data > should return 400 if sensorType is missing
+[ERROR] AppError: sensorType is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/webhooks.ts:80:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:175:3) {
+  status: 400,
+  details: undefined
+}
+
+stderr | __tests__/webhooks.test.ts > Webhooks Routes > POST /webhooks/sensor-data > should return 400 if value is missing
+[ERROR] AppError: value is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/webhooks.ts:83:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:346:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/index.js:175:3) {
+  status: 400,
+  details: undefined
+}
+
+ ✓ __tests__/webhooks.test.ts (12 tests) 92ms
+stdout | __tests__/upload.test.ts > Upload Routes
+✓ Large file fixture generated
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 2: Memory Leak Detection > 2.2: deduplicator memory stays bounded at capacity
+
+      ✓ Processed 100,000 unique events
+      ✓ Dedup window bounded: 1000/1000 entries
+      ✓ Memory growth: 15.92MB
+      ✓ Avg memory per event: 0.000159MB
+    
+
+stderr | __tests__/upload.test.ts > Upload Routes > POST /upload - should return 400 if no file provided
+[ERROR] AppError: File is required
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/upload.ts:139:13
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/middleware/error.ts:66:21
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:91:12)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at multerMiddleware (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/lib/make-middleware.js:18:41)
+    at Layer.handle [as handle_request] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/express@4.22.1/node_modules/express/lib/router/route.js:119:3) {
+  status: 400,
+  details: undefined
+}
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 2: Memory Leak Detection > 2.3: client connections cleanup properly after disconnect
+
+      ✓ Completed 5 cycles of 100 connect/disconnect
+      ✓ Final memory usage: 30.98MB
+      ✓ Total connections/disconnections: 500
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 2: Memory Leak Detection > 2.4: metrics collection memory stays bounded
+
+      ✓ Processed 100,000 events through metrics collector
+      ✓ Event types tracked: 4
+      ✓ Metrics JSON size: 339 bytes
+      ✓ Average latency: 9.97ms
+    
+
+ ✓ __tests__/events.test.ts (9 tests) 57ms
+ ✓ src/services/__tests__/event-deduplicator.test.ts (12 tests) 315ms
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 3: Concurrent Client Stress > 3.1: handles 100 concurrent clients
+
+      ✓ 100 concurrent clients received 500 events each
+      ✓ Average latency: 24.94ms
+      ✓ Total events processed: 500
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 3: Concurrent Client Stress > 3.2: handles connect/disconnect churn
+
+      ✓ Completed 5 cycles of churn operations
+      ✓ Events processed: 500
+      ✓ Final connected clients: 30
+      ✓ Average latency: 14.97ms
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 3: Concurrent Client Stress > 3.3: slow client does not block fast clients
+
+      ✓ 100 events delivered to 10 fast + 1 slow clients
+      ✓ Average latency: 9.20ms (includes slow client)
+      ✓ Total broadcasts: 1100
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 4: Error Scenario Stress > 4.1: malformed events under load handled gracefully
+
+      ✓ Processed 100 valid events, rejected 50 malformed
+      ✓ Service remained stable and operational
+      ✓ Total events broadcast: 100
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 4: Error Scenario Stress > 4.2: reconnection storm handled without crashes
+
+      ✓ Survived 1000 rapid reconnection cycles
+      ✓ Service metrics: 100 events emitted
+      ✓ No crashes or hangs detected
+    
+
+stderr | src/routes/__tests__/stress-testing.test.ts > Event Bus Stress Testing - Suite 4: Error Scenario Stress > 4.3: maintains data integrity during restart simulation
+
+      ✓ Phase 1: Emitted 50 events
+      ✓ Metrics reset: 50 events
+      ✓ Phase 3: Emitted 50 more events
+      ✓ Dedup window: 50 → 0 → 50
+      ✓ Service maintained integrity through restart
+    
+
+ ✓ src/routes/__tests__/stress-testing.test.ts (13 tests) 1944ms
+   ✓ Event Bus Stress Testing - Suite 2: Memory Leak Detection > 2.2: deduplicator memory stays bounded at capacity 1398ms
+stdout | __tests__/upload.test.ts > Upload Routes > POST /upload - should reject files exceeding 50MB size limit
+  Testing with 55.0MB file (limit: 50MB)
+
+stdout | __tests__/upload.test.ts > Upload Routes
+🧹 Cleaning up fixtures...
+✓ Fixtures cleaned up
+
+stderr | __tests__/upload.test.ts > Upload Routes - MIME Validation > POST /upload - should reject executable file with .exe extension
+[ERROR] AppError: Invalid file type: 'application/x-msdos-program' is not allowed. Allowed types: text/plain, text/csv, application/json, application/xml, application/pdf, image/png, image/jpeg, application/zip, application/gzip, application/x-gzip
+    at fileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/upload.ts:78:9)
+    at wrappedFileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/index.js:45:7)
+    at Multipart.<anonymous> (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/lib/make-middleware.js:183:7)
+    at Multipart.emit (node:events:508:28)
+    at HeaderParser.cb (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:358:14)
+    at HeaderParser.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:162:20)
+    at SBMH.ssCb [as _cb] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:394:37)
+    at feed (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:248:10)
+    at SBMH.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:104:16)
+    at Multipart._write (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:567:19) {
+  status: 400,
+  details: undefined,
+  storageErrors: []
+}
+
+stderr | __tests__/upload.test.ts > Upload Routes - MIME Validation > POST /upload - should reject shell script file with .sh extension
+[ERROR] AppError: Invalid file type: 'application/x-sh' is not allowed. Allowed types: text/plain, text/csv, application/json, application/xml, application/pdf, image/png, image/jpeg, application/zip, application/gzip, application/x-gzip
+    at fileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/upload.ts:78:9)
+    at wrappedFileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/index.js:45:7)
+    at Multipart.<anonymous> (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/lib/make-middleware.js:183:7)
+    at Multipart.emit (node:events:508:28)
+    at HeaderParser.cb (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:358:14)
+    at HeaderParser.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:162:20)
+    at SBMH.ssCb [as _cb] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:394:37)
+    at feed (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:248:10)
+    at SBMH.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:104:16)
+    at Multipart._write (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:567:19) {
+  status: 400,
+  details: undefined,
+  storageErrors: []
+}
+
+stderr | __tests__/upload.test.ts > Upload Routes - MIME Validation > POST /upload - should reject Python script file with .py extension
+[ERROR] AppError: Invalid file type: 'application/octet-stream' is not allowed. Allowed types: text/plain, text/csv, application/json, application/xml, application/pdf, image/png, image/jpeg, application/zip, application/gzip, application/x-gzip
+    at fileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/upload.ts:78:9)
+    at wrappedFileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/index.js:45:7)
+    at Multipart.<anonymous> (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/lib/make-middleware.js:183:7)
+    at Multipart.emit (node:events:508:28)
+    at HeaderParser.cb (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:358:14)
+    at HeaderParser.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:162:20)
+    at SBMH.ssCb [as _cb] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:394:37)
+    at feed (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:248:10)
+    at SBMH.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:104:16)
+    at Multipart._write (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:567:19) {
+  status: 400,
+  details: undefined,
+  storageErrors: []
+}
+
+stderr | __tests__/upload.test.ts > Upload Routes - MIME Validation > POST /upload - should reject file with disallowed MIME type
+[ERROR] AppError: Invalid file type: 'application/octet-stream' is not allowed. Allowed types: text/plain, text/csv, application/json, application/xml, application/pdf, image/png, image/jpeg, application/zip, application/gzip, application/x-gzip
+    at fileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-express/src/routes/upload.ts:78:9)
+    at wrappedFileFilter (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/index.js:45:7)
+    at Multipart.<anonymous> (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/multer@2.1.1/node_modules/multer/lib/make-middleware.js:183:7)
+    at Multipart.emit (node:events:508:28)
+    at HeaderParser.cb (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:358:14)
+    at HeaderParser.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:162:20)
+    at SBMH.ssCb [as _cb] (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:394:37)
+    at feed (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:248:10)
+    at SBMH.push (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/streamsearch@1.1.0/node_modules/streamsearch/lib/sbmh.js:104:16)
+    at Multipart._write (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js:567:19) {
+  status: 400,
+  details: undefined,
+  storageErrors: []
+}
+
+ ✓ __tests__/upload.test.ts (19 tests) 2842ms
+   ✓ Upload Routes > POST /upload - should reject files exceeding 50MB size limit 1196ms
+ ✓ src/__tests__/sse-errors.test.ts (18 tests) 11151ms
+   ✓ SSE Error Handling & CORS Configuration > CORS Headers > sets SSE-specific headers on GET 1009ms
+   ✓ SSE Error Handling & CORS Configuration > CORS Headers > sets X-Accel-Buffering to disable proxy buffering 1009ms
+   ✓ SSE Error Handling & CORS Configuration > SSE Connection Establishment > accepts GET request with withCredentials 1005ms
+   ✓ SSE Error Handling & CORS Configuration > SSE Connection Establishment > sends initial connection message 1008ms
+   ✓ SSE Error Handling & CORS Configuration > SSE Connection Establishment > includes clientId in connection message 1005ms
+   ✓ SSE Error Handling & CORS Configuration > SSE Connection Establishment > includes timestamp in connection message 1004ms
+   ✓ SSE Error Handling & CORS Configuration > SSE Connection Establishment > returns text/event-stream content type 1006ms
+   ✓ SSE Error Handling & CORS Configuration > Error Responses > handles disconnected clients gracefully 1007ms
+   ✓ SSE Error Handling & CORS Configuration > Error Responses > includes proper headers for streaming 1008ms
+   ✓ SSE Error Handling & CORS Configuration > Content Encoding > sends SSE data in proper format (data: {...}\n\n) 1006ms
+   ✓ SSE Error Handling & CORS Configuration > Content Encoding > sends valid JSON in SSE messages 1006ms
+
+ Test Files  14 passed (14)
+      Tests  219 passed (219)
+   Start at  09:24:07
+   Duration  12.04s (transform 881ms, setup 0ms, collect 3.28s, tests 17.70s, environment 7ms, prepare 2.15s)
+
