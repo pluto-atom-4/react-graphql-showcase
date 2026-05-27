@@ -1,0 +1,24 @@
+
+> backend-graphql@0.1.0 test /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+> vitest run --run
+
+
+ RUN  v2.1.9 /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+
+ ✓ src/middleware/__tests__/auth.test.ts (18 tests) 46ms
+ ✓ src/resolvers/__tests__/token-management.test.ts (24 tests) 53ms
+ ✓ src/services/__tests__/event-bus.test.ts (16 tests) 160ms
+ ✓ src/resolvers/__tests__/mutation-events.test.ts (10 tests) 25ms
+ ✓ src/resolvers/__tests__/Mutation.integration.test.ts (8 tests) 220ms
+ ✓ src/resolvers/__tests__/auth-check.test.ts (14 tests) 74ms
+ ✓ src/__tests__/integration/graphql-trace-chain.test.ts (24 tests) 26ms
+ ✓ src/__tests__/integration.test.ts (10 tests) 24ms
+ ✓ src/__tests__/lib/prisma-span-bridge.test.ts (16 tests) 17ms
+ ✓ src/__tests__/plugins/tracing-plugin.test.ts (12 tests) 14ms
+ ✓ src/resolvers/__tests__/Mutation.login.test.ts (18 tests) 1881ms
+
+ Test Files  11 passed (11)
+      Tests  170 passed (170)
+   Start at  11:11:05
+   Duration  2.70s (transform 678ms, setup 0ms, collect 1.85s, tests 2.54s, environment 4ms, prepare 1.93s)
+

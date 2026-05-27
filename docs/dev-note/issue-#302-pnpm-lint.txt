@@ -1,0 +1,4 @@
+
+> backend-graphql@0.1.0 lint /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+> eslint src --ext .ts
+

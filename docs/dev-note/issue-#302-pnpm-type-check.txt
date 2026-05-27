@@ -1,0 +1,4 @@
+
+> backend-graphql@0.1.0 type-check /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+> tsc --noEmit
+
