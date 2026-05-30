@@ -1,0 +1,434 @@
+
+> react-grapql-playground@0.1.0 type-check /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground
+> pnpm -r run type-check
+
+Scope: 4 of 5 workspace projects
+frontend type-check$ tsc --noEmit
+packages/shared-tracing type-check$ tsc --noEmit
+packages/shared-tracing type-check: Done
+frontend type-check: components/FileUploader/__tests__/useDropZone.test.ts(73,18): error TS2339: Property 'multiple' does not exist on type 'DropZoneInputProps'.
+frontend type-check: components/FileUploader/__tests__/useUploadFile.test.ts(68,11): error TS6133: '_formData' is declared but its value is never read.
+frontend type-check: components/FileUploader/__tests__/useUploadFile.test.ts(69,11): error TS6133: '_abortController' is declared but its value is never read.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(13,15): error TS2459: Module '"@/lib/hooks/useActivityFeed"' declares 'BuildEvent' locally, but it is not exported.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(54,9): error TS7034: Variable 'mockEvents' implicitly has type 'any[]' in some locations where its type cannot be determined.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(66,65): error TS2345: Argument of type '{ updateStatus: Mock<Procedure>; loading: false; }' is not assignable to parameter of type '{ updateStatus: (id: string, status: BuildStatus) => Promise<Build | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check:   Property 'error' is missing in type '{ updateStatus: Mock<Procedure>; loading: false; }' but required in type '{ updateStatus: (id: string, status: BuildStatus) => Promise<Build | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(71,55): error TS2345: Argument of type '{ addPart: Mock<Procedure>; loading: false; }' is not assignable to parameter of type '{ addPart: (buildId: string, name: string, sku: string, quantity: number) => Promise<Part | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check:   Property 'error' is missing in type '{ addPart: Mock<Procedure>; loading: false; }' but required in type '{ addPart: (buildId: string, name: string, sku: string, quantity: number) => Promise<Part | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(76,61): error TS2345: Argument of type '{ submitTestRun: Mock<Procedure>; loading: false; }' is not assignable to parameter of type '{ submitTestRun: (buildId: string, status: TestStatus, testResult?: string | undefined, fileUrl?: string | undefined) => Promise<TestRun | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check:   Property 'error' is missing in type '{ submitTestRun: Mock<Procedure>; loading: false; }' but required in type '{ submitTestRun: (buildId: string, status: TestStatus, testResult?: string | undefined, fileUrl?: string | undefined) => Promise<TestRun | undefined>; loading: boolean; error: string | null; }'.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(81,57): error TS2345: Argument of type '{ testRuns: TestRun[]; loading: false; error: null; }' is not assignable to parameter of type 'UseTestRunsResult'.
+frontend type-check:   Type '{ testRuns: TestRun[]; loading: false; error: null; }' is missing the following properties from type 'UseTestRunsResult': startPolling, stopPolling, refetch, isPolling, pollInterval
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(87,65): error TS2345: Argument of type '{ events: BuildEvent[]; loading: false; error: null; }' is not assignable to parameter of type 'UseActivityFeedReturn'.
+frontend type-check:   Property 'refetch' is missing in type '{ events: BuildEvent[]; loading: false; error: null; }' but required in type 'UseActivityFeedReturn'.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(89,15): error TS7005: Variable 'mockEvents' implicitly has an 'any[]' type.
+frontend type-check: components/__tests__/BuildDetailModal.phase6-integration.test.tsx(330,59): error TS2345: Argument of type '{ testRuns: never[]; loading: false; error: null; }' is not assignable to parameter of type 'UseTestRunsResult'.
+frontend type-check:   Type '{ testRuns: never[]; loading: false; error: null; }' is missing the following properties from type 'UseTestRunsResult': startPolling, stopPolling, refetch, isPolling, pollInterval
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(6,41): error TS7016: Could not find a declaration file for module 'jest-axe'. '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/jest-axe@10.0.0/node_modules/jest-axe/index.js' implicitly has an 'any' type.
+frontend type-check:   Try `npm i --save-dev @types/jest-axe` if it exists or add a new declaration (.d.ts) file containing `declare module 'jest-axe';`
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(10,1): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(12,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(41,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(42,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(48,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(51,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(57,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(60,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(66,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(69,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(80,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(83,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(87,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(88,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(104,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(107,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(122,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(125,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(142,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(146,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(166,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(174,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(178,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(193,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(194,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(198,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(199,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(208,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(216,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(219,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(231,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(234,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(245,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(248,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(251,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(263,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(267,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(271,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(272,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(280,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(284,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(294,11): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(299,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(309,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(313,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(314,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(324,48): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '(data: Record<string, string | number>) => Promise<void>'.
+frontend type-check:   Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+frontend type-check:     Type 'unknown' is not assignable to type 'void'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(331,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(335,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(345,48): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '(data: Record<string, string | number>) => Promise<void>'.
+frontend type-check:   Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+frontend type-check:     Type 'unknown' is not assignable to type 'void'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(350,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(353,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(361,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(366,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(367,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(374,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(377,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(402,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(406,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(407,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(414,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(417,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(424,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(428,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(429,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(438,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(441,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(459,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(462,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(470,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(474,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(475,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(488,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(491,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(504,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/inline-editor-accessibility.test.tsx(511,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(6,41): error TS7016: Could not find a declaration file for module 'jest-axe'. '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/jest-axe@10.0.0/node_modules/jest-axe/index.js' implicitly has an 'any' type.
+frontend type-check:   Try `npm i --save-dev @types/jest-axe` if it exists or add a new declaration (.d.ts) file containing `declare module 'jest-axe';`
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(11,1): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(13,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(14,9): error TS2741: Property 'buildId' is missing in type '{ id: string; name: string; sku: string; quantity: number; createdAt: string; }' but required in type 'PartData'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(28,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(29,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(40,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(43,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(54,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(57,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(68,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(71,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(74,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(85,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(89,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(90,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(105,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(110,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(113,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(125,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(129,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(143,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(147,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(148,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(159,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(162,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(176,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(179,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(190,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(194,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(195,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(205,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(208,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(218,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(221,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(231,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(232,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(233,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(234,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(237,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(247,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(251,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(252,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(262,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(263,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(264,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(267,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(281,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(282,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(283,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(286,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(300,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(301,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(305,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(306,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(321,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(324,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(339,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(342,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(360,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(364,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(365,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(379,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(382,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(397,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(400,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(413,11): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '(partId: string) => Promise<void>'.
+frontend type-check:   Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+frontend type-check:     Type 'unknown' is not assignable to type 'void'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(425,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(428,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(448,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(452,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(453,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(468,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(471,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(488,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(492,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(493,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(505,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(508,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(523,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(526,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(541,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(544,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(556,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(560,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(561,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(572,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(575,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(585,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(586,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(589,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(599,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(600,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/part-details-modal-accessibility.test.tsx(601,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(6,41): error TS7016: Could not find a declaration file for module 'jest-axe'. '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/jest-axe@10.0.0/node_modules/jest-axe/index.js' implicitly has an 'any' type.
+frontend type-check:   Try `npm i --save-dev @types/jest-axe` if it exists or add a new declaration (.d.ts) file containing `declare module 'jest-axe';`
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(9,1): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(11,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(32,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(33,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(36,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(39,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(42,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(43,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(46,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(49,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(52,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(57,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(61,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(65,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(66,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(67,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(70,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(75,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(79,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(82,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(85,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(90,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(94,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(99,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(104,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(105,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(108,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(115,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(118,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(121,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(128,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(131,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(133,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(140,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(143,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(145,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(152,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(155,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(157,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(171,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(174,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(176,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(183,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(186,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(188,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(195,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(199,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(200,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(207,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(210,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(216,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(217,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(221,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(232,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(237,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(238,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(248,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(249,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(253,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(257,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(260,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(268,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(272,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(273,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(277,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(280,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(284,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(288,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(289,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(292,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(295,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(303,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(306,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(309,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(313,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(314,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(323,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(324,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(327,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(336,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(339,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(341,31): error TS2304: Cannot find name 'vi'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(355,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(359,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(360,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(367,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(370,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(375,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/tabs-accessibility.test.tsx(381,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(6,41): error TS7016: Could not find a declaration file for module 'jest-axe'. '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/jest-axe@10.0.0/node_modules/jest-axe/index.js' implicitly has an 'any' type.
+frontend type-check:   Try `npm i --save-dev @types/jest-axe` if it exists or add a new declaration (.d.ts) file containing `declare module 'jest-axe';`
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(11,1): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(13,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(14,9): error TS2741: Property 'buildId' is missing in type '{ id: string; status: string; result: string; startedAt: string; completedAt: string; fileUrl: string; }' but required in type 'TestRunData'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(29,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(30,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(41,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(44,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(55,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(58,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(69,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(72,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(76,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(77,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(88,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(91,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(101,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(104,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(120,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(124,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(125,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(136,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(139,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(153,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(156,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(167,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(171,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(172,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(182,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(185,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(195,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(196,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(199,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(209,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(212,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(222,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(223,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(227,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(228,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(239,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(242,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(256,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(260,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(272,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(276,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(277,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(293,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(296,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(307,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(310,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(327,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(330,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(344,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(348,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(360,11): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '(testRunId: string) => Promise<void>'.
+frontend type-check:   Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+frontend type-check:     Type 'unknown' is not assignable to type 'void'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(371,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(375,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(387,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(392,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(393,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(407,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(410,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(425,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(430,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(434,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(451,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(455,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(456,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(471,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(474,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(492,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(496,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(497,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(510,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(514,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(522,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(526,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(527,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(537,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(540,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(555,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(559,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(560,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(572,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(575,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(587,11): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '(testRunId: string) => Promise<void>'.
+frontend type-check:   Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+frontend type-check:     Type 'unknown' is not assignable to type 'void'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(599,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(602,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(614,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(617,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(633,9): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(638,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(639,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(650,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(653,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(664,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(667,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+frontend type-check: components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx(680,7): error TS2304: Cannot find name 'expect'.
+frontend type-check: components/__tests__/build-detail-modal-tabbed.test.tsx(107,7): error TS2322: Type '{ id: string; buildId: string; eventType: "status_change"; timestamp: Date; description: string; metadata: { newStatus: string; }; }[]' is not assignable to type 'BuildEvent[]'.
+frontend type-check:   Type '{ id: string; buildId: string; eventType: "status_change"; timestamp: Date; description: string; metadata: { newStatus: string; }; }' is not assignable to type 'BuildEvent'.
+frontend type-check:     The types of 'metadata.newStatus' are incompatible between these types.
+frontend type-check:       Type 'string' is not assignable to type 'BuildStatus | undefined'.
+frontend type-check: components/__tests__/build-detail-modal-tabbed.test.tsx(371,9): error TS2322: Type 'null' is not assignable to type 'BuildDetail | undefined'.
+frontend type-check: components/__tests__/build-detail-modal-tabbed.test.tsx(393,9): error TS2322: Type 'null' is not assignable to type 'BuildDetail | undefined'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(11,78): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(20,30): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(94,63): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(114,33): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(145,71): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/error-boundary.test.tsx(193,75): error TS2503: Cannot find namespace 'JSX'.
+frontend type-check: components/__tests__/test-utils.tsx(14,37): error TS2322: Type '{ children: ReactNode; mocks: readonly MockedResponse<any, any>[]; addTypename: boolean; }' is not assignable to type 'IntrinsicAttributes & IntrinsicClassAttributes<MockedProvider> & Readonly<MockedProviderProps>'.
+frontend type-check:   Property 'addTypename' does not exist on type 'IntrinsicAttributes & IntrinsicClassAttributes<MockedProvider> & Readonly<MockedProviderProps>'.
+frontend type-check: components/__tests__/test-utils.tsx(32,3): error TS2322: Type 'RenderResult<Queries, HTMLElement, HTMLElement>' is not assignable to type 'RenderResult'.
+frontend type-check:   Type 'RenderResult<Queries, HTMLElement, HTMLElement>' is missing the following properties from type '{ getByLabelText: (id: Matcher, options?: SelectorMatcherOptions | undefined) => HTMLElement; getAllByLabelText: (id: Matcher, options?: SelectorMatcherOptions | undefined) => HTMLElement[]; ... 45 more ...; findAllByTestId: (id: Matcher, options?: MatcherOptions | undefined, waitForElementOptions?: waitForOptions |...': getByLabelText, getAllByLabelText, queryByLabelText, queryAllByLabelText, and 44 more.
+frontend type-check: e2e/tests/example.spec.ts(150,39): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: e2e/tests/example.spec.ts(153,33): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(149,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(150,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(151,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(180,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(350,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(506,25): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(518,31): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(536,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(537,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: lib/__tests__/optimistic-updates.test.tsx(538,22): error TS2339: Property 'builds' does not exist on type '{}'.
+frontend type-check: Failed
+/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  frontend@0.1.0 type-check: `tsc --noEmit`
+Exit status 1
+ ELIFECYCLE  Command failed with exit code 1.
+
+[exit_code=1]

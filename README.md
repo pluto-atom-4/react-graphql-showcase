@@ -179,6 +179,21 @@ Frontend (Next.js + React)
 2. **Client Components** - Interactive features with optimistic updates
 3. **DataLoader** - Batch loading prevents N+1 queries
 4. **Real-time Events** - Server-Sent Events (SSE) for live updates
+5. **Request Tracing** - `traceparent` flows through Express/GraphQL middleware, Apollo operation spans, wrapped resolvers, and Prisma spans with safe argument redaction
+
+### GraphQL Tracing Flow
+
+```text
+traceparent header
+  → @repo/shared-tracing middleware
+  → Apollo tracing plugin
+  → wrapped Query / Mutation / Build resolvers
+  → Prisma + DataLoader spans
+```
+
+- Shared tracing logic lives in `packages/shared-tracing/`.
+- Redaction is always on for sensitive resolver args (`password`, `token`, `authorization`, `cookie`, `secret`, `apiKey`, `passwordHash`).
+- GraphQL accepts both `traceparent` and `tracestate` headers during local and manual verification.
 
 See [CLAUDE.md](CLAUDE.md) for architectural deep-dive.
 

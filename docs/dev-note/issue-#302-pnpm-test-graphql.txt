@@ -1,0 +1,66 @@
+
+> backend-graphql@0.1.0 test /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+> vitest run --run
+
+
+ RUN  v2.1.9 /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should retry on network error and eventually succeed
+[EventBus] Event emission attempt 1/4 failed for buildCreated { error: 'Network timeout', retryIn: 20 }
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should respect max retries limit
+[EventBus] Event emission attempt 1/3 failed for buildCreated { error: 'Network error', retryIn: 2 }
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should respect max retries limit
+[EventBus] Event emission attempt 2/3 failed for buildCreated { error: 'Network error', retryIn: 4 }
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should handle non-2xx HTTP response as error
+[EventBus] Event emission attempt 1/2 failed for buildCreated { error: 'HTTP 500: Server error', retryIn: 20 }
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should include correct headers on retry
+[EventBus] Event emission attempt 1/2 failed for buildCreated { error: 'Timeout', retryIn: 20 }
+
+ ✓ src/middleware/__tests__/auth.test.ts (18 tests) 38ms
+ ✓ src/resolvers/__tests__/token-management.test.ts (24 tests) 48ms
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should not throw even after all retries fail
+[EventBus] Event emission attempt 1/2 failed for buildCreated { error: 'Network unreachable', retryIn: 2 }
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should log warnings on retry attempts before success
+[EventBus] Failed to emit event after 2 retries: buildCreated TypeError: Cannot read properties of undefined (reading 'ok')
+    at Module.emitEvent (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql/src/services/event-bus.ts:118:20)
+    at /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql/src/services/__tests__/event-bus.test.ts:171:7
+    at file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:533:5
+    at runTest (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1056:11)
+    at runSuite (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1262:5)
+    at startTests (file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/@vitest+runner@2.1.9/node_modules/@vitest/runner/dist/index.js:1271:3)
+    at file:///home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/node_modules/.pnpm/vitest@2.1.9_@types+node@20.19.39_@vitest+ui@2.1.9_happy-dom@15.11.7_jsdom@29.0.2_@noble+hashes@1.8.0_/node_modules/vitest/dist/chunks/runBaseTests.3qpJUEJM.js:126:11
+
+stderr | src/services/__tests__/event-bus.test.ts > Event Bus Service - Retry Logic > emitEvent with retry logic > should POST event with correct format on all retry attempts
+[EventBus] Event emission attempt 1/2 failed for buildCreated { error: 'Network error', retryIn: 20 }
+
+ ✓ src/services/__tests__/event-bus.test.ts (16 tests) 141ms
+ ✓ src/resolvers/__tests__/mutation-events.test.ts (10 tests) 53ms
+ ✓ src/resolvers/__tests__/auth-check.test.ts (14 tests) 98ms
+stderr | Module.emitEvent (/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql/src/services/event-bus.ts:146:15)
+[EventBus] Event emission attempt 1/4 failed for buildCreated { error: 'fetch failed', retryIn: 2000 }
+
+ ✓ src/__tests__/plugins/tracing-plugin.test.ts (5 tests) 12ms
+ ✓ src/__tests__/integration.test.ts (10 tests) 38ms
+stderr | src/resolvers/__tests__/Mutation.integration.test.ts > Event Bus Integration: GraphQL → Express → SSE > should verify event bus error handling
+[EventBus] Event emission attempt 1/4 failed for buildCreated { error: 'Network error', retryIn: 2000 }
+
+ ✓ src/resolvers/__tests__/Mutation.integration.test.ts (8 tests) 293ms
+ ✓ src/__tests__/lib/prisma-span-bridge.test.ts (5 tests) 12ms
+ ✓ src/__tests__/integration/graphql-trace-chain.test.ts (5 tests) 264ms
+ ✓ src/resolvers/__tests__/Mutation.login.test.ts (18 tests) 1686ms
+
+ Test Files  11 passed (11)
+      Tests  133 passed (133)
+   Start at  18:03:55
+   Duration  2.81s (transform 1.26s, setup 0ms, collect 4.35s, tests 2.68s, environment 4ms, prepare 1.42s)
+
+
+[exit_code=0]

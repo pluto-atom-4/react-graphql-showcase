@@ -125,14 +125,28 @@ Both backends can share the same PostgreSQL database and authentication, but ope
 - DataLoader for efficient N+1 prevention ✅
 - Error handling and validation
 - Authorization checks (planned)
-- Emit events to Express event bus for real-time updates (TODO: currently stub only)
+- Emit events to Express event bus for real-time updates
+- Propagate request traces into operation, resolver, and Prisma spans
 
 **Current Status**: ✅ **FUNCTIONAL** (Resolvers implemented and tested)
 
 - Queries: `builds(limit, offset)`, `build(id)`, `testRuns(buildId)` ✅
 - Mutations: `createBuild`, `updateBuildStatus`, `addPart`, `submitTestRun` ✅
 - DataLoader: ✅ **Implemented** - Prevents N+1 queries when resolving nested parts and test runs
-- Real-time Events: **Stub** - calls console.log, no actual emission to Express (Issue #7)
+- Real-time Events: ✅ **Implemented** - GraphQL mutations emit typed events to Express
+- Tracing: ✅ **Implemented** - `traceparent`/`tracestate` request headers flow through shared middleware, Apollo plugin, wrapped resolvers, and Prisma spans
+
+### Trace Propagation
+
+```text
+Incoming traceparent header
+  → packages/shared-tracing tracing middleware
+  → Apollo request plugin (`graphql.query` / `graphql.mutation` span)
+  → wrapped resolver spans (`graphql.field.*`)
+  → Prisma and DataLoader spans (`db.prisma.*`)
+```
+
+Resolver args are serialized with circular-safe truncation and always-on redaction for sensitive keys (`password`, `token`, `authorization`, `cookie`, `secret`, `apiKey`, `passwordHash`).
 
 ### GraphQL Schema (Domain Model)
 
