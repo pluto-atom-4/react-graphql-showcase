@@ -2,6 +2,7 @@ packages:
   - 'frontend'
   - 'backend-graphql'
   - 'backend-express'
+  - 'packages/*'
 allowBuilds:
   bcrypt: true
 

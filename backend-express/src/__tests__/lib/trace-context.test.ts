@@ -26,6 +26,14 @@ describe('trace-context', () => {
       expect(context.traceFlags).toBe('01')
     })
 
+    it('should accept uppercase hex characters in traceparent header', () => {
+      const header = '00-4BF92F3577B34DA6A3CE929D0E0E4736-00F067AA0BA902B7-01'
+      const context = parseTraceparent(header)
+
+      expect(context.traceId).toBe('4bf92f3577b34da6a3ce929d0e0e4736')
+      expect(context.parentSpanId).toBe('00f067aa0ba902b7')
+    })
+
     it('should generate new trace ID if header is missing', () => {
       const context = parseTraceparent()
 

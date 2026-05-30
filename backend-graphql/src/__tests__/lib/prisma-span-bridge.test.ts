@@ -1,100 +1,147 @@
-import { describe, it, expect } from 'vitest'
+import { ROOT_CONTEXT, trace, type Context as OtelContext } from '@opentelemetry/api';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  createPrismaSpan,
+  getPrismaTraceContext,
+  resetPrismaTracerForTests,
+  setPrismaTracerForTests,
+  withPrismaSpan,
+  withPrismaTransaction,
+} from '../../lib/prisma-span-bridge';
+import { withActiveOtelContext } from '../../lib/otel-context-store';
 
-/**
- * Prisma Span Bridge Tests
- * Tests the core functionality of Prisma ORM tracing
- */
+class FakeSpan {
+  public readonly ended = { value: false };
+  public readonly exceptions: Error[] = [];
+  public readonly events: Array<{ name: string; attributes?: Record<string, unknown> }> = [];
+  public readonly statuses: Array<{ code: number; message?: string }> = [];
+  public readonly attributes: Record<string, unknown>;
 
-describe('Prisma Span Bridge - Core Functionality', () => {
-  describe('Prisma span creation', () => {
-    it('should create spans for database operations', () => {
-      // createPrismaSpan creates spans with db.* attributes
-      expect(true).toBe(true)
-    })
+  constructor(
+    public readonly name: string,
+    attributes: Record<string, unknown>,
+    private readonly traceId: string,
+    private readonly spanId: string
+  ) {
+    this.attributes = { ...attributes };
+  }
 
-    it('should include operation metadata in spans', () => {
-      // Spans include db.operation, db.system, db.engine attributes
-      expect(true).toBe(true)
-    })
+  spanContext() {
+    return { traceId: this.traceId, spanId: this.spanId, traceFlags: 1 };
+  }
 
-    it('should handle missing tracing context gracefully', () => {
-      // If no tracer available, operations execute normally
-      expect(true).toBe(true)
-    })
-  })
+  setAttribute(key: string, value: unknown) {
+    this.attributes[key] = value;
+    return this;
+  }
 
-  describe('Query span wrapping', () => {
-    it('should wrap queries and return results', () => {
-      // withPrismaSpan executes query and returns result
-      expect(true).toBe(true)
-    })
+  setStatus(status: { code: number; message?: string }) {
+    this.statuses.push(status);
+    return this;
+  }
 
-    it('should measure query duration', () => {
-      // withPrismaSpan records duration_ms event
-      expect(true).toBe(true)
-    })
+  recordException(error: Error) {
+    this.exceptions.push(error);
+  }
 
-    it('should record errors in spans', () => {
-      // Errors are recorded via span.recordException
-      expect(true).toBe(true)
-    })
-  })
+  addEvent(name: string, attributes?: Record<string, unknown>) {
+    this.events.push({ name, attributes });
+    return this;
+  }
 
-  describe('Transaction span wrapping', () => {
-    it('should wrap transactions and record completion', () => {
-      // withPrismaTransaction executes tx and records db.transaction.commit
-      expect(true).toBe(true)
-    })
+  end() {
+    this.ended.value = true;
+  }
+}
 
-    it('should record rollbacks on error', () => {
-      // withPrismaTransaction records db.transaction.rollback on error
-      expect(true).toBe(true)
-    })
+class FakeTracer {
+  public readonly startedSpans: Array<{ span: FakeSpan; parent?: string; parentTraceId?: string }> = [];
+  private counter = 1;
 
-    it('should maintain span context across multiple queries', () => {
-      // All queries within transaction are linked to tx span
-      expect(true).toBe(true)
-    })
-  })
+  startSpan(
+    name: string,
+    options?: { attributes?: Record<string, unknown> },
+    contextArg?: OtelContext
+  ) {
+    const parentSpan = contextArg ? trace.getSpan(contextArg) : undefined;
+    const span = new FakeSpan(
+      name,
+      options?.attributes ?? {},
+      parentSpan?.spanContext().traceId ?? `trace-${this.counter}`,
+      `db-span-${this.counter++}`
+    );
+    this.startedSpans.push({
+      span,
+      parent: parentSpan?.spanContext().spanId,
+      parentTraceId: parentSpan?.spanContext().traceId,
+    });
+    return span as never;
+  }
+}
 
-  describe('Error recording', () => {
-    it('should record Prisma errors with metadata', () => {
-      // recordPrismaError captures error message and type
-      expect(true).toBe(true)
-    })
+describe('prisma-span-bridge', () => {
+  let tracer: FakeTracer;
 
-    it('should handle null spans gracefully', () => {
-      // recordPrismaError should not throw if span is null
-      expect(true).toBe(true)
-    })
-  })
+  beforeEach(() => {
+    tracer = new FakeTracer();
+    setPrismaTracerForTests(tracer as never);
+  });
 
-  describe('Operation decorator', () => {
-    it('should decorate Prisma model methods with tracing', () => {
-      // @tracePrismaOperation decorator wraps methods
-      expect(true).toBe(true)
-    })
+  afterEach(() => {
+    resetPrismaTracerForTests();
+  });
 
-    it('should record operation metadata in decorator', () => {
-      // Decorator includes model and operation name
-      expect(true).toBe(true)
-    })
-  })
+  it('wraps Prisma queries and returns results', async () => {
+    const result = await withPrismaSpan('Build.findMany', async () => ['build-1']);
 
-  describe('Trace context retrieval', () => {
-    it('should retrieve trace context from OpenTelemetry', () => {
-      // getPrismaTraceContext retrieves from otel context
-      expect(true).toBe(true)
-    })
+    expect(result).toEqual(['build-1']);
+    expect(tracer.startedSpans[0]?.span.name).toBe('db.prisma.query');
+    expect(tracer.startedSpans[0]?.span.attributes['db.query.name']).toBe('Build.findMany');
+    expect(tracer.startedSpans[0]?.span.events[0]?.name).toBe('db.query.complete');
+  });
 
-    it('should fallback to operation span if field span missing', () => {
-      // getPrismaTraceContext tries field span, then operation span
-      expect(true).toBe(true)
-    })
+  it('records errors on failed Prisma queries', async () => {
+    await expect(
+      withPrismaSpan('Build.findMany', async () => {
+        throw new Error('db broke');
+      })
+    ).rejects.toThrow('db broke');
 
-    it('should return null context if neither available', () => {
-      // Returns null context when no tracing available
-      expect(true).toBe(true)
-    })
-  })
-})
+    const span = tracer.startedSpans[0]?.span;
+    expect(span?.exceptions).toHaveLength(1);
+    expect(span?.events[0]?.name).toBe('db.error');
+    expect(span?.statuses.at(-1)?.code).toBe(2);
+  });
+
+  it('records commit events for successful transactions', async () => {
+    await withPrismaTransaction('Mutation.createBuild', async () => 'ok');
+
+    const span = tracer.startedSpans[0]?.span;
+    expect(span?.events.map((event) => event.name)).toContain('db.transaction.commit');
+    expect(span?.ended.value).toBe(true);
+  });
+
+  it('records rollback events for failed transactions', async () => {
+    await expect(
+      withPrismaTransaction('Mutation.createBuild', async () => {
+        throw new Error('rollback');
+      })
+    ).rejects.toThrow('rollback');
+
+    const span = tracer.startedSpans[0]?.span;
+    expect(span?.events.map((event) => event.name)).toContain('db.transaction.rollback');
+    expect(span?.statuses.at(-1)?.code).toBe(2);
+  });
+
+  it('inherits the active parent span from OpenTelemetry context', async () => {
+    const parentSpan = new FakeSpan('parent', {}, 'trace-parent', 'parent-span');
+    await withActiveOtelContext(trace.setSpan(ROOT_CONTEXT, parentSpan as never), async () => {
+      const contextValue = getPrismaTraceContext();
+      expect(contextValue.span?.spanContext().spanId).toBe('parent-span');
+      await withPrismaSpan('Build.findUnique', async () => 'ok');
+    });
+
+    expect(tracer.startedSpans[0]?.parent).toBe('parent-span');
+    expect(createPrismaSpan('query', { test: true })?.spanContext().traceId).toBeDefined();
+  });
+});

@@ -1,4 +1,49 @@
 
-> backend-graphql@0.1.0 lint /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/backend-graphql
-> eslint src --ext .ts
+> react-grapql-playground@0.1.0 lint /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground
+> pnpm -r run lint
 
+Scope: 4 of 5 workspace projects
+frontend lint$ eslint . --ext .ts,.tsx
+packages/shared-tracing lint$ eslint src --ext .ts
+packages/shared-tracing lint: Done
+frontend lint: /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend/components/__tests__/accessibility/inline-editor-accessibility.test.tsx
+frontend lint:     1:1   warning  Unused eslint-disable directive (no problems were reported from 'no-undef')
+frontend lint:   469:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint: /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend/components/__tests__/accessibility/part-details-modal-accessibility.test.tsx
+frontend lint:     1:1   warning  Unused eslint-disable directive (no problems were reported from 'no-undef')
+frontend lint:   522:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   540:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   555:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint: /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend/components/__tests__/accessibility/tabs-accessibility.test.tsx
+frontend lint:     1:1   warning  Unused eslint-disable directive (no problems were reported from 'no-undef')
+frontend lint:   109:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   122:70  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   133:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   134:70  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   145:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   146:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   157:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   164:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   176:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   177:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   188:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   189:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   291:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   302:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   308:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   341:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   348:71  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint: /home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend/components/__tests__/accessibility/test-run-result-viewer-accessibility.test.tsx
+frontend lint:     1:1   warning  Unused eslint-disable directive (no problems were reported from 'no-undef')
+frontend lint:   598:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   613:13  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint:   632:15  warning  Unsafe assignment of an error typed value                                    @typescript-eslint/no-unsafe-assignment
+frontend lint: ✖ 28 problems (0 errors, 28 warnings)
+frontend lint:   0 errors and 4 warnings potentially fixable with the `--fix` option.
+frontend lint: Done
+backend-express lint$ eslint src --ext .ts
+backend-graphql lint$ eslint src --ext .ts
+backend-express lint: Done
+backend-graphql lint: Done
+
+[exit_code=0]

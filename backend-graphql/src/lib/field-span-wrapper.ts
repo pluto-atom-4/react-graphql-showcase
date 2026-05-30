@@ -1,135 +1,133 @@
-import { trace, context as otelContext } from '@opentelemetry/api'
+import {
+  SpanStatusCode,
+  trace,
+  type Context as OtelContext,
+  type Tracer,
+} from '@opentelemetry/api';
+import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store';
+import { serializeTraceArgs } from './trace-arg-serializer';
 
-const tracer = trace.getTracer('apollo-graphql-fields', '1.0.0')
+const fallbackTracer = trace.getTracer('apollo-graphql-fields', '1.0.0');
 
-// Create symbol keys for OpenTelemetry context
-const FIELD_SPAN_KEY = Symbol('graphqlFieldSpan')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ResolverFn = (parent: any, args: any, context: any, info: any) => any;
 
-/**
- * Wraps a field resolver to create nested spans for detailed tracing
- *
- * @param resolve - Original resolver function
- * @param fieldName - Name of the field being resolved
- * @param typeName - Name of the parent type
- * @returns Wrapped resolver that creates spans
- */
-export function wrapFieldResolver(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolve: (parent: any, args: any, context: any, info: any) => any,
-  fieldName: string,
-  typeName: string
-) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return async function wrappedResolver(parent: any, args: any, context: any, info: any) {
-    // If tracing not available in context, call resolver normally
-    if (!context?.otelTracer) {
-      return resolve(parent, args, context, info)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ResolverMap = Record<string, any>;
+
+function getTracer(context: Record<string, unknown>): Tracer | undefined {
+  return (context.otelTracer as Tracer | undefined) ?? fallbackTracer;
+}
+
+function getParentContext(context: Record<string, unknown>): OtelContext {
+  return (context.otelContext as OtelContext | undefined) ?? getActiveOtelContext();
+}
+
+export function wrapFieldResolver(resolve: ResolverFn, fieldName: string, typeName: string): ResolverFn {
+  return async function wrappedResolver(
+    parent: unknown,
+    args: unknown,
+    context: Record<string, unknown>,
+    info: unknown
+  ): Promise<unknown> {
+    const tracer = getTracer(context ?? {});
+    if (!tracer) {
+      return resolve(parent, args, context, info);
     }
 
-    const span = context.otelTracer.startSpan(
+    const serializedArgs = serializeTraceArgs(args);
+    const parentContext = getParentContext(context ?? {});
+    const span = tracer.startSpan(
       `graphql.field.${typeName}.${fieldName}`,
       {
         attributes: {
           'graphql.field.name': fieldName,
           'graphql.type.name': typeName,
-          'graphql.args': JSON.stringify(args), // Can redact sensitive args if needed
+          'graphql.args': serializedArgs.serialized,
+          'graphql.args.redacted': serializedArgs.redacted,
+          'graphql.args.truncated': serializedArgs.truncated,
         },
-      }
-    )
+      },
+      parentContext
+    );
+    const spanContext = trace.setSpan(parentContext, span);
+    const previousContext = context?.otelContext as OtelContext | undefined;
 
     try {
-      const result = await otelContext.with(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        otelContext.active().setValue(FIELD_SPAN_KEY as any, span),
-        () => resolve(parent, args, context, info)
-      )
-      return result
+      return await withActiveOtelContext(spanContext, async () => {
+        if (context) {
+          context.otelContext = spanContext;
+        }
+
+        const result = await resolve(parent, args, context, info);
+        span.setStatus({ code: SpanStatusCode.OK });
+        return result;
+      });
     } catch (error) {
-      span.recordException(error as Error)
-      span.setStatus({ code: 1, message: 'ERROR' })
-      throw error
+      span.recordException(error as Error);
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error instanceof Error ? error.message : 'ERROR' });
+      throw error;
     } finally {
-      span.end()
+      if (context) {
+        context.otelContext = previousContext;
+      }
+      span.end();
     }
-  }
+  };
 }
 
-/**
- * Wraps all resolvers in a type to create field spans
- *
- * @param resolvers - Object with resolver functions
- * @param typeName - Name of the GraphQL type
- * @returns Object with wrapped resolvers
- */
-export function wrapResolvers(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolvers: Record<string, any>,
-  typeName: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Record<string, any> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const wrapped: Record<string, any> = {}
+export function wrapResolvers(resolvers: ResolverMap, typeName: string): ResolverMap {
+  const wrapped: ResolverMap = {};
 
   for (const [fieldName, resolver] of Object.entries(resolvers)) {
     if (typeof resolver === 'function') {
-      wrapped[fieldName] = wrapFieldResolver(resolver, fieldName, typeName)
-    } else if (resolver && typeof resolver === 'object' && '__resolveReference' in resolver) {
-      // Handle federation reference resolvers
+      wrapped[fieldName] = wrapFieldResolver(resolver, fieldName, typeName);
+      continue;
+    }
+
+    if (resolver && typeof resolver === 'object' && '__resolveReference' in resolver) {
+      const referenceResolver = resolver.__resolveReference;
       wrapped[fieldName] = {
         ...resolver,
-        __resolveReference: wrapFieldResolver(
-          resolver.__resolveReference,
-          fieldName,
-          typeName
-        ),
-      }
-    } else {
-      wrapped[fieldName] = resolver
+        __resolveReference:
+          typeof referenceResolver === 'function'
+            ? wrapFieldResolver(referenceResolver, fieldName, typeName)
+            : referenceResolver,
+      };
+      continue;
     }
+
+    wrapped[fieldName] = resolver;
   }
 
-  return wrapped
+  return wrapped;
 }
 
-/**
- * Simple decorator for wrapping a single resolver with tracing
- *
- * @param typeName - Parent type name
- * @param fieldName - Field name
- * @returns Decorator function
- */
 export function traceResolver(typeName: string, fieldName: string) {
   return function (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _target: any,
+    _target: object,
     _propertyKey: string,
     descriptor: PropertyDescriptor
-  ) {
-    const originalMethod = descriptor.value
-    descriptor.value = wrapFieldResolver(originalMethod, fieldName, typeName)
-    return descriptor
-  }
+  ): PropertyDescriptor {
+    const originalMethod = descriptor.value as ResolverFn;
+    descriptor.value = wrapFieldResolver(originalMethod, fieldName, typeName);
+    return descriptor;
+  };
 }
 
-/**
- * Create a span for a specific operation within a resolver
- * Useful for sub-operations like validation, DB queries, external calls
- */
 export function createOperationSpan(
   operationName: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  attributes?: Record<string, any>
+  attributes?: Record<string, string | number | boolean | undefined>
 ) {
   try {
-    const span = tracer.startSpan(operationName, {
+    return fallbackTracer.startSpan(operationName, {
       attributes: {
         'graphql.resolver.operation': operationName,
         ...attributes,
       },
-    })
-    return span
+    });
   } catch (error) {
-    console.error('[Field Span Wrapper] Error creating operation span:', error)
-    return null
+    console.error('[Field Span Wrapper] Error creating operation span:', error);
+    return null;
   }
 }

@@ -1,47 +1,40 @@
-import { trace, context as otelContext } from '@opentelemetry/api'
+import {
+  SpanStatusCode,
+  trace,
+  type Context as OtelContext,
+  type Span,
+  type Tracer,
+} from '@opentelemetry/api';
+import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store';
 
-const tracer = trace.getTracer('prisma-otel-bridge', '1.0.0')
+const TRACER_NAME = 'prisma-otel-bridge';
 
-// Create symbol keys for OpenTelemetry context
-const PRISMA_SPAN_KEY = Symbol('prismaSpan')
-const DB_TRACER_KEY = Symbol('dbTracer')
+let prismaTracer: Tracer = trace.getTracer(TRACER_NAME, '1.0.0');
 
-/**
- * Prisma ORM Span Bridge
- *
- * Creates spans for Prisma database operations and links them
- * to parent GraphQL resolver spans via OpenTelemetry context
- */
+type SpanAttributes = Record<string, string | number | boolean | undefined>;
 
-/**
- * Get current Prisma trace context from OpenTelemetry
- * Returns tracer and parent span if available
- */
-export function getPrismaTraceContext() {
-  try {
-    const ctx = otelContext.active()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const span = ctx.getValue(PRISMA_SPAN_KEY as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dbTracer = ctx.getValue(DB_TRACER_KEY as any)
-    return { span, tracer: dbTracer }
-  } catch (error) {
-    console.error('[Prisma Bridge] Error getting trace context:', error)
-    return { span: null, tracer: null }
-  }
+export function setPrismaTracerForTests(tracer: Tracer): void {
+  prismaTracer = tracer;
 }
 
-/**
- * Create a span for a Prisma database operation
- *
- * @param operation - Operation type (query, create, update, delete, etc.)
- * @param metadata - Optional metadata (table name, query details, etc.)
- * @returns Span object or null if tracing unavailable
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createPrismaSpan(operation: string, metadata?: Record<string, any>) {
+export function resetPrismaTracerForTests(): void {
+  prismaTracer = trace.getTracer(TRACER_NAME, '1.0.0');
+}
+
+export function getPrismaTraceContext(): { span: Span | undefined; tracer: Tracer } {
+  return {
+    span: trace.getSpan(getActiveOtelContext()) ?? undefined,
+    tracer: prismaTracer,
+  };
+}
+
+export function createPrismaSpan(
+  operation: string,
+  metadata?: SpanAttributes,
+  parentContext: OtelContext = getActiveOtelContext()
+): Span | null {
   try {
-    const span = tracer.startSpan(
+    return prismaTracer.startSpan(
       `db.prisma.${operation}`,
       {
         attributes: {
@@ -50,156 +43,124 @@ export function createPrismaSpan(operation: string, metadata?: Record<string, an
           'db.engine': 'prisma',
           ...metadata,
         },
-      }
-    )
-
-    return span
+      },
+      parentContext
+    );
   } catch (error) {
-    console.error('[Prisma Bridge] Error creating Prisma span:', error)
-    return null
+    console.error('[Prisma Bridge] Error creating Prisma span:', error);
+    return null;
   }
 }
 
-/**
- * Wrap a Prisma query to create a span
- *
- * @param queryName - Name of the Prisma query (e.g., "build.findMany")
- * @param queryFn - Async function that performs the query
- * @param metadata - Optional metadata
- * @returns Result of the query
- */
 export async function withPrismaSpan<T>(
   queryName: string,
   queryFn: () => Promise<T>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata?: Record<string, any>
+  metadata?: SpanAttributes
 ): Promise<T> {
-  const span = createPrismaSpan('query', {
-    'db.query.name': queryName,
-    ...metadata,
-  })
+  const parentContext = getActiveOtelContext();
+  const span = createPrismaSpan(
+    'query',
+    {
+      'db.query.name': queryName,
+      ...metadata,
+    },
+    parentContext
+  );
 
   if (!span) {
-    // Tracing not available, execute query directly
-    return queryFn()
+    return queryFn();
   }
 
+  const spanContext = trace.setSpan(parentContext, span);
+  const startTime = Date.now();
+
   try {
-    const startTime = Date.now()
-    const result = await queryFn()
-    const duration = Date.now() - startTime
-
-    span.addEvent('db.query.complete', {
-      'duration_ms': duration,
-    })
-
-    return result
+    return await withActiveOtelContext(spanContext, async () => {
+      const result = await queryFn();
+      span.addEvent('db.query.complete', {
+        duration_ms: Date.now() - startTime,
+      });
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    });
   } catch (error) {
-    span.recordException(error as Error)
-    span.setStatus({ code: 1, message: 'ERROR' })
-    throw error
+    recordPrismaError(span, error as Error);
+    span.setStatus({ code: SpanStatusCode.ERROR, message: error instanceof Error ? error.message : 'ERROR' });
+    throw error;
   } finally {
-    span.end()
+    span.end();
   }
 }
 
-/**
- * Wrap multiple Prisma queries in a transaction with a span
- *
- * @param txName - Name of the transaction
- * @param txFn - Function that performs the transaction
- * @returns Result of the transaction
- */
-export async function withPrismaTransaction<T>(
-  txName: string,
-  txFn: () => Promise<T>
-): Promise<T> {
-  const span = createPrismaSpan('transaction', {
-    'db.transaction.name': txName,
-  })
+export async function withPrismaTransaction<T>(txName: string, txFn: () => Promise<T>): Promise<T> {
+  const parentContext = getActiveOtelContext();
+  const span = createPrismaSpan(
+    'transaction',
+    {
+      'db.transaction.name': txName,
+    },
+    parentContext
+  );
 
   if (!span) {
-    return txFn()
+    return txFn();
   }
+
+  const spanContext = trace.setSpan(parentContext, span);
 
   try {
-    const result = await txFn()
-    span.addEvent('db.transaction.commit')
-    return result
+    return await withActiveOtelContext(spanContext, async () => {
+      const result = await txFn();
+      span.addEvent('db.transaction.commit');
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    });
   } catch (error) {
-    span.recordException(error as Error)
-    span.addEvent('db.transaction.rollback')
-    span.setStatus({ code: 1, message: 'ERROR' })
-    throw error
+    recordPrismaError(span, error as Error);
+    span.addEvent('db.transaction.rollback');
+    span.setStatus({ code: SpanStatusCode.ERROR, message: error instanceof Error ? error.message : 'ERROR' });
+    throw error;
   } finally {
-    span.end()
+    span.end();
   }
 }
 
-/**
- * Record Prisma errors in span
- *
- * @param span - OpenTelemetry span
- * @param error - Error object
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function recordPrismaError(span: any, error: Error) {
-  if (span) {
-    span.recordException(error)
-    span.addEvent('db.error', {
-      'error.message': error.message,
-      'error.type': error.name,
-    })
+export function recordPrismaError(span: Span | null | undefined, error: Error): void {
+  if (!span) {
+    return;
   }
+
+  span.recordException(error);
+  span.addEvent('db.error', {
+    'error.message': error.message,
+    'error.type': error.name,
+  });
 }
 
-/**
- * Decorator for wrapping Prisma model methods with tracing
- *
- * @param modelName - Prisma model name (e.g., "Build")
- * @param operationName - Operation name (e.g., "findMany")
- * @returns Decorator function
- */
 export function tracePrismaOperation(modelName: string, operationName: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value
+  return function (
+    _target: object,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor
+  ): PropertyDescriptor {
+    const originalMethod = descriptor.value as (...args: unknown[]) => Promise<unknown>;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    descriptor.value = async function (...args: any[]) {
-      const span = createPrismaSpan(`${modelName}.${operationName}`, {
+    descriptor.value = async function (...args: unknown[]): Promise<unknown> {
+      return withPrismaSpan(`${modelName}.${operationName}`, async () => originalMethod.apply(this, args), {
         'db.model': modelName,
-        'db.operation': operationName,
-      })
+        'db.operation.name': operationName,
+      });
+    };
 
-      if (!span) {
-        return originalMethod.apply(this, args)
-      }
-
-      try {
-        const result = await originalMethod.apply(this, args)
-        return result
-      } catch (error) {
-        recordPrismaError(span, error as Error)
-        throw error
-      } finally {
-        span.end()
-      }
-    }
-
-    return descriptor
-  }
+    return descriptor;
+  };
 }
 
-/**
- * Helper to get formatted Prisma query info from Prisma event
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getPrismaQueryInfo(event: any) {
+export function getPrismaQueryInfo(event: { query: string; params: string; duration: number; target: string }) {
   return {
     query: event.query,
     params: event.params,
     duration: event.duration,
     target: event.target,
-  }
+  };
 }

@@ -1,131 +1,137 @@
-import { trace, context as otelContext } from '@opentelemetry/api'
-import { AsyncLocalStorage } from 'async_hooks'
+import {
+  context as otelContext,
+  SpanStatusCode,
+  trace,
+  type Context as OtelContext,
+  type SpanContext,
+  type Tracer,
+} from '@opentelemetry/api';
+import type { ApolloServerPlugin } from '@apollo/server';
+import { getTraceContext } from '@repo/shared-tracing';
+import type { BuildContext } from '../types';
 
-const tracer = trace.getTracer('apollo-graphql', '1.0.0')
+const TRACER_NAME = 'apollo-graphql';
 
-// Re-export type from Express if available, fallback to basic type
-interface TraceContext {
-  traceId: string
-  parentSpanId: string
-  traceFlags: string
+let pluginTracer: Tracer = trace.getTracer(TRACER_NAME, '1.0.0');
+
+export function setTracingPluginTracerForTests(tracer: Tracer): void {
+  pluginTracer = tracer;
 }
 
-// Create symbol keys for OpenTelemetry context
-const OPERATION_SPAN_KEY = Symbol('operationSpan')
-
-// AsyncLocalStorage for trace context (shared with Express middleware)
-const traceContextStorage = new AsyncLocalStorage<TraceContext>()
-
-function getTraceContext(): TraceContext | undefined {
-  return traceContextStorage.getStore()
+export function resetTracingPluginTracerForTests(): void {
+  pluginTracer = trace.getTracer(TRACER_NAME, '1.0.0');
 }
 
-/**
- * Apollo Server plugin for W3C distributed tracing
- *
- * Hooks into GraphQL operation lifecycle to:
- * - Create operation spans with trace context
- * - Record operation type, name, and status
- * - Link to parent trace context from Express middleware
- * - Capture errors in spans
- */
-export const tracingPlugin = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async didResolveOperation(requestContext: any) {
-    try {
-      // Extract trace context from AsyncLocalStorage (set by Express middleware)
-      const parentTraceContext = getTraceContext()
+function buildRemoteParentContext(traceContext: BuildContext['traceContext'] | undefined): OtelContext {
+  if (!traceContext) {
+    return otelContext.active();
+  }
 
-      // Create operation span
-      const operationType = requestContext.operation?.operation || 'unknown'
-      const operationName = requestContext.operationName || 'unnamed'
+  const parentSpanContext: SpanContext = {
+    traceId: traceContext.traceId,
+    spanId: traceContext.parentSpanId,
+    traceFlags: parseInt(traceContext.traceFlags, 16),
+    isRemote: true,
+  };
 
-      const span = tracer.startSpan(
-        `graphql.${operationType}`,
-        {
-          attributes: {
-            'graphql.operation.name': operationName,
-            'graphql.operation.type': operationType,
-            'trace.id': parentTraceContext?.traceId || 'unknown',
-            'trace.parent_span_id': parentTraceContext?.parentSpanId || 'unknown',
-            'trace.flags': parentTraceContext?.traceFlags || '00',
-          },
+  return trace.setSpan(otelContext.active(), trace.wrapSpanContext(parentSpanContext));
+}
+
+export const tracingPlugin: ApolloServerPlugin<BuildContext> = {
+  async requestDidStart() {
+    return {
+      async didResolveOperation(requestContext) {
+        try {
+          const traceContext = requestContext.contextValue.traceContext ?? getTraceContext();
+          const parentContext = buildRemoteParentContext(traceContext);
+          const operationType = requestContext.operation?.operation ?? 'unknown';
+          const operationName =
+            requestContext.operationName ?? requestContext.operation?.name?.value ?? 'anonymous';
+          const span = pluginTracer.startSpan(
+            `graphql.${operationType}`,
+            {
+              attributes: {
+                'graphql.operation.name': operationName,
+                'graphql.operation.type': operationType,
+                'trace.id': traceContext?.traceId ?? 'unknown',
+                'trace.parent_span_id': traceContext?.parentSpanId ?? 'unknown',
+                'trace.flags': traceContext?.traceFlags ?? '00',
+              },
+            },
+            parentContext
+          );
+          const activeContext = trace.setSpan(parentContext, span);
+
+          requestContext.contextValue.traceContext = traceContext ?? requestContext.contextValue.traceContext;
+          requestContext.contextValue.otelTracer = pluginTracer;
+          requestContext.contextValue.otelSpan = span;
+          requestContext.contextValue.otelContext = activeContext;
+        } catch (error) {
+          console.error('[Tracing Plugin] Error in didResolveOperation:', error);
         }
-      )
+      },
 
-      // Store span and tracer in context for access in resolvers
-      if (!requestContext.context) {
-        requestContext.context = {}
-      }
-      requestContext.context.otelSpan = span
-      requestContext.context.otelTracer = tracer
-      requestContext.context.parentTraceContext = parentTraceContext
+      async didEncounterErrors(requestContext) {
+        try {
+          const span = requestContext.contextValue.otelSpan;
+          if (!span || !requestContext.errors.length) {
+            return;
+          }
 
-      // Set OpenTelemetry context for async operations
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const ctx = otelContext.active().setValue(OPERATION_SPAN_KEY as any, span)
-      requestContext.context.otelCtx = ctx
-    } catch (error) {
-      console.error('[Tracing Plugin] Error in didResolveOperation:', error)
-      // Continue without tracing if error occurs
-    }
-  },
+          for (const [index, error] of requestContext.errors.entries()) {
+            span.recordException(error);
+            span.addEvent('graphql.error', {
+              'error.index': index,
+              'error.message': error.message,
+              'error.type': String(error.extensions?.code ?? 'UNKNOWN'),
+            });
+          }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async willSendResponse(requestContext: any) {
-    try {
-      const span = requestContext.context?.otelSpan
-      if (span) {
-        // Add response status
-        if (requestContext.response?.errors && requestContext.response.errors.length > 0) {
-          span.setAttribute('graphql.response.errors.count', requestContext.response.errors.length)
-          span.setStatus({ code: 1 }) // ERROR status
-        } else {
-          span.setStatus({ code: 0 }) // OK status
+          span.setStatus({ code: SpanStatusCode.ERROR });
+        } catch (error) {
+          console.error('[Tracing Plugin] Error in didEncounterErrors:', error);
         }
-        span.end()
-      }
-    } catch (error) {
-      console.error('[Tracing Plugin] Error in willSendResponse:', error)
-    }
-  },
+      },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async didEncounterErrors(requestContext: any) {
-    try {
-      const span = requestContext.context?.otelSpan
-      if (span && requestContext.errors && requestContext.errors.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        requestContext.errors.forEach((error: any, index: number) => {
-          span.addEvent('graphql.error', {
-            'error.index': index,
-            'error.message': error.message,
-            'error.type': error.extensions?.code || 'UNKNOWN',
-          })
-        })
-      }
-    } catch (error) {
-      console.error('[Tracing Plugin] Error in didEncounterErrors:', error)
-    }
-  },
-}
+      async willSendResponse(requestContext) {
+        try {
+          const span = requestContext.contextValue.otelSpan;
+          if (!span) {
+            return;
+          }
 
-/**
- * Helper to create a child span within a GraphQL resolver
- * Useful for wrapping specific operations (DB queries, external calls, etc.)
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createResolverSpan(operationName: string, attributes?: Record<string, any>) {
+          if (requestContext.response.body.kind === 'single' && requestContext.response.body.singleResult.errors?.length) {
+            span.setAttribute(
+              'graphql.response.errors.count',
+              requestContext.response.body.singleResult.errors.length
+            );
+            span.setStatus({ code: SpanStatusCode.ERROR });
+          } else {
+            span.setStatus({ code: SpanStatusCode.OK });
+          }
+
+          span.end();
+        } catch (error) {
+          console.error('[Tracing Plugin] Error in willSendResponse:', error);
+        }
+      },
+    };
+  },
+};
+
+export function createResolverSpan(
+  operationName: string,
+  attributes?: Record<string, string | number | boolean | undefined>
+) {
   try {
-    const span = tracer.startSpan(operationName, {
+    return pluginTracer.startSpan(operationName, {
       attributes: {
         'graphql.resolver.operation': operationName,
         ...attributes,
       },
-    })
-    return span
+    });
   } catch (error) {
-    console.error('[Tracing Plugin] Error creating resolver span:', error)
-    return null
+    console.error('[Tracing Plugin] Error creating resolver span:', error);
+    return null;
   }
 }
