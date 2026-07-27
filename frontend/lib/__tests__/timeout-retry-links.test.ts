@@ -169,7 +169,7 @@ describe('Apollo Client Integration', () => {
 
   it('should have proper link chain order', async () => {
     const apolloFile = await import('fs').then(fs => fs.promises.readFile(
-      '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-playground/frontend/lib/apollo-client.ts',
+      '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-showcase/frontend/lib/apollo-client.ts',
       'utf-8'
     ));
     

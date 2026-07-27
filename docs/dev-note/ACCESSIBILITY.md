@@ -1,6 +1,6 @@
 # WCAG 2.1 Level AA Accessibility Documentation
 
-This document describes the accessibility features and compliance measures implemented in the React GraphQL Playground application to meet WCAG 2.1 Level AA standards.
+This document describes the accessibility features and compliance measures implemented in the React GraphQL Showcase application to meet WCAG 2.1 Level AA standards.
 
 ## Overview
 

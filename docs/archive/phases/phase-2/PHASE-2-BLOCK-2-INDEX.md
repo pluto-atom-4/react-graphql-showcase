@@ -444,7 +444,7 @@ You Are Here: PHASE-2-BLOCK-2-INDEX.md
 
 **Prepared by**: AI Assistant  
 **Date**: May 13, 2026  
-**For**: Stoke Full Stack React/GraphQL Playground  
+**For**: Stoke Full Stack React/GraphQL Showcase  
 **Phase**: Phase 2, Block 2  
 
 ---

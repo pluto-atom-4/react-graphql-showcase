@@ -1,4 +1,4 @@
-# React GraphQL Playground: Full-Stack Interview Prep
+# React GraphQL Showcase: Full-Stack Interview Prep
 
 A comprehensive full-stack monorepo demonstrating modern web development patterns and enterprise-grade code quality practices.
 

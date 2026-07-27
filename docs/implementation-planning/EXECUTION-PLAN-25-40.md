@@ -1,5 +1,5 @@
 # Execution Plan: GitHub Issues #25-40
-**React-GraphQL Playground - Full-Stack Interview Prep**
+**React-GraphQL Showcase - Full-Stack Interview Prep**
 
 **Date**: April 18, 2026  
 **Scope**: 16 frontend + full-stack issues  

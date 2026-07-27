@@ -184,7 +184,7 @@ copilot
 ```
 
 ### 3. Check GitHub.com Recognition
-1. Go to https://github.com/pluto-atom-4/react-graphql-playground
+1. Go to https://github.com/pluto-atom-4/react-graphql-showcase
 2. Verify `.github/copilot-instructions.md` is visible in repo browser
 3. Check that Copilot Chat recognizes it (if organization-level feature enabled)
 
