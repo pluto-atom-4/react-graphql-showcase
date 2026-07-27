@@ -1,6 +1,6 @@
 # 🚀 GitHub Copilot - Project Workflow & Instructions
 
-**Repository**: Stoke Full Stack React/GraphQL Playground  
+**Repository**: Stoke Full Stack React/GraphQL Showcase  
 **Last Updated**: 2026-05-19  
 **Pattern**: Official GitHub Hybrid (root + path-specific instructions)
 

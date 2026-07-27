@@ -8,7 +8,7 @@
 
 ## Overview
 
-The `push-feature-branch` skill has been successfully created, tested, and deployed as a project-specific skill for the Stoke Full Stack React + GraphQL Playground repository.
+The `push-feature-branch` skill has been successfully created, tested, and deployed as a project-specific skill for the Stoke Full Stack React + GraphQL Showcase repository.
 
 ## What Was Delivered
 
@@ -232,6 +232,6 @@ For feedback on the skill or to report issues:
 ---
 
 **Deployed by**: Claude Code Skill Creator  
-**Project**: Stoke Full Stack React + GraphQL Playground  
+**Project**: Stoke Full Stack React + GraphQL Showcase  
 **Interview Context**: Senior Full Stack Developer practice (7-day intensive)  
 **Status**: Ready for production use ✅

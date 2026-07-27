@@ -1,6 +1,6 @@
 # Project-Specific Skills
 
-This directory contains custom skills for the Stoke Full Stack React + GraphQL Playground project.
+This directory contains custom skills for the Stoke Full Stack React + GraphQL Showcase project.
 
 ## Available Skills
 

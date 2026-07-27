@@ -1,6 +1,6 @@
 # Type-Conscious Cache Testing - Complete Implementation Index
 
-**Project**: React GraphQL Playground  
+**Project**: React GraphQL Showcase  
 **Task**: Analyze and refactor `cache.readQuery()` to be type-conscious  
 **Date**: April 27, 2026  
 **Status**: ✅ **COMPLETE - ALL 22 TESTS PASSING**

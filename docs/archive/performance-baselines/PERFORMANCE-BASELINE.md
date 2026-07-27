@@ -1,7 +1,7 @@
 # Performance Baseline for Issue #6 Implementation
 
 **Date**: April 27, 2026  
-**Project**: React GraphQL Playground (Issue #6 Integration Testing & Performance)  
+**Project**: React GraphQL Showcase (Issue #6 Integration Testing & Performance)  
 **Status**: Complete
 
 ## Executive Summary

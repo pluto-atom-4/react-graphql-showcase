@@ -104,7 +104,7 @@ Missing package: libmanette-0.2-0 (and other graphics/browser libraries)
 Reason: Required for browser automation testing (Playwright E2E tests)
 Used by: Chromium, Firefox, WebKit browser engines
 Impact: Enables E2E test execution on this system
-Project: React GraphQL Playground (full-stack development)
+Project: React GraphQL Showcase (full-stack development)
 
 Complete list of required packages for apt-get:
   libmanette-0.2-0, libglib2.0-0, libwayland-client0, libxkbcommon0,

@@ -10,7 +10,7 @@
 
 ### Monorepo Structure
 ```
-react-graphql-playground/          ← Root
+react-graphql-showcase/          ← Root
 ├── pnpm-workspace.yaml            ← pnpm workspaces config
 ├── package.json                   ← Root scripts (dev, test, lint, build)
 ├── frontend/                      ← Layer 1 (Next.js)

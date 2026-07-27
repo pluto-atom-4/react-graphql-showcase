@@ -15,7 +15,7 @@ For backwards compatibility, the detailed content below is preserved. New files 
 
 **Last Updated**: 2026-05-10  
 **Scope**: Multi-agent orchestration, PR feedback cycles, feature implementation  
-**Repository**: Stoke Full Stack React/GraphQL Playground
+**Repository**: Stoke Full Stack React/GraphQL Showcase
 
 ---
 
