@@ -1,3 +1,10 @@
+---
+name: backend-express-development-guide
+description: Backend Express-specific patterns, best practices, constraints for Express, file uploads, webhooks, SSE development
+applyTo: ["backend-express/**/*.{ts,tsx,js}"]
+scope: backend-express
+---
+
 # Backend Express Instructions (`backend-express/**`)
 
 **Applies to**: `backend-express/**/*.{ts,tsx,js}`  
