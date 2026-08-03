@@ -1,13 +1,18 @@
 {
   "model": "claude-haiku-4-5-20251001",
   "modelOverride": "haiku",
-  "hooks": {
-    "pre-commit": "pnpm lint:fix && pnpm test:frontend --run && pnpm test:graphql --run && pnpm test:express --run",
-    "on-file-change": "pnpm lint",
-    "on-error": "Check path-scoped .instructions.md files in .github/instructions/ for layer-specific guidance"
-  },
   "permissions": {
-    "bash": ["pnpm", "git", "grep", "find"],
-    "read": ["CLAUDE.md", "DESIGN.md", "AGENTS.md", ".github/instructions/**", "backend-graphql/src/schema.graphql", ".claude/about-me.md"]
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(git *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Read(CLAUDE.md)",
+      "Read(DESIGN.md)",
+      "Read(AGENTS.md)",
+      "Read(.github/instructions/**)",
+      "Read(backend-graphql/src/schema.graphql)",
+      "Read(.claude/about-me.md)"
+    ]
   }
 }
