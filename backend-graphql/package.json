@@ -20,7 +20,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@apollo/server": "^4.1.7",
+    "@apollo/server": "^5.5.0",
+    "@as-integrations/express4": "^1.1.2",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/instrumentation-graphql": "^0.66.0",
     "@prisma/client": "^6.0.0",

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import express, { type Request } from 'express';
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from '@as-integrations/express4';
 import { parseTraceparent, tracingMiddleware } from '@repo/shared-tracing';
 import { prisma } from './db/client';
 import { createLoaders } from './dataloaders';
