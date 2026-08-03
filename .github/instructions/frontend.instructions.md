@@ -1,3 +1,10 @@
+---
+name: frontend-development-guide
+description: Frontend-specific patterns, best practices, constraints for Next.js, React, Apollo Client development
+applyTo: ["frontend/**/*.{ts,tsx,js,jsx}", "frontend/**/*.{css,module.css}"]
+scope: frontend
+---
+
 # Frontend Instructions (`frontend/**`)
 
 **Applies to**: `frontend/**/*.{ts,tsx,js,jsx}`  

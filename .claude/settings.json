@@ -1,4 +1,18 @@
 {
   "model": "claude-haiku-4-5-20251001",
-  "modelOverride": "haiku"
+  "modelOverride": "haiku",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(git *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Read(CLAUDE.md)",
+      "Read(DESIGN.md)",
+      "Read(AGENTS.md)",
+      "Read(.github/instructions/**)",
+      "Read(backend-graphql/src/schema.graphql)",
+      "Read(.claude/about-me.md)"
+    ]
+  }
 }

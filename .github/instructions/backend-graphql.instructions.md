@@ -1,3 +1,10 @@
+---
+name: backend-graphql-development-guide
+description: Backend GraphQL-specific patterns, best practices, constraints for Apollo Server, resolvers, DataLoader development
+applyTo: ["backend-graphql/**/*.{ts,tsx,js,graphql}"]
+scope: backend-graphql
+---
+
 # Backend GraphQL Instructions (`backend-graphql/**`)
 
 **Applies to**: `backend-graphql/**/*.{ts,tsx,js,graphql}`  

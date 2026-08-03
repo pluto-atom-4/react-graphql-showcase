@@ -121,3 +121,8 @@ backend-express/__tests__/fixtures/*.zip
 .idea/inspectionProfiles/
 .idea/runConfigurations/
 /lint_output.txt
+
+docs/dev-note
+docs/implementation-planning
+issue-content.json
+
