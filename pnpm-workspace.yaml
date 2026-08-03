@@ -4,7 +4,15 @@ packages:
   - 'backend-express'
   - 'packages/*'
 allowBuilds:
+  '@apollo/protobufjs': true
+  '@prisma/client': true
+  '@prisma/engines': true
   bcrypt: true
+  esbuild: true
+  prisma: true
+  protobufjs: true
+  sharp: true
+  unrs-resolver: true
 
 catalog:
   # Core dependencies with versions from version-conflict-free-stack.md
