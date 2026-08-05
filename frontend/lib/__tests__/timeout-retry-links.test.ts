@@ -6,6 +6,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Test that the timeout link timeout configuration is stored correctly
@@ -169,7 +174,7 @@ describe('Apollo Client Integration', () => {
 
   it('should have proper link chain order', async () => {
     const apolloFile = await import('fs').then(fs => fs.promises.readFile(
-      '/home/pluto-atom-4/Documents/stoke-full-stack/react-graphql-showcase/frontend/lib/apollo-client.ts',
+      path.resolve(__dirname, '../apollo-client.ts'),
       'utf-8'
     ));
     
