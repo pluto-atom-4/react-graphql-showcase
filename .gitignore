@@ -124,5 +124,5 @@ backend-express/__tests__/fixtures/*.zip
 
 docs/dev-note
 docs/implementation-planning
-issue-content.json
+issue-content*.json
 
