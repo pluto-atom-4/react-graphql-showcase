@@ -1,18 +1,50 @@
 {
   "model": "claude-haiku-4-5-20251001",
   "modelOverride": "haiku",
+  "reasoning": {
+    "enabled": false,
+    "budget_tokens": 5000
+  },
+  "performance": {
+    "fastMode": true,
+    "maxInputTokens": 100000,
+    "maxOutputTokens": 8000,
+    "timeout": 120
+  },
+  "caching": {
+    "enabled": true,
+    "ttl": 3600,
+    "strategy": "file-based"
+  },
+  "telemetry": {
+    "enabled": true,
+    "analytics": "minimal",
+    "errorReporting": true
+  },
   "permissions": {
     "allow": [
       "Bash(pnpm *)",
       "Bash(git *)",
       "Bash(grep *)",
       "Bash(find *)",
+      "Bash(wc *)",
       "Read(CLAUDE.md)",
       "Read(DESIGN.md)",
       "Read(AGENTS.md)",
       "Read(.github/instructions/**)",
+      "Read(.claude/patterns/**)",
       "Read(backend-graphql/src/schema.graphql)",
-      "Read(.claude/about-me.md)"
+      "Read(.claude/about-me.md)",
+      "Read(.claude/settings.json)",
+      "Edit(**/.instructions.md)",
+      "Edit(DESIGN.md)",
+      "Edit(CLAUDE.md)"
     ]
+  },
+  "rules": {
+    "alwaysRunTestsBeforeCommit": true,
+    "requireLintCheckBeforePush": true,
+    "autoFormatOnSave": false,
+    "enforceCommitMessageFormat": "feat(#issue): description"
   }
 }
