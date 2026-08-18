@@ -31,12 +31,15 @@
       "Read(CLAUDE.md)",
       "Read(DESIGN.md)",
       "Read(AGENTS.md)",
+      "Read(SKILLS.md)",
       "Read(.github/instructions/**)",
+      "Read(.github/copilot/**)",
       "Read(.claude/patterns/**)",
       "Read(backend-graphql/src/schema.graphql)",
       "Read(.claude/about-me.md)",
       "Read(.claude/settings.json)",
       "Edit(**/.instructions.md)",
+      "Edit(.github/copilot/**)",
       "Edit(DESIGN.md)",
       "Edit(CLAUDE.md)"
     ]
