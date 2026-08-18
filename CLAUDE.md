@@ -1,56 +1,29 @@
 # CLAUDE.md
 
-Full-stack React/GraphQL playground for Stoke Space interview prep. Monorepo with Next.js frontend, Apollo GraphQL backend, and Express auxiliary services.
-
-**See [DESIGN.md](./DESIGN.md) for architecture, [AGENTS.md](./AGENTS.md) for multi-agent orchestration.**
+Full-stack React/GraphQL playground for Stoke Space interview prep. **See [DESIGN.md](./DESIGN.md) for architecture, [AGENTS.md](./AGENTS.md) for orchestration.**
 
 ---
 
 ## Quick Start
 
-### Prerequisites
-- Docker & Docker Compose, Node.js 18+, pnpm
+**Prerequisites**: Docker, Docker Compose, Node.js 18+, pnpm
 
-### Setup
 ```bash
-pnpm install                    # Install dependencies
-docker-compose up -d            # Start PostgreSQL
-pnpm run migrate                # Run migrations
-pnpm dev                        # Start all services
+pnpm install && docker-compose up -d && pnpm migrate && pnpm dev
 ```
 
-**Services**:
-- Frontend: http://localhost:3000 (Next.js)
-- GraphQL: http://localhost:4000 (Apollo + GraphiQL)
-- Express: http://localhost:5000 (Files, webhooks, SSE)
+**Services**: Frontend (3000), GraphQL (4000), Express (5000)
 
 ---
 
 ## Commands
 
-### Development
-```bash
-pnpm dev                        # All services
-pnpm dev:frontend               # Next.js only
-pnpm dev:graphql                # Apollo only
-pnpm dev:express                # Express only
-```
-
-### Testing & Quality
-```bash
-pnpm test --run                 # All tests (CI mode)
-pnpm test:frontend --run        # Frontend only
-pnpm test:graphql --run         # GraphQL only
-pnpm test:express --run         # Express only
-pnpm lint && pnpm type-check    # Quality checks
-```
-
-### Database
-```bash
-pnpm migrate                    # Run pending migrations
-pnpm migrate:reset              # Reset (dev only)
-pnpm seed                       # Seed sample data
-```
+| Task | Command |
+|------|---------|
+| **Develop** | `pnpm dev` / `pnpm dev:frontend` / `pnpm dev:graphql` / `pnpm dev:express` |
+| **Test** | `pnpm test --run` / `pnpm test:{frontend,graphql,express} --run` |
+| **Quality** | `pnpm lint && pnpm type-check` |
+| **Database** | `pnpm migrate` / `pnpm migrate:reset` / `pnpm seed` |
 
 ---
 
@@ -58,55 +31,28 @@ pnpm seed                       # Seed sample data
 
 | Doc | Purpose |
 |-----|---------|
-| **DESIGN.md** | Architecture, dual-backend rationale, integration points |
-| **AGENTS.md** | Multi-agent orchestration, roles, decision trees |
-| **.claude/about-me.md** | Interview context, Boltline domain, themes |
-| **.claude/patterns/** | Reusable pattern guides (DataLoader, auth, events, etc.) |
-| **.github/instructions/** | Path-specific patterns (frontend, GraphQL, Express) |
+| **DESIGN.md** | Dual-backend architecture, integration patterns |
+| **AGENTS.md** | Multi-agent roles, handoff workflows |
+| **.claude/patterns/** | Reusable guides (DataLoader, auth, events) |
+| **.github/instructions/** | Frontend, GraphQL, Express-specific patterns |
 | **docs/start-from-here.md** | 7-day interview prep roadmap |
-
----
-
-## Debugging
-
-**GraphiQL IDE**: http://localhost:4000/graphql
-```graphql
-query GetBuilds {
-  builds(limit: 10, offset: 0) {
-    id status parts { id name } testRuns { id result }
-  }
-}
-```
-
-**SSE Events**: `curl -N http://localhost:5000/events`
-
-**Apollo DevTools**: Install [extension](https://www.apollographql.com/docs/react/development-testing/developer-tools/) to inspect cache.
-
-**Express Logs**: `DEBUG=express:* pnpm dev:express`
-
-**Database**: `psql postgres://user:pass@localhost:5432/boltline`
 
 ---
 
 ## Code Style
 
-- **Language**: TypeScript (strict mode)
-- **Formatting**: Prettier
-- **Linting**: ESLint v9 (flat config)
-- **Testing**: Vitest
-- **Package Manager**: pnpm
+**Stack**: TypeScript (strict), Prettier, ESLint v9, Vitest, pnpm
 
 ---
 
-## Path-Specific Instructions
+## Debugging
 
-When working on code, follow layer guides:
-- **Frontend**: `.github/instructions/frontend.instructions.md`
-- **GraphQL**: `.github/instructions/backend-graphql.instructions.md`
-- **Express**: `.github/instructions/backend-express.instructions.md`
-
-Each includes patterns, checklists, and debugging tips.
+- **GraphQL**: http://localhost:4000/graphql (GraphiQL)
+- **Events**: `curl -N http://localhost:5000/events` (SSE)
+- **Database**: `psql postgres://user:pass@localhost:5432/boltline`
+- **Express Logs**: `DEBUG=express:* pnpm dev:express`
+- **Apollo DevTools**: Browser extension to inspect cache
 
 ---
 
-**Last Updated**: 2026-08-09
+**Last Updated**: 2026-08-17
