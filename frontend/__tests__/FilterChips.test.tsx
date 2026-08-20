@@ -12,7 +12,7 @@ describe('FilterChips Component', () => {
         <FilterChips searchTerm="" onRemove={handleRemove} />
       );
 
-      expect(container.firstChild).toBeEmptyDOMElement();
+      expect(container.firstChild).toBeNull();
     });
 
     it('should display search term as chip', () => {
@@ -122,7 +122,8 @@ describe('FilterChips Component', () => {
 
       const chip = screen.getByTestId('filter-chip');
       expect(chip).toBeInTheDocument();
-      expect(chip).toHaveTextContent('   ');
+      // The chip contains the text plus the close button
+      expect(chip.textContent).toContain('   ');
     });
 
     it('should handle very short search term', () => {

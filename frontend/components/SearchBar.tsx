@@ -62,6 +62,10 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
     // Debounced onChange handler
     const handleInputChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (disabled) {
+          return;
+        }
+
         const newValue = e.target.value;
         setInputValue(newValue);
 
@@ -75,7 +79,7 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
           onChange(newValue);
         }, debounceMs);
       },
-      [onChange, debounceMs]
+      [onChange, debounceMs, disabled]
     );
 
     // Keyboard handlers
@@ -95,6 +99,7 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
             clearTimeout(debounceTimerRef.current);
           }
           setInputValue('');
+          onChange('');
           onClear?.();
         }
       },

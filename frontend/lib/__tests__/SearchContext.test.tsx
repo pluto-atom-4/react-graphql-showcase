@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import {
   SearchProvider,
@@ -65,7 +65,9 @@ describe('SearchContext', () => {
       );
 
       const setButton = screen.getByTestId('set-btn');
-      setButton.click();
+      act(() => {
+        setButton.click();
+      });
 
       const searchTerm = screen.getByTestId('search-term');
       expect(searchTerm).toHaveTextContent('test');
@@ -79,7 +81,9 @@ describe('SearchContext', () => {
       );
 
       const setButton = screen.getByTestId('set-btn');
-      setButton.click();
+      act(() => {
+        setButton.click();
+      });
 
       const searchTerm = screen.getByTestId('search-term');
       expect(searchTerm).toHaveTextContent('test');
@@ -96,10 +100,12 @@ describe('SearchContext', () => {
       expect(searchTerm).toHaveTextContent('initial');
 
       const clearButton = screen.getByTestId('clear-btn');
-      clearButton.click();
+      act(() => {
+        clearButton.click();
+      });
 
       searchTerm = screen.getByTestId('search-term');
-      expect(searchTerm).toHaveTextContent('');
+      expect(searchTerm).toBeEmptyDOMElement();
     });
 
     it('should throw error when used outside provider', () => {
