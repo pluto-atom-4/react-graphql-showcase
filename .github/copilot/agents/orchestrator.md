@@ -816,6 +816,76 @@ feat: #40 add ARIA labels and keyboard navigation
 
 ---
 
+## Claude Code Best Practices for Orchestrators
+
+### Context Loading Strategy
+
+**Before creating execution plan**:
+```
+Load in parallel (one message):
+1. Read AGENTS.md (agent roles)
+2. Read DESIGN.md (patterns)
+3. Read issue description and linked docs
+4. Review 1-2 recent execution plans
+
+Timeline: 5 min to gather context + 10-15 min to plan
+Result: High-quality plan with proper dependencies identified
+```
+
+### Model Recommendations
+
+**Use Haiku (default) for**:
+- ✅ Issue analysis within established patterns
+- ✅ Execution plan creation
+- ✅ Dependency identification
+- ✅ Status updates and progress tracking
+
+**Use Sonnet/Opus for**:
+- 🔍 Complex multi-layer dependencies
+- 🔍 Resolving blocker conflicts
+- 🔍 Large-scale refactoring coordination
+- 🔍 Architectural escalations
+
+### Parallel Execution Decision Tree
+
+**Before dispatching agents in parallel**:
+
+```
+Multiple independent tasks? (3+)
+├─ YES → Continue
+└─ NO → Sequential execution only
+
+Zero blocking dependencies?
+├─ YES → Continue
+└─ NO → Sequential execution only
+
+Different files modified per task?
+├─ YES → Continue
+└─ NO → Sequential (merge conflict risk)
+
+Expected total time > 30 min?
+├─ YES → Parallel saves significant time
+└─ NO → Sequential overhead not justified
+
+DECISION: Parallel-safe if ALL above are YES
+```
+
+### Coordination Commands
+
+**Document parallel dispatch clearly**:
+```
+Orchestrator Dispatch: Parallel execution authorized
+Task 1: @developer on feat/issue-#341 (worktree 1)
+Task 2: @developer on feat/issue-#342 (worktree 2)
+Task 3: @tester on integration tests (worktree 3)
+
+Dependencies: NONE (verified zero interdependencies)
+Expected duration: ~45 min parallel vs 120 min sequential
+Success criteria: All PRs merge cleanly in any order
+```
+
+---
+
 ## Related Resources
 
 - `.copilot/orchestrator-github-issues.md`: Detailed GitHub issue orchestration guide

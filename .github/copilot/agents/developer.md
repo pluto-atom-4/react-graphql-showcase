@@ -1262,3 +1262,85 @@ All automated quality checks passed:
 - Format: PASS (see `issue-#[N]-pnpm-format-check.txt`)
 - Type Check: PASS (see `issue-#[N]-pnpm-type-check.txt`)
 ```
+
+---
+
+## Claude Code Best Practices for Developers
+
+### Context Loading Before Implementation
+
+**Before starting implementation**:
+```
+Load in order (sequential):
+1. Read layer-specific instruction file
+   (frontend.instructions.md OR backend-graphql.instructions.md OR backend-express.instructions.md)
+2. Read relevant DESIGN.md patterns (2-3 min read)
+3. Review 1-2 recent PRs in same layer (understand current patterns)
+
+Timeline: 10-15 min upfront for complete context
+Result: Avoid false starts and rework
+```
+
+### Multi-Layer Context Strategy
+
+**When feature spans multiple layers**:
+```
+Load context for EACH layer (parallel):
+- Frontend: frontend.instructions.md
+- GraphQL: backend-graphql.instructions.md  
+- Express: backend-express.instructions.md
+- Shared: shared.instructions.md
+- Patterns: DESIGN.md (relevant sections)
+
+Result: Complete picture before touching any code
+Avoids: Cross-layer integration issues discovered late
+```
+
+### Model Override Recommendations
+
+**Use Haiku (default) for**:
+- ✅ Single-layer implementation
+- ✅ Bug fixes within known patterns
+- ✅ Tests and documentation
+- ✅ Code refactoring
+
+**Use Sonnet/Opus for**:
+- 🔍 Complex multi-layer features
+- 🔍 Performance optimization from first principles
+- 🔍 Architectural questions (escalate to Architect)
+- 🔍 Debugging subtle cross-layer bugs
+
+### Implementation Workflow in Claude Code
+
+**Optimal workflow**:
+```
+1. Load context (layer instructions + DESIGN.md)
+2. Ask clarifying questions about approach
+3. Get detailed implementation guidance
+4. Begin coding
+5. Ask for debugging help if stuck
+6. Get test strategy from Tester guidance section
+7. Run quality checks (Issue #306 pattern)
+```
+
+### Handling Blocked Work
+
+**If blocked by architecture or another layer**:
+```
+STEP 1: Document blocker clearly
+  - What are you trying to do?
+  - What's blocking you?
+  - What needs to change to unblock?
+
+STEP 2: Escalate to Orchestrator
+  - Provide context from Step 1
+  - Orchestrator coordinates with other layer/Architect
+
+STEP 3: Continue other work
+  - Move to different phase/layer if possible
+  - Don't block waiting for resolution
+
+RESULT: Orchestrator coordinates, you continue productive work
+```
+
+---

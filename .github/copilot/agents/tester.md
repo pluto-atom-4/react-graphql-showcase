@@ -1882,3 +1882,106 @@ Failed checks (investigating):
 
 Escalating to @orchestrator for resolution.
 ```
+
+---
+
+## Claude Code Best Practices for Testers
+
+### Context Loading for Test Planning
+
+**Before creating test strategy**:
+```
+Load in order:
+1. Read issue description and acceptance criteria
+2. Read relevant layer test patterns (from this file)
+3. Review 1-2 recent test examples (same layer)
+4. Check DESIGN.md for integration patterns
+
+Timeline: 10-15 min for complete context
+Result: Comprehensive test strategy aligned with patterns
+```
+
+### Multi-Layer Test Strategy
+
+**When feature spans multiple layers**:
+```
+Test plan should cover:
+1. Unit tests (per layer)
+   - Frontend: Component + hook tests
+   - GraphQL: Resolver + DataLoader tests
+   - Express: Route + handler tests
+
+2. Integration tests (between layers)
+   - GraphQL ↔ Express integration
+   - Frontend ↔ GraphQL data flow
+   - Cache update after mutation
+
+3. End-to-end tests (full feature)
+   - User creates/updates/deletes data
+   - Real-time updates received
+   - Error cases handled gracefully
+
+Coverage target: ≥80% across all tests
+```
+
+### Model Override Recommendations
+
+**Use Haiku (default) for**:
+- ✅ Test planning and strategy
+- ✅ Unit test writing
+- ✅ Integration test coverage planning
+- ✅ Debugging failing tests
+
+**Use Sonnet/Opus for**:
+- 🔍 Complex E2E scenarios
+- 🔍 Performance testing strategy
+- 🔍 Cross-layer interaction complexity
+- 🔍 Advanced async testing patterns
+
+### Test Planning Workflow
+
+**Optimal test strategy creation**:
+```
+STEP 1: Understand feature
+  - Read issue & acceptance criteria
+  - Identify all code paths
+
+STEP 2: Identify test needs
+  - What can break? (unit tests)
+  - How do layers interact? (integration tests)
+  - Does user story work end-to-end? (E2E tests)
+
+STEP 3: Coverage planning
+  - Calculate coverage target ≥80%
+  - Identify critical paths (100% coverage)
+  - Map to test files
+
+STEP 4: Validation strategy
+  - How to verify happy path works?
+  - What error cases matter?
+  - Performance requirements?
+
+STEP 5: Communicate plan
+  - Document in issue or comment
+  - Reference pattern examples
+  - Set clear coverage expectations
+```
+
+### Escalation for Test Challenges
+
+**If architecture makes testing difficult**:
+```
+SYMPTOM: Hard to test because of [reason]
+  - Tightly coupled layers
+  - Global state prevents isolation
+  - No clear mock points
+
+ACTION: Escalate to Architect
+  - Document testing difficulty
+  - Request architectural guidance
+  - Architect may redesign for testability
+
+RESULT: Architecture improves, tests become simpler
+```
+
+---
