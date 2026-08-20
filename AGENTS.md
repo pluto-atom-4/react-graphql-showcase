@@ -6,17 +6,70 @@ Agent orchestration and multi-agent handoff strategy for Stoke Full Stack React/
 
 ## Agent Roles & Responsibilities
 
-| Agent Type       | Role | Responsibilities | When to Use |
-|------------------|------|------------------|------------|
-| **Orchestrator** | Plan & Coordinate | Analyze issue requirements, create execution plan, delegate work, track progress | Issue intake; new feature planning; cross-layer coordination |
-| **Coder**        | Implementation | Code features on feature branches, fix feedback, write tests, update docs | Feature implementation; bug fixes; refactoring |
-| **Reviewer**     | Quality Gate | Examine PR diffs, provide detailed feedback, approve when ready, catch regressions | Before merge; code quality validation; architecture review |
-| **Tester**       | Consolidation Validation | Run integration tests post-merge, verify end-to-end flows, document results | After merge; phase consolidation; regression testing |
-| **QA / Product** | Release Readiness | Verify against requirements, check performance, validate UX, sign off on release | Pre-release; feature completeness; user-facing validation |
+| Agent Type           | Role | Responsibilities | When to Use |
+|----------------------|------|------------------|------------|
+| **Architect**        | Strategic Design | Design system architecture, select technologies, set scalability patterns, review architecture decisions | Major features; technology choices; system redesign |
+| **Orchestrator**     | Plan & Coordinate | Analyze issue requirements, create execution plan, delegate work, track progress | Issue intake; new feature planning; cross-layer coordination |
+| **Developer**        | Implementation | Code features on feature branches, fix feedback, write tests, update docs | Feature implementation; bug fixes; refactoring |
+| **Code Reviewer**    | Quality Gate | Examine PR diffs, provide detailed feedback, approve when ready, catch regressions | Before merge; code quality validation; architecture review |
+| **Tester**          | Validation Strategy | Plan test approach, write integration tests, verify end-to-end flows, validate coverage | Feature testing; test planning; regression validation |
+| **Quality Assurance** | Standards & Tooling | Enforce ESLint, Prettier, test frameworks, security audits | Code quality; tooling; security |
+| **Product Manager**  | Requirements & Release | Define features, set acceptance criteria, verify requirements, sign off on release | Feature definition; acceptance criteria; release readiness |
 
 ---
 
 ## Agent Invocation Guide
+
+### Architect (`@architect`)
+**Triggers**:
+- New feature requires architectural decisions
+- Technology stack change needed
+- Database schema redesign required
+- Cross-layer integration pattern needed
+- PR has architectural concerns
+
+**Responsibilities**:
+- Design system architecture and integration patterns
+- Select and evaluate technologies
+- Design database schemas and migrations
+- Set performance targets and scalability requirements
+- Review major PRs for architectural alignment
+- Resolve architectural conflicts between layers
+- Document architecture decisions (ADR format)
+
+**Output Format**:
+```markdown
+## Architecture Decision Record: [Title]
+
+### Context
+Why this architectural decision is needed
+
+### Options Considered
+- Option A: (pros/cons)
+- Option B: (pros/cons)
+- Option C: (pros/cons)
+
+### Decision
+Chosen: [Option] because [key reason]
+
+### Implementation
+- Phase 1: [what to build]
+- Phase 2: [what to build]
+
+### Trade-offs
+- Benefit: [what we gain]
+- Cost: [what we sacrifice]
+- Risk: [what could go wrong]
+```
+
+**Decision Authority**:
+- ✅ Approves/rejects technology selections
+- ✅ Designs database schemas and migrations
+- ✅ Sets performance targets and scalability requirements
+- ✅ Reviews and approves major architectural changes
+- ✅ Can veto PRs that violate architectural patterns
+
+---
 
 ### Orchestrator (`@orchestrator`)
 **Triggers**:
@@ -63,7 +116,7 @@ Agent orchestration and multi-agent handoff strategy for Stoke Full Stack React/
 
 ---
 
-### Coder (`@coder`)
+### Developer (`@developer`)
 **Triggers**:
 - Orchestrator hands off implementation
 - User says: "implement this feature", "fix the feedback", "add this component"
@@ -75,7 +128,7 @@ Agent orchestration and multi-agent handoff strategy for Stoke Full Stack React/
 - Implement per path-scoped `.instructions.md` files
 - Write tests for each layer (frontend, backend-graphql, backend-express)
 - Run quality checks: `pnpm test`, `pnpm lint`, `pnpm type-check`
-- Push to remote and create PR (or hand off to Reviewer)
+- Push to remote and create PR (or hand off to Code Reviewer)
 - Fix feedback on EXISTING branch (no new branches)
 
 **Branch Workflow**:
@@ -104,7 +157,7 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 
 ---
 
-### Reviewer (`@reviewer`)
+### Code Reviewer (`@reviewer`)
 **Triggers**:
 - Developer pushes PR
 - User says: "review this PR", "check the code"
@@ -118,6 +171,7 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 - Leave detailed feedback on specific lines (not just general comments)
 - Approve when ready OR request changes
 - Consolidate feedback: "Ready to merge" or "Address feedback then re-request review"
+- Escalate architectural concerns to Architect if needed
 
 **Review Checklist**:
 ```
@@ -138,16 +192,19 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 
 ### Tester (`@tester`)
 **Triggers**:
+- Feature implementation needs test strategy
 - PR merged to main
-- User says: "test this", "run consolidation tests", "verify the feature"
+- User says: "test this", "verify the feature", "what's the test plan?"
 - Integration validation needed
 
 **Responsibilities**:
+- Design test strategy for features
 - Verify feature works end-to-end: all layers integrated
 - Run full test suite: `pnpm test:frontend --run && pnpm test:graphql --run && pnpm test:express --run`
 - Test real-world scenarios (UI interactions, real-time events, file uploads)
 - Check performance: N+1 query logs, event latency, file upload speed
 - Verify no regression: existing features still work
+- Validate test coverage meets 80% minimum requirement
 - Document results in issue or PR
 
 **Test Scenarios**:
@@ -160,19 +217,45 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 
 ---
 
-### QA / Product (`@qa`, `@product`)
+### Quality Assurance (`@qa`)
 **Triggers**:
-- Near release / final validation
-- User says: "is this production-ready", "final sign-off"
-- Performance or UX concerns
+- Setting up quality tools
+- Security vulnerabilities detected
+- Code quality standards need enforcement
+- Pre-commit checks need configuration
 
 **Responsibilities**:
-- Verify feature matches requirements from issue
-- Test on different browsers/devices if applicable
-- Verify performance meets SLOs (load time, real-time latency)
-- Check documentation is clear and complete
-- User acceptance testing (UAT)
-- Sign off: "Ready to ship" or "Issues blocking release"
+- Configure and enforce ESLint, Prettier, TypeScript
+- Set up Vitest test framework across layers
+- Run security audits (pnpm audit)
+- Monitor dependency vulnerabilities
+- Enforce pre-commit quality gates
+- Maintain CI/CD quality standards
+- Document quality procedures
+
+**Output**: Quality standards enforced; all checks passing.
+
+---
+
+### Product Manager (`@product-manager`)
+**Triggers**:
+- New feature needs requirements definition
+- Acceptance criteria needs clarification
+- Release readiness check
+- Business priorities need setting
+- Interview prep material needed
+
+**Responsibilities**:
+- Define feature requirements and scope
+- Write clear acceptance criteria
+- Verify features meet business goals
+- Test features for user-facing quality
+- Conduct user acceptance testing (UAT)
+- Manage scope and prevent creep
+- Sign off on release readiness
+- Prepare business talking points for features
+
+**Output**: Feature requirements, acceptance criteria, release approval.
 
 ---
 
@@ -181,32 +264,147 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 ```
 Issue Created
     ↓
+Architectural decision needed?
+├─ YES: @architect → Design system approach (15-30 min)
+│        ↓
+│        → Return to Orchestrator with design
+└─ NO → Continue
+    ↓
 @orchestrator → Create execution plan (10-30 min)
+    ├─ Identify dependencies
+    ├─ Sequence layers
+    └─ Estimate time per phase
     ↓
 Plan saved to docs/implementation-planning/
     ↓
-@coder → Implement on feature branch (1-3 hours)
+@developer → Implement on feature branch (1-3 hours)
+    ├─ Frontend layer
+    ├─ GraphQL backend
+    ├─ Express backend
+    └─ Write tests
     ↓
 Push PR to GitHub
     ↓
-@reviewer → Examine diff, provide feedback (30-60 min)
+@code-reviewer → Examine diff (30-60 min)
+    ├─ Check patterns
+    ├─ Catch regressions
+    ├─ Validate architecture
+    └─ Approve or request changes
     ↓
-Feedback? → YES → @coder → Fix on EXISTING branch → Loop back to @reviewer
+Feedback? → YES → @developer → Fix on EXISTING branch → Loop back to @code-reviewer
     ↓ NO
 Approved! → Merge to main
     ↓
 @tester → Run consolidation tests (20-30 min)
+    ├─ Integration tests
+    ├─ End-to-end flows
+    └─ Validate coverage ≥80%
     ↓
 All pass? → YES → Feature complete
         ↓ NO
-        Issue → @coder → Hotfix → Loop back to @tester
-
+        Issue → @developer → Hotfix → Loop back to @tester
+    ↓
+@quality-assurance → Verify quality gates
+    ├─ Linting clean
+    ├─ Tests passing
+    ├─ Security audit
+    └─ Type-check OK
+    ↓
 Release candidate?
     ↓
-@qa → Final UAT & performance validation
+@product-manager → Final acceptance & sign-off
+    ├─ Feature meets requirements
+    ├─ Acceptance criteria met
+    ├─ UAT approved
+    └─ Go/no-go decision
     ↓
 Ship!
 ```
+
+---
+
+## Claude Code Best Practices for Agent Workflows
+
+### Context Management for Large Decisions
+
+**When Architect designs new feature**:
+```
+Load in parallel:
+1. DESIGN.md (existing patterns)
+2. AGENTS.md (role responsibilities)
+3. 2-3 recent architecture PRs (current direction)
+4. Layer-specific instructions (constraints)
+
+Result: 15K context for complete picture
+Timeline: 5 min to load context + 10-15 min to design
+Outcome: High-quality design without rework
+```
+
+**Why**: Large-scale changes affect many files. Pre-reading prevents design rework.
+
+### Parallel Agent Execution Strategy
+
+**When Orchestrator coordinates developers**:
+```
+Setup parallel worktrees for independent tasks:
+  Task 1: Frontend feature (worktree 1)
+  Task 2: GraphQL backend (worktree 2)
+  Task 3: Express backend (worktree 3)
+
+Dispatch agents simultaneously (zero dependencies)
+Monitor progress in parallel
+Merge PRs in any order (independent changes)
+
+Result: 60% efficiency gain vs sequential
+Time: 3 hours parallel vs 5 hours sequential
+```
+
+**Key**: Verify dependencies FIRST before parallel dispatch
+
+### Model Override Guidance
+
+**Default**: Claude Haiku 4.5 (fast, cost-effective)
+
+**Promote to Sonnet/Opus for**:
+- ✅ Complex architectural redesigns
+- ✅ Technology trade-off analysis requiring research
+- ✅ Performance optimization from first principles
+- ✅ Conflicting requirements resolution
+
+**Stay with Haiku for**:
+- Design decisions within established patterns
+- Routine implementation guidance
+- Code review feedback
+- Documentation updates
+
+### Decision Documentation Pattern
+
+**Every architectural decision should document**:
+
+```markdown
+## ADR: [Decision Title]
+
+### Context
+Why needed (business/technical drivers)
+
+### Options Considered
+- Option A (pros/cons)
+- Option B (pros/cons)
+
+### Decision
+Chosen: [Option X] because [key reason]
+
+### Implementation
+- Phase 1: [what to build]
+- Phase 2: [what to build]
+
+### Trade-offs
+- Benefit: [what we gain]
+- Cost: [what we sacrifice]
+- Risk: [what could go wrong]
+```
+
+**Storage**: `docs/decisions/ADR-[number]-[title].md`
 
 ---
 
@@ -456,10 +654,11 @@ Test Failure Found
 
 See `.github/copilot/rules/` for detailed domain-specific guidance:
 
+- **[agent-authority.md](./.github/copilot/rules/agent-authority.md)** — Decision authority matrix, escalation paths, conflict resolution (NEW)
+- **[agents.rules.md](./.github/copilot/rules/agents.rules.md)** — Agent roles, handoff protocol, escalation
 - **[frontend.rules.md](./.github/copilot/rules/frontend.rules.md)** — Server/Client components, Apollo, performance, accessibility
 - **[backend-graphql.rules.md](./.github/copilot/rules/backend-graphql.rules.md)** — Resolvers, DataLoader, Prisma, auth, events
 - **[backend-express.rules.md](./.github/copilot/rules/backend-express.rules.md)** — Routes, uploads, webhooks, SSE
-- **[agents.rules.md](./.github/copilot/rules/agents.rules.md)** — Agent roles, handoff protocol, escalation
 - **[permissions.rules.md](./.github/copilot/rules/permissions.rules.md)** — Permission layers, access control
 - **[workflow.rules.md](./.github/copilot/rules/workflow.rules.md)** — Feature branching, PR workflow, testing
 
@@ -476,6 +675,29 @@ See **[.github/copilot-instructions.md](./.github/copilot-instructions.md)** (WR
 
 ---
 
-**Last Updated**: 2026-08-18  
-**Pattern**: Multi-agent orchestration with clear role separation and handoff boundaries  
-**Integration**: Linked to SKILLS.md, domain rules, and copilot instructions
+## Enhanced Agent Documentation
+
+See `.github/copilot/agents/` for complete agent guides:
+
+- **[architect.md](./.github/copilot/agents/architect.md)** — Strategic design authority with architecture review checklist (NEW, 1,200+ lines)
+- **[orchestrator.md](./.github/copilot/agents/orchestrator.md)** — Tactical planning and cross-layer coordination
+- **[developer.md](./.github/copilot/agents/developer.md)** — Implementation guidance for coding tasks
+- **[reviewer.md](./.github/copilot/agents/reviewer.md)** — Code Reviewer guide (Reviewer renamed to Code Reviewer)
+- **[tester.md](./.github/copilot/agents/tester.md)** — Test strategy and validation guidance
+- **[quality-assurance.md](./.github/copilot/agents/quality-assurance.md)** — Code quality standards and tooling
+- **[product-manager.md](./.github/copilot/agents/product-manager.md)** — Feature definition and requirements
+
+See `.github/instructions/agent-roles.md` for quick reference table and agent collaboration patterns.
+
+---
+
+**Last Updated**: 2026-08-19  
+**Pattern**: 7-agent orchestration with clear role separation and decision boundaries  
+**Integration**: Linked to SKILLS.md, domain rules, agent guides, and copilot instructions
+**Notable Changes**: 
+- Added Architect role (strategic design authority)
+- Renamed Reviewer → Code Reviewer (clearer naming)
+- Renamed Coder → Developer (industry standard)
+- Split QA/Product into separate roles
+- Added decision authority matrix
+- Added Claude Code best practices section

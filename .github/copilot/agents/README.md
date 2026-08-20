@@ -1,8 +1,23 @@
 # Copilot Agents Guide
 
-This directory contains six specialized Copilot agents designed to coordinate development across the react-grapql-playground monorepo (frontend, backend-graphql, backend-express).
+This directory contains seven specialized Copilot agents designed to coordinate development across the react-grapql-playground monorepo (frontend, backend-graphql, backend-express). Agents provide structured guidance for different roles in the development workflow, from strategic architecture decisions to tactical implementation and release management.
 
 ## Agent Roles & Responsibilities
+
+### 🏛️ Architect (`architect.md`)
+
+**Purpose**: Strategic system architecture and technology decisions  
+**Focus**: Long-term design, scalability planning, technology selection  
+**Key Sections**:
+- Architecture Authority Matrix (decision-making power)
+- Common Architecture Patterns (real-time, DataLoader, file uploads)
+- Architecture Review Checklist (PR review criteria)
+- Decision Trees (technology selection, database schema, cross-layer integration)
+- Integration Points with other agents
+
+**When to use**: Major features need architectural design, technology selection, database changes, or cross-layer integration patterns
+
+---
 
 ### 🛠️ Developer (`developer.md`)
 
@@ -323,14 +338,15 @@ All agents configured with:
 
 | Agent | Lines | Size | Focus | Parallel Ready |
 |-------|-------|------|-------|--------|
+| architect.md | 1,250+ | 45K | Strategic Design | ✅ Yes (decision docs) |
 | developer.md | 1,255 | 43K | Implementation | ✅ Yes (worktree mode) |
-| orchestrator.md | 655 | 22K | Coordination | ✅ Yes (all agents) |
+| orchestrator.md | 655+ | 23K | Coordination | ✅ Yes (all agents) |
 | product-manager.md | 314 | 16K | Requirements | — |
-| reviewer.md | 377 | 12K | Code Quality | ⚠️ Planned |
+| reviewer.md (Code Reviewer) | 377 | 12K | Code Quality | ✅ Yes |
 | quality-assurance.md | 531 | 12K | Standards | — |
 | tester.md | 1,780 | 62K | Testing | ✅ Yes (worktree mode) |
 
-**Total**: ~5,312 lines of specialized guidance across 167KB
+**Total**: ~6,160+ lines of specialized guidance across 213K+
 
 **Parallel Execution Status**:
 - ✅ **Developers**: Git worktree support documented (Phase 2 proven: 3 agents, 61% efficiency)
@@ -355,5 +371,5 @@ All agents configured with:
 
 ---
 
-**Last Updated**: April 22, 2026  
-**Status**: Complete with all 6 agents (Developer & Tester enhanced with comprehensive patterns)
+**Last Updated**: August 19, 2026  
+**Status**: Complete with all 7 agents (Added Architect for strategic design, enhanced with decision authority matrix)

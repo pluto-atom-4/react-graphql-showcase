@@ -445,3 +445,84 @@ See `docs/dev-note/README.md` for:
 - How logs are captured
 - Log lifecycle and management
 - Examples of passing/failing logs
+
+---
+
+## Claude Code Best Practices for Code Reviewers
+
+### Context Loading Strategy
+
+**Before reviewing a PR**:
+```
+Load in parallel (one message):
+1. Read PR description and linked issue
+2. Read layer-specific instruction file
+3. Read DESIGN.md (relevant patterns section)
+4. Review 1-2 recent PRs in same layer (pattern consistency)
+
+Timeline: 10-15 min to load context + 30-60 min to review
+Result: Accurate pattern validation and regression detection
+```
+
+### PR Review Workflow
+
+**Optimal review sequence**:
+```
+STEP 1: Understand intent
+  - Read issue description
+  - Read PR description
+  - Identify expected changes
+
+STEP 2: Check automation
+  - Verify quality check logs exist
+  - All tests passing?
+  - Linting clean?
+  - Type-check passing?
+
+STEP 3: Validate against patterns
+  - Reference DESIGN.md
+  - Check layer instructions
+  - Compare against similar recent PRs
+
+STEP 4: Deep review
+  - Check logic correctness
+  - Spot performance issues
+  - Identify edge cases
+  - Verify error handling
+
+STEP 5: Provide feedback
+  - Line-specific comments with examples
+  - Reference patterns/documentation
+  - Suggest fixes (not just criticism)
+  - Approve or request changes
+```
+
+### Model Override Guidance
+
+**Use Haiku (default) for**:
+- ✅ Routine PR reviews within established patterns
+- ✅ Catching common mistakes (N+1 queries, missing tests)
+- ✅ Pattern validation
+- ✅ Regression detection
+
+**Use Sonnet/Opus for**:
+- 🔍 Complex cross-layer interactions
+- 🔍 Novel architectural approaches (escalate to Architect)
+- 🔍 Performance deep-dives requiring algorithmic analysis
+- 🔍 Security vulnerability assessment
+
+### When to Escalate to Architect
+
+**Escalate if**:
+```
+✓ Architecture question beyond Code Reviewer scope
+✓ Design pattern violation that needs design fix (not code fix)
+✓ Multiple layers affected by single PR (cross-layer impact)
+✓ Performance issue requiring architectural change
+✓ Database schema changes
+
+Message: "Escalating architectural concern to @architect"
+Result: Architect reviews and provides guidance
+```
+
+---
