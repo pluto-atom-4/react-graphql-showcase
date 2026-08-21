@@ -6,7 +6,6 @@ import {
   FilterState,
   FilterAction,
   defaultInitialState,
-  AVAILABLE_STATUSES,
   BuildStatus,
 } from '../useFilter';
 
@@ -25,7 +24,7 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: SET_SEARCH', () => {
     it('should set search term in state', () => {
-      const state: FilterState = { search: '' };
+      const state: FilterState = { search: '', statuses: [] };
       const action: FilterAction = { type: 'SET_SEARCH', payload: 'test query' };
 
       const result = filterReducer(state, action);
@@ -34,7 +33,7 @@ describe('useFilter Hook', () => {
     });
 
     it('should replace existing search term', () => {
-      const state: FilterState = { search: 'old query' };
+      const state: FilterState = { search: 'old query', statuses: [] };
       const action: FilterAction = { type: 'SET_SEARCH', payload: 'new query' };
 
       const result = filterReducer(state, action);
@@ -43,7 +42,7 @@ describe('useFilter Hook', () => {
     });
 
     it('should handle empty string search', () => {
-      const state: FilterState = { search: 'query' };
+      const state: FilterState = { search: 'query', statuses: [] };
       const action: FilterAction = { type: 'SET_SEARCH', payload: '' };
 
       const result = filterReducer(state, action);
@@ -53,7 +52,7 @@ describe('useFilter Hook', () => {
 
     it('should preserve lastSynced when setting search', () => {
       const now = Date.now();
-      const state: FilterState = { search: '', lastSynced: now };
+      const state: FilterState = { search: '', lastSynced: now, statuses: [] };
       const action: FilterAction = { type: 'SET_SEARCH', payload: 'query' };
 
       const result = filterReducer(state, action);
@@ -65,7 +64,7 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: CLEAR_SEARCH', () => {
     it('should clear search term', () => {
-      const state: FilterState = { search: 'test query' };
+      const state: FilterState = { search: 'test query', statuses: [] };
       const action: FilterAction = { type: 'CLEAR_SEARCH' };
 
       const result = filterReducer(state, action);
@@ -75,7 +74,7 @@ describe('useFilter Hook', () => {
 
     it('should preserve lastSynced when clearing', () => {
       const now = Date.now();
-      const state: FilterState = { search: 'query', lastSynced: now };
+      const state: FilterState = { search: 'query', lastSynced: now, statuses: [] };
       const action: FilterAction = { type: 'CLEAR_SEARCH' };
 
       const result = filterReducer(state, action);
@@ -90,6 +89,7 @@ describe('useFilter Hook', () => {
       const storedState: FilterState = {
         search: 'stored query',
         lastSynced: 12345,
+        statuses: [],
       };
       const action: FilterAction = {
         type: 'HYDRATE_FROM_STORAGE',
@@ -102,8 +102,8 @@ describe('useFilter Hook', () => {
     });
 
     it('should replace existing state completely', () => {
-      const currentState: FilterState = { search: 'current' };
-      const storedState: FilterState = { search: 'stored', lastSynced: 999 };
+      const currentState: FilterState = { search: 'current', statuses: [] };
+      const storedState: FilterState = { search: 'stored', lastSynced: 999, statuses: [] };
       const action: FilterAction = {
         type: 'HYDRATE_FROM_STORAGE',
         payload: storedState,
@@ -117,7 +117,7 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: RESET_FILTERS', () => {
     it('should reset to default initial state', () => {
-      const state: FilterState = { search: 'query', lastSynced: 999 };
+      const state: FilterState = { search: 'query', lastSynced: 999, statuses: [] };
       const action: FilterAction = { type: 'RESET_FILTERS' };
 
       const result = filterReducer(state, action);
@@ -126,7 +126,7 @@ describe('useFilter Hook', () => {
     });
 
     it('should clear search and timestamp', () => {
-      const state: FilterState = { search: 'anything', lastSynced: 12345 };
+      const state: FilterState = { search: 'anything', lastSynced: 12345, statuses: [] };
       const action: FilterAction = { type: 'RESET_FILTERS' };
 
       const result = filterReducer(state, action);
@@ -138,7 +138,7 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: UPDATE_STATE', () => {
     it('should merge partial state', () => {
-      const state: FilterState = { search: 'query', lastSynced: 999 };
+      const state: FilterState = { search: 'query', lastSynced: 999, statuses: [] };
       const action: FilterAction = {
         type: 'UPDATE_STATE',
         payload: { lastSynced: 111 },
@@ -151,7 +151,7 @@ describe('useFilter Hook', () => {
     });
 
     it('should update search via UPDATE_STATE', () => {
-      const state: FilterState = { search: '', lastSynced: 999 };
+      const state: FilterState = { search: '', lastSynced: 999, statuses: [] };
       const action: FilterAction = {
         type: 'UPDATE_STATE',
         payload: { search: 'new' },
@@ -164,7 +164,7 @@ describe('useFilter Hook', () => {
     });
 
     it('should handle empty partial update', () => {
-      const state: FilterState = { search: 'query', lastSynced: 999 };
+      const state: FilterState = { search: 'query', lastSynced: 999, statuses: [] };
       const action: FilterAction = {
         type: 'UPDATE_STATE',
         payload: {},
@@ -178,7 +178,7 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: Unknown Action', () => {
     it('should return state unchanged for unknown actions', () => {
-      const state: FilterState = { search: 'query' };
+      const state: FilterState = { search: 'query', statuses: [] };
       const action = { type: 'UNKNOWN_ACTION' } as unknown as FilterAction;
 
       const result = filterReducer(state, action);
