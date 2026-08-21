@@ -2,23 +2,58 @@
 
 import { useReducer } from 'react';
 
+// Hardcoded available statuses for multi-select
+export const AVAILABLE_STATUSES = ['Active', 'Idle', 'Failed', 'Completed'] as const;
+export type BuildStatus = typeof AVAILABLE_STATUSES[number];
+
 /**
  * State shape for filter management
+ *
+ * Phase 1 fields:
+ * - search: string - search term
+ * - lastSynced?: number - last sync timestamp
+ *
+ * Phase 2 fields:
+ * - statuses: BuildStatus[] - selected statuses (multi-select, max 4)
+ * - dateStart?: string - start date in YYYY-MM-DD format
+ * - dateEnd?: string - end date in YYYY-MM-DD format
  */
 export interface FilterState {
   search: string;
   lastSynced?: number;
+  statuses: BuildStatus[];
+  dateStart?: string;
+  dateEnd?: string;
 }
 
 /**
- * Union type for all filter actions
+ * Union type for all filter actions (10 total)
+ *
+ * Phase 1 actions (5):
+ * - SET_SEARCH: Set search term
+ * - CLEAR_SEARCH: Clear search term
+ * - HYDRATE_FROM_STORAGE: Restore state from localStorage
+ * - RESET_FILTERS: Reset all filters to default
+ * - UPDATE_STATE: Merge partial state
+ *
+ * Phase 2 actions (5):
+ * - ADD_STATUS: Add a status to selection
+ * - REMOVE_STATUS: Remove a status from selection
+ * - TOGGLE_STATUS: Toggle a status (add if not present, remove if present)
+ * - SET_DATE_RANGE: Set both start and end dates
+ * - CLEAR_DATE_RANGE: Clear date filters
  */
 export type FilterAction =
   | { type: 'SET_SEARCH'; payload: string }
   | { type: 'CLEAR_SEARCH' }
   | { type: 'HYDRATE_FROM_STORAGE'; payload: FilterState }
   | { type: 'RESET_FILTERS' }
-  | { type: 'UPDATE_STATE'; payload: Partial<FilterState> };
+  | { type: 'UPDATE_STATE'; payload: Partial<FilterState> }
+  | { type: 'ADD_STATUS'; payload: BuildStatus }
+  | { type: 'REMOVE_STATUS'; payload: BuildStatus }
+  | { type: 'TOGGLE_STATUS'; payload: BuildStatus }
+  | { type: 'SET_DATE_RANGE'; payload: { start?: string; end?: string } }
+  | { type: 'CLEAR_DATE_RANGE' };
 
 
 /**
@@ -26,17 +61,58 @@ export type FilterAction =
  */
 export const defaultInitialState: FilterState = {
   search: '',
+  statuses: [],
 };
 
 /**
- * Filter reducer function with 5 actions
+ * Count total active filters (excluding empty values)
+ * - search (1 if non-empty)
+ * - each status (1 per status)
+ * - dateStart (1 if present)
+ * - dateEnd (1 if present)
  *
- * Actions:
+ * @param state Filter state
+ * @returns Total filter count
+ */
+const countActiveFilters = (state: FilterState): number => {
+  let count = 0;
+  if (state.search) count++;
+  count += state.statuses.length;
+  if (state.dateStart) count++;
+  if (state.dateEnd) count++;
+  return count;
+};
+
+/**
+ * Validate date range (end >= start)
+ *
+ * @param start Start date in YYYY-MM-DD format
+ * @param end End date in YYYY-MM-DD format
+ * @returns true if valid, false otherwise
+ */
+const isValidDateRange = (start?: string, end?: string): boolean => {
+  if (!start || !end) return true; // Valid if either is empty
+  return end >= start;
+};
+
+/**
+ * Filter reducer function with 10 actions (Phase 1 + Phase 2)
+ *
+ * Phase 1 Actions (5):
  * - SET_SEARCH: Set search term
  * - CLEAR_SEARCH: Clear search term
  * - HYDRATE_FROM_STORAGE: Restore state from localStorage
  * - RESET_FILTERS: Reset all filters to default
  * - UPDATE_STATE: Merge partial state
+ *
+ * Phase 2 Actions (5):
+ * - ADD_STATUS: Add a status (max 10 filters enforced)
+ * - REMOVE_STATUS: Remove a status
+ * - TOGGLE_STATUS: Toggle status on/off
+ * - SET_DATE_RANGE: Set date range (validates end >= start)
+ * - CLEAR_DATE_RANGE: Clear date filters
+ *
+ * Max Filters: Enforces 10 total filters (search + statuses + dates)
  *
  * @param state Current filter state
  * @param action Action to apply
@@ -46,14 +122,110 @@ export const filterReducer = (state: FilterState, action: FilterAction): FilterS
   switch (action.type) {
     case 'SET_SEARCH':
       return { ...state, search: action.payload };
+
     case 'CLEAR_SEARCH':
       return { ...state, search: '' };
+
+    case 'ADD_STATUS': {
+      // Check if already present
+      if (state.statuses.includes(action.payload)) {
+        return state;
+      }
+      // Check max filters: search (1) + current statuses + new status (1) + dates (0-2)
+      const wouldBe = countActiveFilters(state) + 1;
+      if (wouldBe > 10) {
+        console.warn(
+          `[useFilter] Cannot add status: max 10 filters exceeded (would be ${wouldBe})`
+        );
+        return state;
+      }
+      return {
+        ...state,
+        statuses: [...state.statuses, action.payload],
+      };
+    }
+
+    case 'REMOVE_STATUS': {
+      return {
+        ...state,
+        statuses: state.statuses.filter((s) => s !== action.payload),
+      };
+    }
+
+    case 'TOGGLE_STATUS': {
+      if (state.statuses.includes(action.payload)) {
+        // Remove if present
+        return {
+          ...state,
+          statuses: state.statuses.filter((s) => s !== action.payload),
+        };
+      } else {
+        // Add if not present (with max filters check)
+        const wouldBe = countActiveFilters(state) + 1;
+        if (wouldBe > 10) {
+          console.warn(
+            `[useFilter] Cannot toggle status: max 10 filters exceeded (would be ${wouldBe})`
+          );
+          return state;
+        }
+        return {
+          ...state,
+          statuses: [...state.statuses, action.payload],
+        };
+      }
+    }
+
+    case 'SET_DATE_RANGE': {
+      const start = action.payload.start ?? state.dateStart;
+      const end = action.payload.end ?? state.dateEnd;
+
+      // Validate date range
+      if (!isValidDateRange(start, end)) {
+        console.warn(
+          `[useFilter] Invalid date range: end date must be >= start date`
+        );
+        return state;
+      }
+
+      // Check max filters
+      const newDatesCount = (start ? 1 : 0) + (end ? 1 : 0);
+      const oldDatesCount = (state.dateStart ? 1 : 0) + (state.dateEnd ? 1 : 0);
+      const dateDiff = newDatesCount - oldDatesCount;
+
+      if (dateDiff > 0) {
+        const wouldBe = countActiveFilters(state) + dateDiff;
+        if (wouldBe > 10) {
+          console.warn(
+            `[useFilter] Cannot set date range: max 10 filters exceeded (would be ${wouldBe})`
+          );
+          return state;
+        }
+      }
+
+      return {
+        ...state,
+        dateStart: start,
+        dateEnd: end,
+      };
+    }
+
+    case 'CLEAR_DATE_RANGE': {
+      return {
+        ...state,
+        dateStart: undefined,
+        dateEnd: undefined,
+      };
+    }
+
     case 'HYDRATE_FROM_STORAGE':
       return action.payload;
+
     case 'RESET_FILTERS':
       return { ...defaultInitialState };
+
     case 'UPDATE_STATE':
       return { ...state, ...action.payload };
+
     default:
       return state;
   }
@@ -61,6 +233,9 @@ export const filterReducer = (state: FilterState, action: FilterAction): FilterS
 
 /**
  * Validate filter state schema
+ *
+ * Handles both Phase 1 (search only) and Phase 2 (search + statuses + dates) formats.
+ * Automatically upgrades old format to new format.
  *
  * @param state State to validate
  * @returns true if valid, false otherwise
@@ -71,14 +246,31 @@ const isValidFilterState = (state: unknown): state is FilterState => {
   }
 
   const obj = state as Record<string, unknown>;
-  return (
-    typeof obj.search === 'string' &&
-    (obj.lastSynced === undefined || typeof obj.lastSynced === 'number')
-  );
+
+  // Required fields
+  if (typeof obj.search !== 'string') return false;
+
+  // Handle backward compatibility: statuses may be missing from old Phase 1 format
+  // Default to empty array if missing
+  const statuses = Array.isArray(obj.statuses) ? obj.statuses : [];
+
+  // Validate each status is in AVAILABLE_STATUSES
+  if (!statuses.every((s: unknown) => AVAILABLE_STATUSES.includes(s as BuildStatus))) {
+    return false;
+  }
+
+  // Optional fields
+  if (obj.lastSynced !== undefined && typeof obj.lastSynced !== 'number') return false;
+  if (obj.dateStart !== undefined && typeof obj.dateStart !== 'string') return false;
+  if (obj.dateEnd !== undefined && typeof obj.dateEnd !== 'string') return false;
+
+  return true;
 };
 
 /**
  * Load filter state from localStorage with validation
+ *
+ * Handles backward compatibility: upgrades Phase 1 format (search-only) to Phase 2 format.
  *
  * @param storageKey Key to read from localStorage
  * @returns Validated filter state or default
@@ -93,7 +285,15 @@ const loadFromStorage = (storageKey: string): FilterState => {
     if (stored) {
       const parsed = JSON.parse(stored);
       if (isValidFilterState(parsed)) {
-        return parsed;
+        // Migrate Phase 1 format to Phase 2 if needed
+        const migrated: FilterState = {
+          search: parsed.search,
+          statuses: parsed.statuses ?? [],
+          lastSynced: parsed.lastSynced,
+          dateStart: parsed.dateStart,
+          dateEnd: parsed.dateEnd,
+        };
+        return migrated;
       }
       console.warn(`[useFilter] Invalid stored state for key "${storageKey}"`);
     }
