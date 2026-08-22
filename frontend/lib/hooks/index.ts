@@ -5,3 +5,4 @@
  */
 
 export { useFilter, filterReducer, defaultInitialState, saveToStorage, type FilterState, type FilterAction } from './useFilter';
+export { useSearchHighlight, searchHighlightReducer, defaultSearchHighlightState, type SearchHighlightState, type SearchHighlightAction } from './useSearchHighlight';
