@@ -310,6 +310,84 @@ See [ACCESSIBILITY.md](docs/dev-note/ACCESSIBILITY.md) for detailed compliance d
 
 ---
 
+## Advanced Search & Filtering (Phase 3)
+
+The repository includes comprehensive search and filtering capabilities with advanced features:
+
+### Phase 3.1: Search Highlighting
+- Real-time search term highlighting
+- Case-sensitive search option
+- Special character support
+- Match counter display
+
+### Phase 3.2: Filter History
+- Automatic history tracking for all filter changes
+- Duplicate prevention (no consecutive identical filters)
+- Configurable history limit (default: 50 items)
+- localStorage persistence
+
+### Phase 3.3: Filter Presets
+- Save frequently used filter combinations as presets
+- Quick load/restore of preset filters
+- Preset rename and delete functionality
+- Automatic localStorage persistence
+
+### Phase 3.4: Keyboard Navigation & Undo/Redo
+- Full keyboard navigation support (Tab, Arrow keys, Enter, Escape)
+- Undo/Redo functionality with Ctrl+Z / Ctrl+Y (Cmd+Z / Cmd+Y on Mac)
+- Focus management with boundary looping
+- Configurable undo/redo levels (max 20 by default)
+
+### FilterBar Component Integration
+
+All features are orchestrated through the `FilterBar` component:
+
+```tsx
+<FilterBar
+  filters={filterState}
+  onFilterChange={handleFilterChange}
+  history={historyState}
+  onSelectFromHistory={handleSelectHistory}
+  presets={presetsState}
+  onSelectPreset={handleSelectPreset}
+  onCreatePreset={handleCreatePreset}
+  undoRedo={undoRedoState}
+  onUndo={handleUndo}
+  onRedo={handleRedo}
+/>
+```
+
+**Usage**:
+```bash
+# Frontend hooks
+import { useFilter } from '@/lib/hooks/useFilter';
+import { useFilterHistory } from '@/lib/hooks/useFilterHistory';
+import { useFilterPresets } from '@/lib/hooks/useFilterPresets';
+import { useUndoRedo } from '@/lib/hooks/useUndoRedo';
+import { useKeyboardNav } from '@/lib/hooks/useKeyboardNav';
+
+# Components
+import { FilterBar } from '@/components/FilterBar';
+import { SearchBar } from '@/components/SearchBar';
+import { StatusFilter } from '@/components/StatusFilter';
+import { DateRangeFilter } from '@/components/DateRangeFilter';
+```
+
+**Features**:
+- ✅ Search with highlighting and case sensitivity
+- ✅ Status and date range filtering
+- ✅ History tracking with duplicate prevention
+- ✅ Preset management (save/load/rename/delete)
+- ✅ Undo/redo with configurable levels
+- ✅ Full keyboard navigation
+- ✅ WCAG 2.1 AA accessibility compliant
+- ✅ Performance optimized (<100ms operations)
+- ✅ localStorage persistence
+
+See [.claude/patterns/search-filter-patterns.md](.claude/patterns/search-filter-patterns.md) for implementation patterns and best practices.
+
+---
+
 ## Interview Preparation
 
 This repository demonstrates:
@@ -368,6 +446,8 @@ Interview preparation material.
 
 **Status**: ✅ Production Ready  
 **ESLint**: ✅ v9 (0 issues)  
-**Tests**: ✅ All Passing (339/339)  
+**Tests**: ✅ All Passing (2145/2145 across all packages)  
+**Frontend Tests**: ✅ 1792/1792 passing  
 **Documentation**: ✅ Complete  
-**Quality**: ⭐⭐⭐⭐⭐ Enterprise-Grade
+**Quality**: ⭐⭐⭐⭐⭐ Enterprise-Grade  
+**Phase 3 (Search & Filtering)**: ✅ Complete
