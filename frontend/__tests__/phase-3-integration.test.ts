@@ -91,8 +91,8 @@ describe('Phase 3: Integration Tests - All Features', () => {
       const matches = text.match(regex) || [];
 
       expect(matches).toHaveLength(2);
-      expect(matches[0].toLowerCase()).toBe('test');
-      expect(matches[1].toLowerCase()).toBe('test');
+      expect(matches[0]?.toLowerCase()).toBe('test');
+      expect(matches[1]?.toLowerCase()).toBe('test');
     });
 
     it('should support case-sensitive highlighting', () => {
@@ -571,13 +571,6 @@ describe('Phase 3: Integration Tests - All Features', () => {
     });
 
     it('should still support clearing all filters', () => {
-      const filters: FilterState = {
-        search: 'query',
-        statuses: ['PENDING', 'RUNNING'],
-        dateStart: '2026-01-01',
-        dateEnd: '2026-12-31',
-      };
-
       const cleared: FilterState = {
         search: '',
         statuses: [],
@@ -628,7 +621,7 @@ describe('Phase 3: Integration Tests - All Features', () => {
 
       const currentPast = undoRedo.past;
       if (currentPast.length > 0) {
-        const _ = currentPast.pop();
+        currentPast.pop();
       }
 
       const endTime = performance.now();
