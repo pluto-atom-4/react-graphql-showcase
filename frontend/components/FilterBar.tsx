@@ -9,6 +9,7 @@ import { PresetsManager } from './PresetsManager';
 import { FilterState, BuildStatus } from '../lib/hooks/useFilter';
 import { FilterHistoryState, FilterHistoryItem } from '../lib/hooks/useFilterHistory';
 import { FilterPresetsState, FilterPreset } from '../lib/hooks/useFilterPresets';
+import { UndoRedoState } from '../lib/hooks/useUndoRedo';
 import { hasActiveFilters } from '../lib/utils/filterComposers';
 
 /**
@@ -45,6 +46,12 @@ export interface FilterBarProps {
   onDeletePreset?: (id: string) => void;
   /** Optional callback to rename preset */
   onRenamePreset?: (id: string, name: string) => void;
+  /** Optional undo/redo state */
+  undoRedo?: UndoRedoState;
+  /** Optional callback for undo action */
+  onUndo?: () => void;
+  /** Optional callback for redo action */
+  onRedo?: () => void;
 }
 
 /**
@@ -93,6 +100,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onCreatePreset,
   onDeletePreset,
   onRenamePreset,
+  undoRedo,
+  onUndo,
+  onRedo,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPresetsOpen, setIsPresetsOpen] = useState(false);
@@ -183,9 +193,80 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         />
       </div>
 
-      {/* Action Buttons Row - Presets, History and Clear All */}
-      {(presets || history || hasFilters) && (
+      {/* Action Buttons Row - Undo/Redo, Presets, History and Clear All */}
+      {(undoRedo || presets || history || hasFilters) && (
         <div className="flex justify-between items-center pt-2 gap-2 flex-wrap">
+          {/* Undo/Redo Buttons */}
+          {undoRedo && (
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={onUndo}
+                disabled={disabled || !undoRedo.past.length}
+                className={`
+                  px-2 py-2 bg-blue-600 text-white text-sm font-medium rounded-md
+                  transition-all duration-150
+                  hover:bg-blue-700 active:bg-blue-800
+                  focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center justify-center
+                  w-8 h-8
+                `}
+                aria-label="Undo (Ctrl+Z)"
+                title="Undo (Ctrl+Z)"
+                data-testid="filter-bar-undo-button"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2"
+                  />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                onClick={onRedo}
+                disabled={disabled || !undoRedo.future.length}
+                className={`
+                  px-2 py-2 bg-blue-600 text-white text-sm font-medium rounded-md
+                  transition-all duration-150
+                  hover:bg-blue-700 active:bg-blue-800
+                  focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  flex items-center justify-center
+                  w-8 h-8
+                `}
+                aria-label="Redo (Ctrl+Y)"
+                title="Redo (Ctrl+Y)"
+                data-testid="filter-bar-redo-button"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* Presets Button and Dropdown */}
           {presets && (
             <div className="relative">
