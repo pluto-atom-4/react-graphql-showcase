@@ -654,13 +654,14 @@ Test Failure Found
 
 See `.github/copilot/rules/` for detailed domain-specific guidance:
 
-- **[agent-authority.md](./.github/copilot/rules/agent-authority.md)** — Decision authority matrix, escalation paths, conflict resolution (NEW)
-- **[agents.rules.md](./.github/copilot/rules/agents.rules.md)** — Agent roles, handoff protocol, escalation
+- **[agent-authority.md](./.github/copilot/rules/agent-authority.md)** — Decision authority matrix, escalation paths, conflict resolution
 - **[frontend.rules.md](./.github/copilot/rules/frontend.rules.md)** — Server/Client components, Apollo, performance, accessibility
 - **[backend-graphql.rules.md](./.github/copilot/rules/backend-graphql.rules.md)** — Resolvers, DataLoader, Prisma, auth, events
 - **[backend-express.rules.md](./.github/copilot/rules/backend-express.rules.md)** — Routes, uploads, webhooks, SSE
 - **[permissions.rules.md](./.github/copilot/rules/permissions.rules.md)** — Permission layers, access control
 - **[workflow.rules.md](./.github/copilot/rules/workflow.rules.md)** — Feature branching, PR workflow, testing
+
+> **Note (Issue #336)**: Agent roles previously duplicated in `agents.rules.md` have been consolidated into this file (AGENTS.md). AGENTS.md is now the single source of truth for agent orchestration.
 
 ---
 
