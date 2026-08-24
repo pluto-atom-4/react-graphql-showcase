@@ -1,6 +1,47 @@
 {
+  "metadata": {
+    "tool": "Claude Code CLI",
+    "version": "1.0+",
+    "description": "Claude Code workspace configuration (single source of truth for CLI)",
+    "lastUpdated": "2026-08-23"
+  },
   "model": "claude-haiku-4-5-20251001",
   "modelOverride": "haiku",
+  "pathScopes": {
+    "frontend": {
+      "pattern": "frontend/**",
+      "model": "claude-opus-5",
+      "reasoning": "enabled",
+      "description": "React components, UI logic, accessibility",
+      "timeout": 180
+    },
+    "backend-graphql": {
+      "pattern": "backend-graphql/**",
+      "model": "claude-opus-5",
+      "reasoning": "enabled",
+      "description": "GraphQL resolvers, DataLoader, Prisma queries",
+      "timeout": 180
+    },
+    "backend-express": {
+      "pattern": "backend-express/**",
+      "model": "claude-sonnet-5",
+      "reasoning": "disabled",
+      "description": "Express routes, webhooks, SSE handlers",
+      "timeout": 120
+    },
+    "tests": {
+      "pattern": "**/*.test.ts",
+      "model": "claude-opus-5",
+      "reasoning": "enabled",
+      "description": "Test writing and validation",
+      "timeout": 180
+    },
+    "docs": {
+      "pattern": "docs/**",
+      "model": "claude-haiku-4-5-20251001",
+      "description": "Documentation files (use base model)"
+    }
+  },
   "reasoning": {
     "enabled": false,
     "budget_tokens": 5000
@@ -21,13 +62,59 @@
     "analytics": "minimal",
     "errorReporting": true
   },
+  "devHooks": {
+    "preCommit": {
+      "enabled": true,
+      "script": ".claude/hooks/pre-commit.sh",
+      "checks": [
+        "pnpm lint --max-warnings=0",
+        "pnpm type-check",
+        "pnpm test --run"
+      ],
+      "failBehavior": "block"
+    },
+    "prePush": {
+      "enabled": true,
+      "checks": [
+        "git fetch origin",
+        "pnpm test --run",
+        "pnpm build"
+      ],
+      "failBehavior": "warn"
+    },
+    "verification": {
+      "enabled": true,
+      "onWorkspaceLoad": [
+        "docker ps | grep postgres",
+        "curl -s localhost:3000/health",
+        "curl -s localhost:4000/graphql"
+      ],
+      "failBehavior": "warn"
+    }
+  },
+  "skills": {
+    "autoLoad": [
+      "caveman:cavecrew-builder",
+      "caveman:cavecrew-investigator",
+      "code-review",
+      "simplify"
+    ],
+    "contextual": {
+      "frontend/**": ["example-skills:frontend-design", "dataviz"],
+      "backend-graphql/**": ["artifact-design"],
+      "docs/**": ["artifact-design", "example-skills:doc-coauthoring"]
+    }
+  },
   "permissions": {
+    "scope": "Claude Code CLI (local development only)",
     "allow": [
       "Bash(pnpm *)",
       "Bash(git *)",
       "Bash(grep *)",
       "Bash(find *)",
       "Bash(wc *)",
+      "Bash(docker *)",
+      "Bash(curl *)",
       "Read(CLAUDE.md)",
       "Read(DESIGN.md)",
       "Read(AGENTS.md)",
@@ -35,19 +122,58 @@
       "Read(.github/instructions/**)",
       "Read(.github/copilot/**)",
       "Read(.claude/patterns/**)",
+      "Read(.claude/hooks/**)",
       "Read(backend-graphql/src/schema.graphql)",
       "Read(.claude/about-me.md)",
       "Read(.claude/settings.json)",
       "Edit(**/.instructions.md)",
       "Edit(.github/copilot/**)",
       "Edit(DESIGN.md)",
-      "Edit(CLAUDE.md)"
+      "Edit(CLAUDE.md)",
+      "Edit(AGENTS.md)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(sudo *)",
+      "Bash(passwd *)",
+      "Bash(chmod 000 *)"
     ]
   },
   "rules": {
     "alwaysRunTestsBeforeCommit": true,
     "requireLintCheckBeforePush": true,
     "autoFormatOnSave": false,
-    "enforceCommitMessageFormat": "feat(#issue): description"
+    "enforceCommitMessageFormat": "feat(#issue): description",
+    "verificationFirst": "Always run verification checks before commit/push"
+  },
+  "toolIsolation": {
+    "claudeCodeCLI": {
+      "owns": [
+        "Deep reasoning tasks",
+        "Multi-file refactoring",
+        "Test-driven development",
+        "Pattern implementation"
+      ],
+      "reads": ["CLAUDE.md", "DESIGN.md", ".claude/patterns/"],
+      "configSource": ".claude/settings.json"
+    },
+    "githubCopilotIDE": {
+      "owns": [
+        "Real-time code completion",
+        "Inline explanations",
+        "Quick documentation lookups"
+      ],
+      "reads": ["DESIGN.md", ".claude/patterns/"],
+      "configSource": ".github/copilot/settings.json"
+    },
+    "githubCopilotCLI": {
+      "owns": [
+        "Planning and orchestration",
+        "Cross-layer coordination",
+        "PR feedback"
+      ],
+      "reads": ["CLAUDE.md", "DESIGN.md", "AGENTS.md", ".github/copilot/rules/"],
+      "configSource": ".github/copilot/settings.json"
+    }
   }
 }
