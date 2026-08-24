@@ -654,13 +654,14 @@ Test Failure Found
 
 See `.github/copilot/rules/` for detailed domain-specific guidance:
 
-- **[agent-authority.md](./.github/copilot/rules/agent-authority.md)** — Decision authority matrix, escalation paths, conflict resolution (NEW)
-- **[agents.rules.md](./.github/copilot/rules/agents.rules.md)** — Agent roles, handoff protocol, escalation
+- **[agent-authority.md](./.github/copilot/rules/agent-authority.md)** — Decision authority matrix, escalation paths, conflict resolution
 - **[frontend.rules.md](./.github/copilot/rules/frontend.rules.md)** — Server/Client components, Apollo, performance, accessibility
 - **[backend-graphql.rules.md](./.github/copilot/rules/backend-graphql.rules.md)** — Resolvers, DataLoader, Prisma, auth, events
 - **[backend-express.rules.md](./.github/copilot/rules/backend-express.rules.md)** — Routes, uploads, webhooks, SSE
 - **[permissions.rules.md](./.github/copilot/rules/permissions.rules.md)** — Permission layers, access control
 - **[workflow.rules.md](./.github/copilot/rules/workflow.rules.md)** — Feature branching, PR workflow, testing
+
+> **Note (Issue #336)**: Agent roles previously duplicated in `agents.rules.md` have been consolidated into this file (AGENTS.md). AGENTS.md is now the single source of truth for agent orchestration.
 
 ---
 
@@ -691,7 +692,82 @@ See `.github/instructions/agent-roles.md` for quick reference table and agent co
 
 ---
 
-**Last Updated**: 2026-08-19  
+## Verify First: Verification Checklist by Agent Role
+
+### Architect Verification
+- [ ] Architecture decision documented in ADR format
+- [ ] Schema design reviewed for scalability
+- [ ] Performance targets set and quantified
+- [ ] Technology choices validated with rationale
+- [ ] Major PRs reviewed for architectural alignment
+- [ ] No pattern violations identified
+
+**Check**: `DESIGN.md` reflects latest architecture decisions
+
+### Orchestrator Verification
+- [ ] Issue requirements fully analyzed
+- [ ] Execution plan created and saved to `docs/implementation-planning/`
+- [ ] Affected layers identified (frontend, backend-graphql, backend-express)
+- [ ] Phase estimates provided and realistic
+- [ ] Dependencies documented
+- [ ] Escalation criteria evaluated
+
+**Check**: `docs/implementation-planning/ISSUE-#<N>-PLAN.md` exists and complete
+
+### Developer Verification
+- [ ] Code follows layer-specific patterns (.github/instructions/)
+- [ ] Tests written and passing (`pnpm test --run`)
+- [ ] Linting passes (`pnpm lint --max-warnings=0`)
+- [ ] Type checking passes (`pnpm type-check`)
+- [ ] Documentation updated (CLAUDE.md, README)
+- [ ] No N+1 queries in GraphQL resolvers
+- [ ] Pre-commit hook ran successfully (`.claude/hooks/pre-commit.sh`)
+
+**Check**: `git status` shows clean working tree before push
+
+### Code Reviewer Verification
+- [ ] Code quality gates pass (lint, type, tests)
+- [ ] Pattern violations flagged with references (.github/copilot/rules/)
+- [ ] Performance regression detected? → Block or comment based on severity
+- [ ] Documentation updated? → Suggest if needed
+- [ ] Commit message follows format: `feat(#N): description`
+- [ ] Branch name follows pattern: `feat/issue-#N-kebab-case`
+
+**Check**: PR checklist in `PR_FEEDBACK_QUICK_REFERENCE.md` complete
+
+### Tester Verification
+- [ ] Test coverage measured and within targets
+- [ ] End-to-end flows tested manually
+- [ ] Regressions detected? → Link to original feature issue
+- [ ] Performance regression? → Create optimization issue
+- [ ] All layers tested (frontend, backend-graphql, backend-express)
+- [ ] Integration tests passing (`pnpm test --run`)
+
+**Check**: `pnpm test --run` shows all passing
+
+### Quality Assurance Verification
+- [ ] ESLint rules enforced (v9 flat config)
+- [ ] Prettier formatting applied
+- [ ] TypeScript strict mode enabled
+- [ ] No security vulnerabilities in dependencies
+- [ ] Code coverage maintained/improved
+- [ ] Vitest framework used consistently
+
+**Check**: `pnpm lint && pnpm type-check` passes with 0 warnings
+
+### Product Manager Verification
+- [ ] Acceptance criteria met and tested
+- [ ] Requirements aligned with business goals
+- [ ] Release readiness confirmed
+- [ ] Stakeholder sign-off obtained
+- [ ] Feature documentation complete
+- [ ] No blocking issues remain
+
+**Check**: Feature branch ready for merge (all other agents' checks passed)
+
+---
+
+**Last Updated**: 2026-08-23 (Issue #336 Phase 1-6 complete)  
 **Pattern**: 7-agent orchestration with clear role separation and decision boundaries  
 **Integration**: Linked to SKILLS.md, domain rules, agent guides, and copilot instructions
 **Notable Changes**: 

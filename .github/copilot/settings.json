@@ -1,12 +1,75 @@
 {
-  "model": "claude-opus-4-7",
-  "theme": "auto",
+  "metadata": {
+    "tool": "GitHub Copilot CLI & IDE",
+    "version": "1.0+",
+    "description": "GitHub Copilot workspace configuration (authoritative for CLI & IDE)",
+    "lastUpdated": "2026-08-23"
+  },
+  "ide": {
+    "model": "claude-opus-5",
+    "theme": "auto",
+    "description": "In-editor completions, explanations, real-time suggestions"
+  },
+  "cli": {
+    "model": "claude-opus-5",
+    "description": "Planning, orchestration, PR feedback, cross-layer coordination"
+  },
   "custom-instructions-enabled": true,
   "execution-planning-enabled": true,
   "multi-agent-orchestration": {
     "enabled": true,
     "max-concurrent-agents": 5,
     "orchestrator-role": "Analyzes execution plans and delegates to specialized agents"
+  },
+  "pathScopes": {
+    "frontend": {
+      "pattern": "frontend/**",
+      "role": "developer",
+      "description": "Frontend code development"
+    },
+    "backend-graphql": {
+      "pattern": "backend-graphql/**",
+      "role": "developer",
+      "description": "GraphQL backend development"
+    },
+    "backend-express": {
+      "pattern": "backend-express/**",
+      "role": "developer",
+      "description": "Express backend development"
+    },
+    "tests": {
+      "pattern": "**/*.test.ts",
+      "role": "tester",
+      "description": "Test files"
+    },
+    "docs": {
+      "pattern": "docs/**",
+      "role": "orchestrator",
+      "description": "Documentation"
+    },
+    "github": {
+      "pattern": ".github/**",
+      "role": "orchestrator",
+      "description": "GitHub configuration and workflows"
+    }
+  },
+  "roleBasedAccess": {
+    "developer": {
+      "permissions": ["read-code", "write-code", "run-tests", "push-feature-branch"],
+      "restrictions": ["no-direct-push-to-main", "no-delete-branches"]
+    },
+    "reviewer": {
+      "permissions": ["read-code", "review-pr", "approve-pr", "request-changes"],
+      "restrictions": ["no-write-code", "no-push"]
+    },
+    "orchestrator": {
+      "permissions": ["read-all", "plan", "delegate", "create-issues"],
+      "restrictions": ["no-direct-code-write", "no-approve-pr"]
+    },
+    "tester": {
+      "permissions": ["read-code", "run-tests", "write-test-code"],
+      "restrictions": ["no-push-to-main", "no-review-production"]
+    }
   },
   "pr-feedback-cycle": {
     "enabled": true,
@@ -45,18 +108,58 @@
       "invocation": "@product-manager [task]",
       "auto-load": true,
       "description": "Defines requirements, acceptance criteria, validates business alignment"
+    },
+    "architect": {
+      "config-file": ".github/copilot/agents/architect.md",
+      "invocation": "@architect [task]",
+      "auto-load": true,
+      "description": "Strategic design authority, architecture review, technology decisions"
     }
   },
   "agent-context-loading": {
     "enabled": true,
     "trigger": "When user invokes agent with @agent-name syntax or 'let @agent-name delegate...'",
     "behavior": "Automatically loads agent config file into context, injecting agent-specific knowledge and responsibilities",
-    "priority": "Agent config > main instructions > project CLAUDE.md"
+    "priority": "Agent config > custom instructions > AGENTS.md"
   },
-  "rules-reference": ".copilot/rules.json",
+  "rulesReference": {
+    "directory": ".github/copilot/rules/",
+    "files": [
+      "agent-authority.md",
+      "frontend.rules.md",
+      "backend-graphql.rules.md",
+      "backend-express.rules.md",
+      "permissions.rules.md",
+      "workflow.rules.md"
+    ],
+    "legacy": {
+      "note": "agents.rules.md consolidated into AGENTS.md (Issue #336 Phase 2)",
+      "archived": ".copilot/LEGACY_REFERENCE.md"
+    }
+  },
   "documentation": {
     "execution-plans": "docs/implementation-planning/",
     "quick-reference": ".github/copilot/quick-references/PR_FEEDBACK_QUICK_REFERENCE.md",
-    "orchestration-guide": ".copilot/PARALLEL-EXECUTION-GUIDE.md"
+    "orchestration-guide": ".copilot/PARALLEL-EXECUTION-GUIDE.md",
+    "agent-roles": ".github/instructions/agent-roles.md",
+    "architecture": "DESIGN.md",
+    "patterns": ".claude/patterns/"
+  },
+  "toolIsolation": {
+    "claudeCodeCLI": {
+      "description": "Local deep reasoning, multi-file refactoring, test-driven development",
+      "configSource": ".claude/settings.json",
+      "scope": "Local development only"
+    },
+    "copilotIDE": {
+      "description": "In-editor completions, explanations, documentation lookups",
+      "configSource": ".github/copilot/settings.json (IDE section)",
+      "scope": "GitHub.com authenticated"
+    },
+    "copilotCLI": {
+      "description": "Planning, orchestration, PR feedback, cross-layer coordination",
+      "configSource": ".github/copilot/settings.json (CLI section)",
+      "scope": "GitHub Copilot CLI authenticated"
+    }
   }
 }
