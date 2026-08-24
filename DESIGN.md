@@ -251,78 +251,15 @@ export const client = new ApolloClient({
 
 ---
 
-## Quality Gates (Issue #306 Automation)
+## Quality Gates & Verification
 
-All quality checks run without user confirmation:
-
+All quality checks automated (no manual confirmation):
 ```bash
-pnpm test --run           # All layer tests
-pnpm lint                 # ESLint across all layers
-pnpm format:check         # Prettier compliance
-pnpm type-check           # TypeScript strict mode
+pnpm test --run && pnpm lint && pnpm type-check
 ```
 
-Logs captured to `docs/dev-note/issue-#[N]-pnpm-*.txt` format per Issue #306 convention.
-
----
-
-## Development Workflow
-
-### Starting Services
-```bash
-pnpm install              # Install dependencies
-docker-compose up -d      # Start PostgreSQL
-pnpm run migrate          # Run migrations
-pnpm dev                  # Start all services
-```
-
-**Ports**:
-- Frontend: http://localhost:3000
-- GraphQL: http://localhost:4000 (GraphiQL IDE)
-- Express: http://localhost:5000
-
-### Running Specific Layer
-```bash
-pnpm dev:frontend         # Next.js only
-pnpm dev:graphql          # Apollo only
-pnpm dev:express          # Express only
-```
-
-### Testing Specific Layer
-```bash
-pnpm test:frontend --run  # Frontend tests
-pnpm test:graphql --run   # GraphQL tests
-pnpm test:express --run   # Express tests
-```
-
-### Debugging
-
-**GraphiQL IDE** (http://localhost:4000/graphql)
-```graphql
-query GetBuilds {
-  builds(limit: 10, offset: 0) {
-    id status parts { id name } testRuns { id result completedAt }
-  }
-}
-```
-
-**SSE Stream Testing**
-```bash
-# Terminal 1: Listen to events
-curl -N http://localhost:5000/events
-
-# Terminal 2: Trigger mutation
-curl -X POST http://localhost:4000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query":"mutation { createBuild(input: {name: \"Test\"}) { id } }"}'
-```
-
-**Database Inspection**
-```bash
-psql postgres://user:pass@localhost:5432/boltline
-\dt                    # List tables
-SELECT * FROM builds;  # Query data
-```
+**See**: `CLAUDE.md` → "Verify First: Quick Health Check" for detailed commands  
+**See**: `DESIGN.md` → "Verify First: Architectural Compliance" for pattern verification
 
 ---
 
@@ -362,112 +299,19 @@ SELECT * FROM builds;  # Query data
 
 ---
 
-## Phase 3: Advanced Search & Filtering
+## Key Implementation Patterns
 
-**Status**: ✅ Complete  
-**Issue**: #335  
-**Implementation**: Phase 3.1-3.4
+### Frontend Patterns
+- **Server/Client Components**: See `.claude/patterns/server-client-components-pattern.md`
+- **Apollo Cache Updates**: See `.claude/patterns/apollo-mutations-pattern.md`
 
-### Features
+### Backend Patterns
+- **DataLoader (N+1 Prevention)**: See `.claude/patterns/dataloaders-pattern.md`
+- **Event Emission**: See `.claude/patterns/event-emission-pattern.md`
+- **Authentication**: See `.claude/patterns/auth-patterns.md`
+- **Security**: See `.claude/patterns/security-patterns.md`
 
-#### 3.1: Search Highlighting
-- Real-time search term highlighting with case sensitivity
-- Match counter and active state tracking
-- Special character support
-- Reducer-based state management
-
-#### 3.2: Filter History
-- Automatic tracking of all filter changes
-- Duplicate prevention (no consecutive identical states)
-- Configurable history limit (default: 50 items)
-- localStorage persistence
-
-#### 3.3: Filter Presets
-- Save and restore frequently used filter combinations
-- Preset management (create, rename, delete)
-- Atomic localStorage persistence
-- Type-safe preset storage
-
-#### 3.4: Keyboard Navigation & Undo/Redo
-- Complete keyboard navigation with Tab, Arrow keys, Enter, Escape
-- Undo/Redo with Ctrl+Z / Ctrl+Y keyboard shortcuts
-- Configurable undo/redo levels (max 20 by default)
-- Focus management with boundary looping
-
-### Architecture
-
-```
-FilterBar (Orchestrator)
-├── SearchBar (Phase 1)
-├── StatusFilter (Phase 2)
-├── DateRangeFilter (Phase 2)
-├── SearchHighlight (Phase 3.1) - useSearchHighlight hook
-├── HistoryDropdown (Phase 3.2) - useFilterHistory hook
-├── PresetsManager (Phase 3.3) - useFilterPresets hook
-└── Undo/Redo Buttons (Phase 3.4) - useUndoRedo + useKeyboardNav hooks
-```
-
-### State Management
-
-All filter features use reducer-based state management with localStorage persistence:
-
-```typescript
-// useFilter - Core filter state
-interface FilterState {
-  search: string;
-  statuses: BuildStatus[];
-  dateStart?: string;
-  dateEnd?: string;
-}
-
-// useFilterHistory - Track changes
-interface FilterHistoryState {
-  items: FilterHistoryItem[];
-  maxItems: number;
-}
-
-// useFilterPresets - Save combinations
-interface FilterPresetsState {
-  presets: FilterPreset[];
-  selectedId: string | null;
-}
-
-// useUndoRedo - Track history
-interface UndoRedoState {
-  past: FilterState[];
-  present: FilterState;
-  future: FilterState[];
-  maxLevels: number;
-}
-```
-
-### Performance
-
-All operations are optimized to <100ms:
-
-| Operation | Target | Typical |
-|-----------|--------|---------|
-| Search filtering | <100ms | <50ms |
-| Undo/Redo | <10ms | <5ms |
-| History lookup | <10ms | <3ms |
-| Preset restore | <50ms | <20ms |
-| Keyboard navigation | <5ms | <2ms |
-
-### Accessibility
-
-- WCAG 2.1 Level AA compliant
-- Full keyboard navigation support
-- Semantic HTML with proper aria-labels
-- Focus management and boundary looping
-- Screen reader compatible
-
-### Testing
-
-- **1792/1792 frontend tests passing**
-- 36 integration tests for Phase 3 features
-- All hooks have comprehensive unit tests
-- Component tests with mocked props
-- Performance verification tests
+**All patterns**: `.claude/patterns/README.md`
 
 ---
 

@@ -4,6 +4,38 @@ Full-stack React/GraphQL playground for Stoke Space interview prep. **See [DESIG
 
 ---
 
+## Quick Navigation
+
+**Getting Started**: [Quick Start](#quick-start) | [Commands](#commands) | [Debugging](#debugging)
+
+**Architecture**: 
+- [DESIGN.md](./DESIGN.md#core-architecture-dual-backend-approach) — Core architecture
+- [DESIGN.md](./DESIGN.md#backend-1-apollo-graphql-server) — GraphQL backend
+- [DESIGN.md](./DESIGN.md#backend-2-expressjs-server) — Express backend
+- [DESIGN.md](./DESIGN.md#integration-points) — Integration patterns
+
+**Multi-Agent Orchestration**:
+- [AGENTS.md](./AGENTS.md#agent-roles--responsibilities) — Agent matrix
+- [AGENTS.md](./AGENTS.md#agent-invocation-guide) — When to invoke each agent
+- [AGENTS.md](./AGENTS.md#verify-first-verification-checklist-by-agent-role) — Agent verification checklists
+
+**Configuration**:
+- [.claude/settings.json](./.claude/settings.json) — Claude Code workspace config
+- [.github/copilot/settings.json](./.github/copilot/settings.json) — GitHub Copilot config
+- [.claude/README.md](./.claude/README.md) — Configuration guide (new)
+
+**Patterns & Guides**:
+- [.claude/patterns/](./claude/patterns/) — Reusable implementation patterns
+- [.github/instructions/](./github/instructions/) — Path-specific developer guides
+- [docs/start-from-here.md](./docs/start-from-here.md) — 7-day interview prep plan
+
+**Tools**:
+- **Claude Code CLI**: Deep reasoning, refactoring, test-driven development (local)
+- **GitHub Copilot IDE**: Real-time completions, inline suggestions (in-editor)
+- **GitHub Copilot CLI**: Planning, orchestration, PR feedback (authenticated)
+
+---
+
 ## Quick Start
 
 **Prerequisites**: Docker, Docker Compose, Node.js 18+, pnpm
