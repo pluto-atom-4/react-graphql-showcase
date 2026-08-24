@@ -767,7 +767,7 @@ See `.github/instructions/agent-roles.md` for quick reference table and agent co
 
 ---
 
-**Last Updated**: 2026-08-23  
+**Last Updated**: 2026-08-23 (Issue #336 Phase 1-6 complete)  
 **Pattern**: 7-agent orchestration with clear role separation and decision boundaries  
 **Integration**: Linked to SKILLS.md, domain rules, agent guides, and copilot instructions
 **Notable Changes**: 
