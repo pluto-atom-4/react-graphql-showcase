@@ -502,5 +502,37 @@ All operations are optimized to <100ms:
 
 ---
 
-**Last Updated**: 2026-08-09  
+## Verify First: Architectural Compliance
+
+Verify design patterns are correctly implemented:
+
+```bash
+# ✓ GraphQL resolvers use DataLoader (N+1 prevention)
+grep -r "dataloader" backend-graphql/src/resolvers/ || echo "⚠ No DataLoader found"
+
+# ✓ Apollo caching strategy in place
+grep -r "cache.writeQuery\|cache.modify" frontend/src/ || echo "⚠ No Apollo mutations"
+
+# ✓ Event system properly wired
+test -f backend-express/src/routes/events.ts && echo "✓ SSE events handler exists"
+
+# ✓ Authentication middleware in place
+grep -r "requireAuth\|authMiddleware" backend-graphql/src/middleware/ || echo "⚠ No auth found"
+
+# ✓ No performance regressions
+pnpm test --run 2>&1 | grep -E "failing|passing" || echo "⚠ Check test output"
+
+# ✓ Schema is type-safe
+test -f backend-graphql/src/schema.graphql && echo "✓ Schema defined"
+```
+
+**Pattern References**:
+- DataLoader batching: `.claude/patterns/dataloader-pattern.md`
+- Apollo cache updates: `.claude/patterns/apollo-mutations-pattern.md`
+- Event emission: `.claude/patterns/event-emission-pattern.md`
+- Authentication: `.claude/patterns/auth-pattern.md`
+
+---
+
+**Last Updated**: 2026-08-23  
 **Architecture Pattern**: Dual-backend with event coordination and shared PostgreSQL

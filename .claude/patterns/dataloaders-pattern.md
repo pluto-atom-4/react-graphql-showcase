@@ -61,6 +61,34 @@ it('batches multiple builds', async () => {
 - Mixing loader instances across requests
 - Forgetting to handle null/undefined IDs
 
+## Verify First: DataLoader Implementation
+
+Check that DataLoader is correctly implemented:
+
+```bash
+# ✓ Loaders defined in context
+grep -r "new DataLoader" backend-graphql/src/ || echo "⚠ No DataLoaders found"
+
+# ✓ Loaders used in resolvers
+grep -r "loaders\." backend-graphql/src/resolvers/ || echo "⚠ Loaders not used"
+
+# ✓ No N+1 queries (test with slow query logging)
+# In resolver test, verify single batch query vs N queries
+
+# ✓ Tests verify batch behavior
+grep -r "batches\|batch" backend-graphql/src/**/*.test.ts || echo "⚠ No batch tests"
+
+# ✓ Context properly initializes loaders
+grep -r "createContext" backend-graphql/src/ | head -5
+```
+
+**Quick Test**:
+```bash
+pnpm test:graphql --run -- dataloaders
+```
+
+**Common Regression**: If you see multiple similar queries in logs, DataLoader may not be applied.
+
 ## Links
 - Backend GraphQL Instructions: `.github/instructions/backend-graphql.instructions.md`
 - Schema: `backend-graphql/src/schema.graphql`

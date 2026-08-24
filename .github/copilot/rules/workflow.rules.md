@@ -485,6 +485,42 @@ pnpm build:graphql
 
 ---
 
-**Last Updated**: 2026-08-17  
+## Verify First: Workflow Compliance
+
+Before every commit, push, and PR, verify workflow compliance:
+
+```bash
+# ✓ On correct branch (feat/issue-#N-...)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+[[ $BRANCH =~ ^feat/issue-#[0-9]+-[a-z0-9-]+$ ]] && echo "✓ Branch name valid" || echo "✗ Invalid branch: $BRANCH"
+
+# ✓ Commit message format: feat(#N): description
+git log --oneline -1 | grep -E "^[a-f0-9]+ (feat|fix|docs|refactor|test|chore)\(#[0-9]+\):" && \
+  echo "✓ Commit message valid" || echo "✗ Invalid commit format"
+
+# ✓ Tests pass
+pnpm test --run > /dev/null && echo "✓ Tests passing" || echo "✗ Tests failing"
+
+# ✓ Linting passes
+pnpm lint --max-warnings=0 > /dev/null && echo "✓ Linting passes" || echo "✗ Linting fails"
+
+# ✓ Type checking passes
+pnpm type-check > /dev/null && echo "✓ Type checking passes" || echo "✗ Type errors"
+
+# ✓ No uncommitted changes before PR
+[[ -z $(git status -s) ]] && echo "✓ Working tree clean" || echo "✗ Uncommitted changes"
+```
+
+**Pre-Commit Hook** (automated): `.claude/hooks/pre-commit.sh` runs these checks automatically.
+
+**Common Issues**:
+- Branch name doesn't match `feat/issue-#N-...` → Will fail PR checks
+- Commit message missing `(#N)` → Unclear issue linkage
+- Tests failing → CI/CD will block PR
+- Type errors → Cannot merge until resolved
+
+---
+
+**Last Updated**: 2026-08-23  
 **Key Principle**: One issue → one branch → one PR (keeps history clean and review simple)  
 **Quick Check**: `pnpm test --run && pnpm lint && pnpm type-check` before every commit

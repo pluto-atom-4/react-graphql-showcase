@@ -111,6 +111,45 @@ it('rejects unauthenticated requests', async () => {
 });
 ```
 
+## Verify First: Authentication Implementation
+
+Verify auth is correctly implemented across layers:
+
+```bash
+# ✓ JWT verification in context
+grep -r "jwt.verify" backend-graphql/src/middleware/ || echo "⚠ No JWT verification"
+
+# ✓ Protected resolvers check currentUser
+grep -r "if (!currentUser)" backend-graphql/src/resolvers/ || echo "⚠ Unprotected resolvers"
+
+# ✓ Frontend token management
+grep -r "localStorage.getItem.*authToken\|setContext" frontend/lib/ || echo "⚠ No token handling"
+
+# ✓ Authorization checks (not just authentication)
+grep -r "FORBIDDEN\|userId.*currentUser.id" backend-graphql/src/ || echo "⚠ No auth checks"
+
+# ✓ Tests verify both authenticated and unauthenticated
+grep -r "currentUser: null\|UNAUTHENTICATED" backend-graphql/src/**/*.test.ts || echo "⚠ No auth tests"
+```
+
+**Quick Test**:
+```bash
+# Test unauthenticated query
+curl -s http://localhost:4000/graphql -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ me { id } }"}'
+# Should return error: UNAUTHENTICATED
+
+# Test authenticated query
+curl -s http://localhost:4000/graphql -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <valid-jwt>" \
+  -d '{"query":"{ me { id } }"}'
+# Should return currentUser data
+```
+
+**Security Regression**: If unauthenticated queries return data, auth is bypassed.
+
 ## Links
 - GraphQL Resolvers: `backend-graphql/src/resolvers/`
 - Frontend Apollo: `frontend/lib/apollo.ts`

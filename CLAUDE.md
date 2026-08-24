@@ -55,4 +55,29 @@ pnpm install && docker-compose up -d && pnpm migrate && pnpm dev
 
 ---
 
-**Last Updated**: 2026-08-17
+## Verify First: Quick Health Check
+
+Before committing or pushing, run these verification checks:
+
+```bash
+# ✓ Services running
+docker ps | grep -E "postgres|redis"
+
+# ✓ Frontend responding
+curl -s http://localhost:3000/health
+
+# ✓ GraphQL responding
+curl -s http://localhost:4000/graphql
+
+# ✓ Express responding
+curl -s http://localhost:5000/events
+
+# ✓ Quality gates
+pnpm lint && pnpm type-check && pnpm test --run
+```
+
+**Pre-commit hook** (automatic): `.claude/hooks/pre-commit.sh` runs linting, type-check, tests before commit. See `.claude/settings.json` → `devHooks.preCommit`.
+
+---
+
+**Last Updated**: 2026-08-23
