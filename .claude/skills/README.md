@@ -2,6 +2,14 @@
 
 This directory contains custom skills for the Stoke Full Stack React + GraphQL Showcase project.
 
+## Skill Resolution Order
+
+User-level skills in `~/.claude/skills/` are available in every project and take precedence over project-level skills. Do not vendor a copy of a user-level skill into `.claude/skills/` — a project copy is shadowed by the user-level one and drifts silently out of sync.
+
+**Example:** `session-blog-to-gist` is maintained at `~/.claude/skills/session-blog-to-gist/` (user-level). It is available in this project automatically; no local copy exists.
+
+**Project-level skills** in this directory are reserved for logic genuinely specific to this repository (e.g., `push-feature-branch`).
+
 ## Available Skills
 
 ### push-feature-branch
