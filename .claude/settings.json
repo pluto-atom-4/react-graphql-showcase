@@ -1,12 +1,13 @@
 {
   "metadata": {
     "tool": "Claude Code CLI",
-    "version": "1.0+",
-    "description": "Claude Code workspace configuration (single source of truth for CLI)",
-    "lastUpdated": "2026-08-23"
+    "version": "2.0",
+    "description": "Claude Code workspace configuration (Aug 2026 optimizations)",
+    "lastUpdated": "2026-08-30",
+    "effortLevel": "medium"
   },
-  "model": "claude-haiku-4-5-20251001",
-  "modelOverride": "haiku",
+  "model": "claude-opus-5",
+  "modelOverride": "opus",
   "pathScopes": {
     "frontend": {
       "pattern": "frontend/**",
@@ -48,14 +49,21 @@
   },
   "performance": {
     "fastMode": true,
-    "maxInputTokens": 100000,
-    "maxOutputTokens": 8000,
-    "timeout": 120
+    "maxInputTokens": 180000,
+    "maxOutputTokens": 16000,
+    "timeout": 180
+  },
+  "tokenBudget": {
+    "maxPerRequest": 180000,
+    "costTarget": "optimized",
+    "cacheStrategy": "aggressive",
+    "promptCacheTTL": 3600
   },
   "caching": {
     "enabled": true,
     "ttl": 3600,
-    "strategy": "file-based"
+    "strategy": "aggressive-with-prompt-cache",
+    "description": "Prompt caching on CLAUDE.md + settings.json base = 90% cache hit for repeat sessions"
   },
   "telemetry": {
     "enabled": true,
@@ -72,6 +80,11 @@
         "pnpm test --run"
       ],
       "failBehavior": "block"
+    },
+    "postSession": {
+      "enabled": true,
+      "script": ".claude/hooks/post-session.sh",
+      "description": "Syncs non-obvious session insights back to CLAUDE.md for next session"
     },
     "prePush": {
       "enabled": true,
@@ -91,6 +104,21 @@
       ],
       "failBehavior": "warn"
     }
+  },
+  "autoExecuteAllowlist": {
+    "description": "Commands that auto-execute without interactive prompt",
+    "allowed": [
+      "pnpm lint --max-warnings=0",
+      "pnpm type-check",
+      "pnpm test --run",
+      "pnpm test:frontend --run",
+      "pnpm test:graphql --run",
+      "pnpm test:express --run",
+      "git status",
+      "git log --oneline -n 5",
+      "docker ps",
+      "curl -s localhost:*"
+    ]
   },
   "skills": {
     "autoLoad": [

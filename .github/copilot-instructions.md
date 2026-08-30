@@ -1,6 +1,14 @@
+---
+version: "2026-08"
+scope: "repository-level"
+tools: ["GitHub Copilot", "GitHub Copilot CLI", "Claude Code"]
+updated: "2026-08-30"
+effort_level: "medium"
+---
+
 # Copilot Instructions - WRAP Format
 
-Stoke Full Stack React/GraphQL Playground multi-agent workflow guide.
+Stoke Full Stack React/GraphQL Playground multi-agent workflow guide (Aug 2026).
 
 ---
 
@@ -27,6 +35,20 @@ Stoke Full Stack React/GraphQL Playground multi-agent workflow guide.
 2. **GraphQL Backend**: `backend-graphql/` → Resolvers, DataLoader, schema, migrations
 3. **Express Backend**: `backend-express/` → Routes (upload, webhooks, SSE), middleware
 4. **Shared**: PostgreSQL, authentication, event bus
+
+### DO / DON'T Quick Reference
+
+| Category | DO ✅ | DON'T ❌ |
+|----------|-------|---------|
+| **TypeScript** | Strict mode, explicit types | `any` type, untyped JSON |
+| **Testing** | Unit + integration per layer | Skip edge cases, no regression tests |
+| **Error Handling** | Typed Error objects, specific codes | String errors, generic "error occurred" |
+| **GraphQL** | DataLoader for nested queries, event emission from mutations | N+1 queries, missing event broadcasts |
+| **Express** | Middleware chain (auth→validation→handler), signature verification | Unverified webhooks, hardcoded secrets |
+| **React** | Server Components for data fetch, Client Components for interactivity | Mixed patterns, all Client Components |
+| **Commits** | `feat(#N): description`, link to issue | Generic "fix", no issue linkage |
+| **Branch** | One issue → one branch → one PR | Multiple branches per issue, pushing to main |
+| **Review** | Layer-scoped `.instructions.md`, check patterns | Approve without testing, ignore escalation paths |
 
 ---
 
