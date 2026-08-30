@@ -323,6 +323,77 @@ Ship!
 
 ---
 
+## Routing Matrix: Tool Coordination & Conflict Prevention
+
+### Path-Scoped Tool Assignment
+
+| Path Pattern | Tool | Scope | Owner | When to Use |
+|--------------|------|-------|-------|------------|
+| `frontend/**` | GitHub Copilot (IDE) | Real-time inline completions | Developer (in-editor) | Single-file edits, components, hooks |
+| `backend-graphql/**` | Claude Code (CLI) | Deep reasoning, resolvers, DataLoader | Architect/Orchestrator | Multi-file refactoring, query optimization |
+| `backend-express/**` | GitHub Copilot (IDE) | Inline suggestions for routes | Developer (in-editor) | Route additions, middleware stubs |
+| `**/*.test.ts` | Claude Code (CLI) | TDD, test-driven development | Developer (local) | Writing comprehensive test suites |
+| `.claude/` | Claude Code (settings) | Configuration, hooks, skills | DevOps/Architect | Tuning performance, adding skills |
+| `.github/` | GitHub Copilot (CLI) | Planning, orchestration | Orchestrator | PR feedback, workflow analysis |
+| `docs/**` | Claude Code (CLI) | Documentation, guides | Tech Writer | Multi-layer documentation, guides |
+
+### Escalation & Handoff Rules
+
+**Scenario A: Frontend → Backend Coordination**
+- Developer in `frontend/` encounters GraphQL issue
+- Action: Escalate to Orchestrator (not direct CLI edit of backend-graphql)
+- Reason: Cross-layer coordination prevents schema drift
+- Example: "UI component needs new field from GraphQL" → Orchestrator → Architect designs query → Developer implements
+
+**Scenario B: Single-File Refactor in Backend**
+- `backend-graphql/src/resolvers/user.ts` needs tidying
+- If <3 files affected: Use GitHub Copilot in IDE for quick suggestions
+- If ≥3 files affected: Escalate to Claude Code CLI for deep refactoring
+- Decision: Check AGENTS.md → Is this isolated? Yes → Use Copilot. No → Use Claude Code.
+
+**Scenario C: Test-Driven Development**
+- Writing comprehensive test suite for new feature
+- Use Claude Code CLI (`/code-review`, `/simplify`, deep reasoning)
+- Why: TDD needs multi-file context, test patterns, assertion strategies
+- GitHub Copilot: Good for test stub, NOT for full test architecture
+
+**Scenario D: Performance Regression Detected**
+- N+1 query found in `backend-graphql/src/resolvers/`
+- Action: Escalate to Architect (via Orchestrator)
+- Process: Architect → Design DataLoader strategy → Developer → Implement with Claude Code CLI
+- Reason: Performance fixes need system-level thinking, not inline completions
+
+### Conflict Prevention: AGENTS.md ↔ .claude/skills/
+
+| Conflict Type | Prevention | Authority |
+|---------------|-----------|-----------|
+| Two tools suggesting different patterns | Check AGENTS.md routing first, follow path-scoped assignment | Path pattern determines tool |
+| GitHub Copilot suggests against `.instructions.md` | Developer trusts `.instructions.md` (layer-specific), ignore Copilot suggestion | `.instructions.md` (checked-in rules) wins |
+| Claude Code vs Copilot for same task | Claude Code: deep reasoning, multi-file. Copilot: inline, single-file. Choose by scope. | Scope determines tool |
+| New skill conflicts with existing workflow | Check `.claude/settings.json` → `contextual` section for precedence | Settings determine load order |
+
+### Tool Ownership Summary
+
+**Claude Code CLI owns:**
+- Architecture decisions (all agents except @developer read CLAUDE.md)
+- Test-driven development and complex testing strategies
+- Multi-file refactoring (3+ files)
+- Performance optimization and bottleneck fixes
+- Configuration and settings tuning
+
+**GitHub Copilot (IDE) owns:**
+- Real-time single-file completions
+- Inline explanations and quick lookups
+- Component/route stubs
+- Comment generation
+
+**GitHub Copilot CLI owns:**
+- Planning and orchestration (`@orchestrator`)
+- PR feedback and cross-layer analysis
+- Skill invocation and workflow coordination
+
+---
+
 ## Claude Code Best Practices for Agent Workflows
 
 ### Context Management for Large Decisions
@@ -767,13 +838,11 @@ See `.github/instructions/agent-roles.md` for quick reference table and agent co
 
 ---
 
-**Last Updated**: 2026-08-23 (Issue #336 Phase 1-6 complete)  
+**Last Updated**: 2026-08-30 (Issue #341 Phase 4: Routing matrix added)  
 **Pattern**: 7-agent orchestration with clear role separation and decision boundaries  
 **Integration**: Linked to SKILLS.md, domain rules, agent guides, and copilot instructions
-**Notable Changes**: 
-- Added Architect role (strategic design authority)
-- Renamed Reviewer → Code Reviewer (clearer naming)
-- Renamed Coder → Developer (industry standard)
-- Split QA/Product into separate roles
-- Added decision authority matrix
-- Added Claude Code best practices section
+**Aug 2026 Additions**: 
+- **Routing Matrix**: Path-scoped tool assignment (Copilot vs Claude Code by directory)
+- **Escalation Rules**: When to escalate across agent boundaries
+- **Conflict Prevention**: AGENTS.md ↔ .claude/skills/ coordination
+- **Tool Ownership**: Explicit boundaries between CLI, IDE, and GitHub Copilot CLI
