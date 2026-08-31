@@ -21,6 +21,8 @@ Agent orchestration and multi-agent handoff strategy for Stoke Full Stack React/
 ## Agent Invocation Guide
 
 ### Architect (`@architect`)
+> **Claude Code**: `Agent(subagent_type: "architect")` — config: [`.claude/agents/architect.md`](./.claude/agents/architect.md), model: session default (Issue #343)
+
 **Triggers**:
 - New feature requires architectural decisions
 - Technology stack change needed
@@ -117,6 +119,8 @@ Chosen: [Option] because [key reason]
 ---
 
 ### Developer (`@developer`)
+> **Claude Code**: `Agent(subagent_type: "developer")` — config: [`.claude/agents/developer.md`](./.claude/agents/developer.md), model: haiku (Issue #343)
+
 **Triggers**:
 - Orchestrator hands off implementation
 - User says: "implement this feature", "fix the feedback", "add this component"
@@ -158,6 +162,8 @@ git push origin feat/issue-#318-ai-tool-config  # No -u
 ---
 
 ### Code Reviewer (`@reviewer`)
+> **Claude Code**: `Agent(subagent_type: "code-reviewer")` — config: [`.claude/agents/code-reviewer.md`](./.claude/agents/code-reviewer.md), model: haiku (Issue #343)
+
 **Triggers**:
 - Developer pushes PR
 - User says: "review this PR", "check the code"

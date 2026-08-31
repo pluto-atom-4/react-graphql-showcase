@@ -174,6 +174,16 @@
     "enforceCommitMessageFormat": "feat(#issue): description",
     "verificationFirst": "Always run verification checks before commit/push"
   },
+  "agentRoles": {
+    "description": "Project-level Claude Code subagents (Issue #343). Format is Markdown+YAML-frontmatter under .claude/agents/, not the .claude.yaml format originally proposed in the issue — Claude Code's Agent tool does not read *.claude.yaml.",
+    "configSource": ".claude/agents/",
+    "invocation": "Agent(subagent_type: \"<name>\") from Claude Code, or /agents to list — NOT via `copilot @<role>` (that's GitHub Copilot CLI, see toolIsolation.githubCopilotCLI below and AGENTS.md)",
+    "roles": {
+      "architect": { "model": "inherits session default", "rationale": "strategic decisions need the strongest available reasoning; low volume, so default model is affordable" },
+      "developer": { "model": "haiku", "rationale": "high-volume implementation with clear requirements; speed/cost over depth" },
+      "code-reviewer": { "model": "haiku", "rationale": "pattern-compliance checks are largely deterministic; high PR throughput" }
+    }
+  },
   "toolIsolation": {
     "claudeCodeCLI": {
       "owns": [
