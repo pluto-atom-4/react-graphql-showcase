@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useUndoRedo, undoRedoReducer, UndoRedoState, saveUndoRedoToStorage } from '../useUndoRedo';
 import { FilterState } from '../useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 /**
  * Mock initial filter state for testing
@@ -28,7 +29,7 @@ const mockFilterStateWithSearch: FilterState = {
  */
 const mockFilterStateWithStatus: FilterState = {
   search: '',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
   dateStart: undefined,
   dateEnd: undefined,
 };

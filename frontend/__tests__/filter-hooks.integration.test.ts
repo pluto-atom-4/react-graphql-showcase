@@ -13,6 +13,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useFilter, defaultInitialState } from '../lib/hooks/useFilter';
+import { BuildStatus } from '../lib/status-vocabulary';
 import { useFilterHistory } from '../lib/hooks/useFilterHistory';
 import { useFilterPresets } from '../lib/hooks/useFilterPresets';
 import { useUndoRedo } from '../lib/hooks/useUndoRedo';
@@ -79,7 +80,7 @@ describe('Filter Hooks Integration', () => {
       const storageKey = `search-filter:${contextName}`;
       const savedState = {
         search: 'pre-loaded',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
       localStorage.setItem(storageKey, JSON.stringify(savedState));
 

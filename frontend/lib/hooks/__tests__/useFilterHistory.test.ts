@@ -8,6 +8,7 @@ import {
   FilterHistoryItem,
 } from '../useFilterHistory';
 import { FilterState } from '../useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -34,12 +35,12 @@ Object.defineProperty(window, 'localStorage', {
 // Test data
 const mockFilterState1: FilterState = {
   search: 'test1',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
 };
 
 const mockFilterState2: FilterState = {
   search: 'test2',
-  statuses: ['Failed', 'Idle'],
+  statuses: [BuildStatus.Failed, BuildStatus.Pending],
   dateStart: '2024-01-01',
 };
 
@@ -453,7 +454,7 @@ describe('useFilterHistory Hook', () => {
 
       const largeFilterState: FilterState = {
         search: 'x'.repeat(1000),
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2024-01-01',
         dateEnd: '2024-12-31',
       };

@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import type { FilterState, FilterAction, BuildStatus } from '../lib/hooks/useFilter';
+import type { FilterState, FilterAction } from '../lib/hooks/useFilter';
+import type { BuildStatus } from '../lib/status-vocabulary';
 
 /**
  * Props for FilterChips component

@@ -4,16 +4,17 @@ import userEvent from '@testing-library/user-event';
 import { PresetsManager } from '../PresetsManager';
 import { FilterPresetsState, FilterPreset } from '../../lib/hooks/useFilterPresets';
 import { FilterState } from '../../lib/hooks/useFilter';
+import { BuildStatus } from '../../lib/status-vocabulary';
 
 // Test data
 const mockFilterState: FilterState = {
   search: 'test',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
 };
 
 const mockFilterState2: FilterState = {
   search: 'test2',
-  statuses: ['Failed'],
+  statuses: [BuildStatus.Failed],
   dateStart: '2024-01-01',
   dateEnd: '2024-01-31',
 };

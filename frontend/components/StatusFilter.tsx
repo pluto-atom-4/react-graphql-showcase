@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AVAILABLE_STATUSES, BuildStatus } from '../lib/hooks/useFilter';
+import { AVAILABLE_STATUSES, BuildStatus } from '../lib/status-vocabulary';
 
 /**
  * Props for StatusFilter component

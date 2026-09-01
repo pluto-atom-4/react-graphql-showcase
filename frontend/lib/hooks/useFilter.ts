@@ -1,10 +1,7 @@
 'use client';
 
 import { useReducer, useEffect, useRef } from 'react';
-
-// Hardcoded available statuses for multi-select
-export const AVAILABLE_STATUSES = ['Active', 'Idle', 'Failed', 'Completed'] as const;
-export type BuildStatus = typeof AVAILABLE_STATUSES[number];
+import { isBuildStatus, type BuildStatus } from '../status-vocabulary';
 
 /**
  * State shape for filter management
@@ -254,8 +251,8 @@ const isValidFilterState = (state: unknown): state is FilterState => {
   // Default to empty array if missing
   const statuses = Array.isArray(obj.statuses) ? obj.statuses : [];
 
-  // Validate each status is in AVAILABLE_STATUSES
-  if (!statuses.every((s: unknown) => AVAILABLE_STATUSES.includes(s as BuildStatus))) {
+  // Validate each status is a member of the canonical BuildStatus vocabulary
+  if (!statuses.every(isBuildStatus)) {
     return false;
   }
 

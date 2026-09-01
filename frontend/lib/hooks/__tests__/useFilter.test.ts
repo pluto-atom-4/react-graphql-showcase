@@ -6,8 +6,8 @@ import {
   FilterState,
   FilterAction,
   defaultInitialState,
-  BuildStatus,
 } from '../useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 describe('useFilter Hook', () => {
   const contextName = 'test-filter';
@@ -269,27 +269,27 @@ describe('useFilter Hook', () => {
   describe('Reducer: ADD_STATUS', () => {
     it('should add a status to the selection', () => {
       const state: FilterState = { search: '', statuses: [] };
-      const action: FilterAction = { type: 'ADD_STATUS', payload: 'Active' };
+      const action: FilterAction = { type: 'ADD_STATUS', payload: BuildStatus.Running };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).toContain('Active');
+      expect(result.statuses).toContain(BuildStatus.Running);
       expect(result.statuses).toHaveLength(1);
     });
 
     it('should add multiple statuses', () => {
       let state: FilterState = { search: '', statuses: [] };
-      state = filterReducer(state, { type: 'ADD_STATUS', payload: 'Active' });
-      state = filterReducer(state, { type: 'ADD_STATUS', payload: 'Idle' });
+      state = filterReducer(state, { type: 'ADD_STATUS', payload: BuildStatus.Running });
+      state = filterReducer(state, { type: 'ADD_STATUS', payload: BuildStatus.Pending });
 
-      expect(state.statuses).toContain('Active');
-      expect(state.statuses).toContain('Idle');
+      expect(state.statuses).toContain(BuildStatus.Running);
+      expect(state.statuses).toContain(BuildStatus.Pending);
       expect(state.statuses).toHaveLength(2);
     });
 
     it('should not add duplicate statuses', () => {
-      let state: FilterState = { search: '', statuses: ['Active'] };
-      state = filterReducer(state, { type: 'ADD_STATUS', payload: 'Active' });
+      let state: FilterState = { search: '', statuses: [BuildStatus.Running] };
+      state = filterReducer(state, { type: 'ADD_STATUS', payload: BuildStatus.Running });
 
       expect(state.statuses).toHaveLength(1);
     });
@@ -297,7 +297,7 @@ describe('useFilter Hook', () => {
     it('should enforce max 10 filters (search + 4 statuses + 2 dates = 7, can add 3 more)', () => {
       const state: FilterState = {
         search: 'test',
-        statuses: ['Active', 'Idle', 'Failed', 'Completed'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending, BuildStatus.Failed, BuildStatus.Complete],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -306,9 +306,9 @@ describe('useFilter Hook', () => {
 
       const result = filterReducer(state, {
         type: 'ADD_STATUS',
-        payload: 'Active' as BuildStatus,
+        payload: BuildStatus.Running,
       });
-      // No change because 'Active' is already present
+      // No change because BuildStatus.Running is already present
       expect(result.statuses).toEqual(state.statuses);
     });
 
@@ -317,7 +317,7 @@ describe('useFilter Hook', () => {
       // Create max state with 10 filters
       const maxState: FilterState = {
         search: 'test query',
-        statuses: ['Active', 'Idle', 'Failed', 'Completed'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending, BuildStatus.Failed, BuildStatus.Complete],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -326,7 +326,7 @@ describe('useFilter Hook', () => {
       // Simplified: just verify the warning is called when we'd exceed 10
       filterReducer(maxState, {
         type: 'ADD_STATUS',
-        payload: 'Active' as BuildStatus,
+        payload: BuildStatus.Running,
       });
       // No warning for duplicate
       expect(warnSpy).not.toHaveBeenCalled();
@@ -337,68 +337,68 @@ describe('useFilter Hook', () => {
 
   describe('Reducer: REMOVE_STATUS', () => {
     it('should remove a status from selection', () => {
-      const state: FilterState = { search: '', statuses: ['Active', 'Idle'] };
-      const action: FilterAction = { type: 'REMOVE_STATUS', payload: 'Active' };
+      const state: FilterState = { search: '', statuses: [BuildStatus.Running, BuildStatus.Pending] };
+      const action: FilterAction = { type: 'REMOVE_STATUS', payload: BuildStatus.Running };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).not.toContain('Active');
-      expect(result.statuses).toContain('Idle');
+      expect(result.statuses).not.toContain(BuildStatus.Running);
+      expect(result.statuses).toContain(BuildStatus.Pending);
       expect(result.statuses).toHaveLength(1);
     });
 
     it('should remove status that exists', () => {
-      const state: FilterState = { search: '', statuses: ['Active', 'Idle', 'Failed'] };
-      const action: FilterAction = { type: 'REMOVE_STATUS', payload: 'Idle' };
+      const state: FilterState = { search: '', statuses: [BuildStatus.Running, BuildStatus.Pending, BuildStatus.Failed] };
+      const action: FilterAction = { type: 'REMOVE_STATUS', payload: BuildStatus.Pending };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).toEqual(['Active', 'Failed']);
+      expect(result.statuses).toEqual([BuildStatus.Running, BuildStatus.Failed]);
     });
 
     it('should handle removing non-existent status gracefully', () => {
-      const state: FilterState = { search: '', statuses: ['Active'] };
-      const action: FilterAction = { type: 'REMOVE_STATUS', payload: 'Idle' };
+      const state: FilterState = { search: '', statuses: [BuildStatus.Running] };
+      const action: FilterAction = { type: 'REMOVE_STATUS', payload: BuildStatus.Pending };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).toEqual(['Active']);
+      expect(result.statuses).toEqual([BuildStatus.Running]);
     });
   });
 
   describe('Reducer: TOGGLE_STATUS', () => {
     it('should add status if not present', () => {
       const state: FilterState = { search: '', statuses: [] };
-      const action: FilterAction = { type: 'TOGGLE_STATUS', payload: 'Active' };
+      const action: FilterAction = { type: 'TOGGLE_STATUS', payload: BuildStatus.Running };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).toContain('Active');
+      expect(result.statuses).toContain(BuildStatus.Running);
     });
 
     it('should remove status if already present', () => {
-      const state: FilterState = { search: '', statuses: ['Active'] };
-      const action: FilterAction = { type: 'TOGGLE_STATUS', payload: 'Active' };
+      const state: FilterState = { search: '', statuses: [BuildStatus.Running] };
+      const action: FilterAction = { type: 'TOGGLE_STATUS', payload: BuildStatus.Running };
 
       const result = filterReducer(state, action);
 
-      expect(result.statuses).not.toContain('Active');
+      expect(result.statuses).not.toContain(BuildStatus.Running);
       expect(result.statuses).toHaveLength(0);
     });
 
     it('should toggle multiple statuses independently', () => {
       let state: FilterState = { search: '', statuses: [] };
 
-      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: 'Active' });
-      expect(state.statuses).toContain('Active');
+      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: BuildStatus.Running });
+      expect(state.statuses).toContain(BuildStatus.Running);
 
-      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: 'Idle' });
-      expect(state.statuses).toContain('Active');
-      expect(state.statuses).toContain('Idle');
+      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: BuildStatus.Pending });
+      expect(state.statuses).toContain(BuildStatus.Running);
+      expect(state.statuses).toContain(BuildStatus.Pending);
 
-      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: 'Active' });
-      expect(state.statuses).not.toContain('Active');
-      expect(state.statuses).toContain('Idle');
+      state = filterReducer(state, { type: 'TOGGLE_STATUS', payload: BuildStatus.Running });
+      expect(state.statuses).not.toContain(BuildStatus.Running);
+      expect(state.statuses).toContain(BuildStatus.Pending);
     });
   });
 
@@ -487,7 +487,7 @@ describe('useFilter Hook', () => {
       // Create a state at the 10-filter limit (can't add more)
       const state: FilterState = {
         search: 'test',
-        statuses: ['Active', 'Idle', 'Failed', 'Completed'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending, BuildStatus.Failed, BuildStatus.Complete],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -525,7 +525,7 @@ describe('useFilter Hook', () => {
     it('should preserve other filters when clearing dates', () => {
       const state: FilterState = {
         search: 'test',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -534,7 +534,7 @@ describe('useFilter Hook', () => {
       const result = filterReducer(state, action);
 
       expect(result.search).toBe('test');
-      expect(result.statuses).toEqual(['Active', 'Idle']);
+      expect(result.statuses).toEqual([BuildStatus.Running, BuildStatus.Pending]);
       expect(result.dateStart).toBeUndefined();
       expect(result.dateEnd).toBeUndefined();
     });
@@ -545,14 +545,14 @@ describe('useFilter Hook', () => {
     it('should hydrate statuses from localStorage', () => {
       const storedState: FilterState = {
         search: 'query',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         lastSynced: 12345,
       };
       localStorage.setItem(storageKey, JSON.stringify(storedState));
 
       const { result } = renderHook(() => useFilter(contextName));
 
-      expect(result.current[0].statuses).toEqual(['Active', 'Idle']);
+      expect(result.current[0].statuses).toEqual([BuildStatus.Running, BuildStatus.Pending]);
       expect(result.current[0].search).toBe('query');
     });
 
@@ -575,7 +575,7 @@ describe('useFilter Hook', () => {
     it('should hydrate all filters (search + statuses + dates)', () => {
       const storedState: FilterState = {
         search: 'important',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
         dateStart: '2026-01-01',
         dateEnd: '2026-06-30',
         lastSynced: 12345,
@@ -590,7 +590,7 @@ describe('useFilter Hook', () => {
     it('should handle invalid statuses in stored state gracefully', () => {
       const invalidState = {
         search: 'test',
-        statuses: ['Active', 'InvalidStatus'],
+        statuses: [BuildStatus.Running, 'InvalidStatus'],
         lastSynced: 12345,
       };
       localStorage.setItem(storageKey, JSON.stringify(invalidState));

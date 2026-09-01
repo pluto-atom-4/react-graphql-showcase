@@ -15,6 +15,7 @@ import '@testing-library/jest-dom/vitest';
 import { SearchProvider, useSearchContext } from '../lib/SearchContext';
 import { FilterBar, type FilterBarProps } from '../components/FilterBar';
 import { defaultInitialState, type FilterState } from '../lib/hooks/useFilter';
+import { BuildStatus } from '../lib/status-vocabulary';
 
 describe('Filter UI Integration', () => {
   beforeEach(() => {
@@ -107,7 +108,7 @@ describe('Filter UI Integration', () => {
     it('should display status filters in FilterChips', () => {
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
       };
       const props: FilterBarProps = {
         filters,
@@ -116,8 +117,8 @@ describe('Filter UI Integration', () => {
 
       render(<FilterBar {...props} />);
 
-      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
-      expect(screen.getByTestId('filter-chip-status-Failed')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-RUNNING')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-FAILED')).toBeInTheDocument();
     });
 
     it('should dispatch CLEAR_SEARCH when search chip remove button clicked', () => {
@@ -143,7 +144,7 @@ describe('Filter UI Integration', () => {
       const handleFilterChange = vi.fn();
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
       };
       const props: FilterBarProps = {
         filters,
@@ -152,12 +153,12 @@ describe('Filter UI Integration', () => {
 
       render(<FilterBar {...props} />);
 
-      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      const removeButton = screen.getByTestId('filter-chip-remove-status-RUNNING');
       fireEvent.click(removeButton);
 
       expect(handleFilterChange).toHaveBeenCalledWith({
         type: 'REMOVE_STATUS',
-        payload: 'Active',
+        payload: BuildStatus.Running,
       });
     });
 
@@ -221,7 +222,7 @@ describe('Filter UI Integration', () => {
       // Simulate adding search
       const updatedFilters: FilterState = {
         search: 'query',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2026-01-01',
       };
 
@@ -229,7 +230,7 @@ describe('Filter UI Integration', () => {
 
       // All chips should be present
       expect(screen.getByTestId('filter-chip-search')).toBeInTheDocument();
-      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-RUNNING')).toBeInTheDocument();
       expect(screen.getByTestId('filter-chip-dateStart')).toBeInTheDocument();
     });
 
