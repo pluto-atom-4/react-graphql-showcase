@@ -178,11 +178,11 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      const startInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
-      const endInput = screen.getByTestId('date-range-filter-end') as HTMLInputElement;
+      const startInput = screen.getByTestId('date-range-filter-start');
+      const endInput = screen.getByTestId('date-range-filter-end');
 
-      expect(startInput.value).toBe('2026-01-01');
-      expect(endInput.value).toBe('2026-12-31');
+      expect((startInput as HTMLInputElement).value).toBe('2026-01-01');
+      expect((endInput as HTMLInputElement).value).toBe('2026-12-31');
     });
   });
 
