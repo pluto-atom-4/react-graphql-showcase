@@ -25,7 +25,7 @@ export interface StatusFilterProps {
  * StatusFilter Component - Multi-select status filter with pill UI
  *
  * Features:
- * - Renders pills for each available status
+ * - Renders pills for each available status, labelled via STATUS_LABELS
  * - Selected statuses highlighted with blue background (bg-blue-500)
  * - Unselected statuses shown as solid gray (bg-gray-200)
  * - Click to toggle selection
@@ -36,7 +36,7 @@ export interface StatusFilterProps {
  *
  * @example
  * <StatusFilter
- *   selectedStatuses={['Active', 'Idle']}
+ *   selectedStatuses={[BuildStatus.Running, BuildStatus.Pending]}
  *   onToggle={(status) => dispatch({ type: 'TOGGLE_STATUS', payload: status })}
  *   disabled={false}
  * />

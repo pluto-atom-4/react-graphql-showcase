@@ -37,7 +37,7 @@ export interface FilterChipsProps {
  *
  * // Multi-filter mode
  * <FilterChips
- *   filters={{ search: 'query', statuses: ['Active'], dateStart: '2026-01-01' }}
+ *   filters={{ search: 'query', statuses: [BuildStatus.Running], dateStart: '2026-01-01' }}
  *   onRemoveFilter={handleDispatch}
  * />
  *

@@ -462,7 +462,64 @@ try {
 const state = JSON.parse(localStorage.getItem('filter-state'));
 ```
 
-### 5. Testing
+Rehydration must fail *open*. A persisted value the current schema no longer
+recognises should be dropped on its own, not used as a reason to throw away the
+rest of the saved state:
+
+```typescript
+// Do: drop the unknown parts, keep the rest
+// { search: 'x', statuses: ['Active', 'FAILED'] }
+//   -> { search: 'x', statuses: ['FAILED'] }
+const migrated = sanitizeFilterState(parsed);
+
+// Don't: reject the whole blob, silently losing search term and date range
+if (!parsed.statuses.every(isBuildStatus)) return defaultInitialState;
+```
+
+`sanitizeFilterState` is applied on load across all four key namespaces:
+`search-filter:`, `filter-history:`, `filter-presets:` and `undo-redo:`.
+
+### 5. Single source of truth for status
+
+`frontend/lib/status-vocabulary.ts` is the only place that describes build
+statuses. Import from it; do not re-declare the union, the order or the labels.
+
+```typescript
+import {
+  BuildStatus,        // re-exported from lib/generated/graphql
+  AVAILABLE_STATUSES, // lifecycle-ordered: PENDING, RUNNING, COMPLETE, FAILED
+  STATUS_LABELS,      // wire value -> display copy
+  isBuildStatus,      // narrow untrusted input
+  sanitizeStatuses,   // keep only recognised values
+} from '@/lib/status-vocabulary';
+```
+
+Three rules make the #347 class of bug visible rather than silent:
+
+1. **Wire values are identifiers.** `'PENDING'`, `'RUNNING'`, `'COMPLETE'`,
+   `'FAILED'` come from the GraphQL schema. They are what gets compared,
+   persisted, and used to build `data-testid` attributes. Before #347 the filter
+   used a parallel `['Active','Idle','Failed','Completed']`, whose intersection
+   with the schema was empty, so no filter pill could ever match a build.
+2. **Labels are copy, and live only in `STATUS_LABELS`.** Changing a label must
+   never change a wire value or a test id:
+
+   ```tsx
+   // Do
+   <button data-testid={`status-filter-pill-${status.toLowerCase()}`}>
+     {STATUS_LABELS[status]}
+   </button>
+
+   // Don't: a copy change now breaks every selector
+   <button data-testid={`status-filter-pill-${label}`}>{label}</button>
+   ```
+3. **Order is explicit, never `Object.values(BuildStatus)`.** That is
+   alphabetical (`COMPLETE, FAILED, PENDING, RUNNING`) and codegen-order
+   dependent, so the pills would silently reorder. `STATUS_ORDER` is a literal
+   tuple guarded by a type-level exhaustiveness check: adding a member to the
+   schema enum without ordering and labelling it is a `tsc` error.
+
+### 6. Testing
 
 ```typescript
 // Do: Test reducer pure functions
@@ -495,6 +552,9 @@ All operations should complete in the specified timeframes:
 ```
 frontend/
 ├── lib/
+│   ├── status-vocabulary.ts        # canonical BuildStatus values/order/labels
+│   ├── __tests__/
+│   │   └── status-vocabulary.test.ts
 │   ├── hooks/
 │   │   ├── useFilter.ts
 │   │   ├── useSearchHighlight.ts
@@ -599,10 +659,6 @@ Test full user workflows through the application.
 - Test with screen readers (NVDA, JAWS)
 - Verify keyboard navigation works without mouse
 - Check aria-labels and roles
-
-### Status vocabulary mismatch
-
-**Note**: Issue #347 tracks a vocabulary mismatch where `AVAILABLE_STATUSES` in useFilter.ts uses ['Active','Idle','Failed','Completed'] but the generated BuildStatus enum uses ['COMPLETE','FAILED','PENDING','RUNNING']. For now, use the hook's AVAILABLE_STATUSES. This will be unified in #347.
 
 ## See Also
 

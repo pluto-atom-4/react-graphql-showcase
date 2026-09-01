@@ -56,6 +56,10 @@ const matchesSearch = (item: Filterable, searchTerm: string): boolean => {
  * If no statuses selected, matches all items.
  * If statuses selected, item status must be in the selection.
  *
+ * The comparison is an exact, case-sensitive match on the wire value, so both
+ * sides must speak the canonical BuildStatus vocabulary (see
+ * lib/status-vocabulary.ts). Comparing a display label here matches nothing.
+ *
  * @param item Item to match
  * @param selectedStatuses Selected statuses to match against
  * @returns true if matches, false otherwise
@@ -119,7 +123,7 @@ const matchesDateRange = (
  * @example
  * const filtered = applyFilters(builds, {
  *   search: 'important',
- *   statuses: ['Active', 'Idle'],
+ *   statuses: [BuildStatus.Running, BuildStatus.Pending],
  *   dateStart: '2026-01-01',
  *   dateEnd: '2026-12-31',
  * });
