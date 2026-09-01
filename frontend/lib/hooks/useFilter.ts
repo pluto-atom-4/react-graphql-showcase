@@ -283,7 +283,7 @@ const loadFromStorage = (storageKey: string): FilterState => {
   try {
     const stored = window.localStorage.getItem(storageKey);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
       if (isValidFilterState(parsed)) {
         // Migrate Phase 1 format to Phase 2 if needed
         const migrated: FilterState = {
@@ -367,7 +367,7 @@ export function useFilter(
 ): [FilterState, React.Dispatch<FilterAction>] {
   const storageKey = `search-filter:${contextName}`;
   const isFirstRender = useRef(true);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Initialize from localStorage
   const [state, dispatch] = useReducer(filterReducer, undefined, () =>

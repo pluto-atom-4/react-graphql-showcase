@@ -685,21 +685,14 @@ describe('useFilter Hook', () => {
 
     it('should clear timer on unmount', () => {
       const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-      const { unmount } = renderHook(() => useFilter(contextName));
+      const { result, unmount } = renderHook(() => useFilter(contextName));
 
       act(() => {
-        // The first render, isFirstRender is skipped
-        // Change state to trigger debounce
-      });
-
-      // Render component to get a state change
-      const hook = renderHook(() => useFilter(contextName));
-      act(() => {
-        hook.result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
+        result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
       });
 
       // Unmount should clear the timeout
-      hook.unmount();
+      unmount();
       expect(clearTimeoutSpy).toHaveBeenCalled();
       clearTimeoutSpy.mockRestore();
     });

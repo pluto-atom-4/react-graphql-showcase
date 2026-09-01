@@ -307,14 +307,14 @@ describe('FilterBar Component', () => {
       render(<FilterBar {...props} />);
 
       // Verify all filters are displayed
-      const searchInput = screen.getByRole('textbox') as HTMLInputElement;
-      expect(searchInput.value).toBe('important');
+      const searchInput = screen.getByRole('textbox');
+      expect((searchInput as HTMLInputElement).value).toBe('important');
 
       const activeButton = screen.getByTestId('status-filter-pill-active');
       expect(activeButton).toHaveAttribute('aria-pressed', 'true');
 
-      const startDateInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
-      expect(startDateInput.value).toBe('2026-01-01');
+      const startDateInput = screen.getByTestId('date-range-filter-start');
+      expect((startDateInput as HTMLInputElement).value).toBe('2026-01-01');
 
       // Clear All should be visible
       expect(screen.getByTestId('filter-bar-clear-all')).toBeInTheDocument();

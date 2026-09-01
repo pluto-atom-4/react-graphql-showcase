@@ -205,7 +205,7 @@ describe('Filter UI Integration', () => {
       });
     });
 
-    it('should handle multi-dimensional filter updates', async () => {
+    it('should handle multi-dimensional filter updates', () => {
       const handleFilterChange = vi.fn();
       const filters: FilterState = {
         search: '',

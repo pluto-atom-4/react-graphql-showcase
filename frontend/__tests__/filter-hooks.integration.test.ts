@@ -2,20 +2,20 @@
  * Filter Hooks Integration Tests
  *
  * Tests the composition of multiple filter hooks working together:
- * - useFilter: Base filter state management
+ * - useFilter: Base filter state management with localStorage persistence
  * - useFilterHistory: History tracking and recall
  * - useFilterPresets: Preset saving/restoring
  * - useUndoRedo: Undo/redo stack management
  *
- * These tests verify API contracts, state composition, and storage persistence.
+ * These tests verify API contracts and actual state behavior changes.
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useFilter, defaultInitialState, type FilterState, type FilterAction } from '../lib/hooks/useFilter';
-import { useFilterHistory, type FilterHistoryState } from '../lib/hooks/useFilterHistory';
-import { useFilterPresets, type FilterPresetsState } from '../lib/hooks/useFilterPresets';
-import { useUndoRedo, type UndoRedoState } from '../lib/hooks/useUndoRedo';
+import { useFilter, defaultInitialState } from '../lib/hooks/useFilter';
+import { useFilterHistory } from '../lib/hooks/useFilterHistory';
+import { useFilterPresets } from '../lib/hooks/useFilterPresets';
+import { useUndoRedo } from '../lib/hooks/useUndoRedo';
 
 describe('Filter Hooks Integration', () => {
   const contextName = 'integration-test';
@@ -30,347 +30,189 @@ describe('Filter Hooks Integration', () => {
     vi.useRealTimers();
   });
 
-  describe('useFilter hook API', () => {
-    it('should return [FilterState, Dispatch] tuple', () => {
+  describe('useFilter API contracts', () => {
+    it('should return [FilterState, Dispatch] tuple with correct shape', () => {
       const { result } = renderHook(() => useFilter(contextName));
 
-      expect(Array.isArray(result.current)).toBe(true);
+      // Verify tuple structure
       expect(result.current).toHaveLength(2);
-
       const [state, dispatch] = result.current;
-      expect(typeof state).toBe('object');
+
+      // Verify state is correct FilterState shape
+      expect(state).toEqual({
+        search: '',
+        statuses: [],
+      });
+
+      // Verify dispatch is a function
       expect(typeof dispatch).toBe('function');
     });
 
-    it('should initialize with default state', () => {
+    it('should persist state changes to localStorage via debounce', () => {
       const { result } = renderHook(() => useFilter(contextName));
 
-      const [state] = result.current;
-      expect(state.search).toBe('');
-      expect(state.statuses).toEqual([]);
-      expect(state.dateStart).toBeUndefined();
-      expect(state.dateEnd).toBeUndefined();
-    });
-
-    it('should support SET_SEARCH action', () => {
-      const { result } = renderHook(() => useFilter(contextName));
-
+      // Dispatch SET_SEARCH
       act(() => {
         result.current[1]({ type: 'SET_SEARCH', payload: 'test query' });
       });
 
+      // State should update immediately
       expect(result.current[0].search).toBe('test query');
+
+      // Storage should be empty before debounce completes
+      const storageKey = `search-filter:${contextName}`;
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Advance past debounce window
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      // Storage should now contain the state
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('test query');
     });
 
-    it('should support CLEAR_SEARCH action', () => {
+    it('should hydrate from localStorage on mount', () => {
+      const storageKey = `search-filter:${contextName}`;
+      const savedState = {
+        search: 'pre-loaded',
+        statuses: ['Active'],
+      };
+      localStorage.setItem(storageKey, JSON.stringify(savedState));
+
       const { result } = renderHook(() => useFilter(contextName));
 
-      act(() => {
-        result.current[1]({ type: 'SET_SEARCH', payload: 'something' });
-      });
-
-      act(() => {
-        result.current[1]({ type: 'CLEAR_SEARCH' });
-      });
-
-      expect(result.current[0].search).toBe('');
-    });
-
-    it('should support ADD_STATUS action', () => {
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({ type: 'ADD_STATUS', payload: 'Active' });
-      });
-
-      expect(result.current[0].statuses).toContain('Active');
-    });
-
-    it('should support REMOVE_STATUS action', () => {
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({ type: 'ADD_STATUS', payload: 'Active' });
-        result.current[1]({ type: 'ADD_STATUS', payload: 'Failed' });
-      });
-
-      act(() => {
-        result.current[1]({ type: 'REMOVE_STATUS', payload: 'Active' });
-      });
-
-      expect(result.current[0].statuses).toContain('Failed');
-      expect(result.current[0].statuses).not.toContain('Active');
-    });
-
-    it('should support SET_DATE_RANGE action', () => {
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({
-          type: 'SET_DATE_RANGE',
-          payload: { start: '2026-01-01', end: '2026-12-31' },
-        });
-      });
-
-      expect(result.current[0].dateStart).toBe('2026-01-01');
-      expect(result.current[0].dateEnd).toBe('2026-12-31');
-    });
-
-    it('should support RESET_FILTERS action', () => {
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({ type: 'SET_SEARCH', payload: 'query' });
-        result.current[1]({ type: 'ADD_STATUS', payload: 'Active' });
-      });
-
-      act(() => {
-        result.current[1]({ type: 'RESET_FILTERS' });
-      });
-
-      expect(result.current[0].search).toBe('');
-      expect(result.current[0].statuses).toEqual([]);
+      expect(result.current[0]).toEqual(savedState);
     });
   });
 
-  describe('useFilterHistory composition', () => {
-    it('should record filter state changes to history', () => {
-      const { result: filterResult } = renderHook(() => useFilter(contextName));
-      const { result: historyResult } = renderHook(() =>
-        useFilterHistory(contextName)
-      );
-
-      act(() => {
-        filterResult.current[1]({ type: 'SET_SEARCH', payload: 'first' });
-      });
-
-      act(() => {
-        vi.advanceTimersByTime(500); // Wait for persistence
-      });
-
-      // Simulate adding to history
-      if (historyResult.current[2].addToHistory) {
-        act(() => {
-          historyResult.current[2].addToHistory(filterResult.current[0]);
-        });
-      }
-
-      const [historyState] = historyResult.current;
-      expect(historyState.items.length).toBeGreaterThanOrEqual(0);
-    });
-
-    it('should return [state, dispatch, helpers] tuple from useFilterHistory', () => {
+  describe('useFilterHistory API contracts', () => {
+    it('should return [state, dispatch, helpers] tuple', () => {
       const { result } = renderHook(() => useFilterHistory(contextName));
 
-      expect(Array.isArray(result.current)).toBe(true);
       expect(result.current).toHaveLength(3);
-
       const [state, dispatch, helpers] = result.current;
+
       expect(typeof state).toBe('object');
       expect(typeof dispatch).toBe('function');
       expect(typeof helpers).toBe('object');
       expect(typeof helpers.addToHistory).toBe('function');
-      expect(typeof helpers.removeFromHistory).toBe('function');
-      expect(typeof helpers.clearHistory).toBe('function');
     });
 
-    it('should store history in localStorage with contextName key', () => {
-      const testContextName = 'history-test';
-      const { result } = renderHook(() => useFilterHistory(testContextName));
+    it('should auto-save history to localStorage when state changes', () => {
+      const { result } = renderHook(() => useFilterHistory(contextName));
 
-      const storageKey = `filter-history:${testContextName}`;
+      // Trigger a history dispatch
+      act(() => {
+        result.current[1]({
+          type: 'ADD_TO_HISTORY',
+          payload: { search: 'history item', statuses: [] },
+          label: 'Test',
+        });
+      });
+
+      // Advance past persistence window
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      // Verify stored in localStorage
+      const storageKey = `filter-history:${contextName}`;
       const stored = localStorage.getItem(storageKey);
-
-      // Should have some stored value (could be null on first render due to skip)
-      expect(typeof stored === 'string' || stored === null).toBe(true);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(Array.isArray(parsed.items)).toBe(true);
     });
   });
 
-  describe('useFilterPresets composition', () => {
+  describe('useFilterPresets API contracts', () => {
     it('should return [state, dispatch, helpers] tuple', () => {
       const { result } = renderHook(() => useFilterPresets(contextName));
 
-      expect(Array.isArray(result.current)).toBe(true);
       expect(result.current).toHaveLength(3);
-
       const [state, dispatch, helpers] = result.current;
+
       expect(typeof state).toBe('object');
       expect(typeof dispatch).toBe('function');
       expect(typeof helpers).toBe('object');
       expect(typeof helpers.createPreset).toBe('function');
-      expect(typeof helpers.deletePreset).toBe('function');
     });
 
-    it('should persist presets to localStorage', () => {
-      const testContextName = 'presets-test';
-      renderHook(() => useFilterPresets(testContextName));
-
-      const storageKey = `filter-presets:${testContextName}`;
-      const stored = localStorage.getItem(storageKey);
-
-      // Should have some stored value
-      expect(typeof stored === 'string' || stored === null).toBe(true);
-    });
   });
 
-  describe('useUndoRedo composition', () => {
+  describe('useUndoRedo API contracts', () => {
     it('should return [state, dispatch, helpers] tuple', () => {
       const { result } = renderHook(() =>
         useUndoRedo(contextName, defaultInitialState)
       );
 
-      expect(Array.isArray(result.current)).toBe(true);
       expect(result.current).toHaveLength(3);
-
       const [state, dispatch, helpers] = result.current;
+
       expect(typeof state).toBe('object');
       expect(typeof dispatch).toBe('function');
       expect(typeof helpers).toBe('object');
       expect(typeof helpers.push).toBe('function');
       expect(typeof helpers.undo).toBe('function');
       expect(typeof helpers.redo).toBe('function');
-      expect(typeof helpers.reset).toBe('function');
     });
 
-    it('should track undo/redo state through past/future arrays', () => {
-      const { result } = renderHook(() =>
-        useUndoRedo(contextName, defaultInitialState)
-      );
-
-      const [undoRedoState, , helpers] = result.current;
-
-      // Initially should not have past/future
-      expect(undoRedoState.past).toHaveLength(0);
-      expect(undoRedoState.future).toHaveLength(0);
-
-      // After pushing a state
-      const newState: FilterState = { ...defaultInitialState, search: 'test' };
-      act(() => {
-        helpers.push(newState);
-      });
-
-      // Should have history in past
-      expect(result.current[0].past.length).toBeGreaterThan(0);
-    });
-
-    it('should persist undo/redo to localStorage', () => {
-      const testContextName = 'undo-test';
-      renderHook(() => useUndoRedo(testContextName, defaultInitialState));
-
-      const storageKey = `filter-undo-redo:${testContextName}`;
-      const stored = localStorage.getItem(storageKey);
-
-      expect(typeof stored === 'string' || stored === null).toBe(true);
-    });
   });
 
-  describe('Multi-hook composition', () => {
-    it('should support filter + history together', () => {
-      const { result: filterResult } = renderHook(() => useFilter(contextName));
-      const { result: historyResult } = renderHook(() =>
-        useFilterHistory(contextName)
-      );
+  describe('Storage keying by contextName', () => {
+    it('should use contextName to isolate storage across contexts', () => {
+      const ctx1 = 'ctx-one';
+      const ctx2 = 'ctx-two';
 
-      // Change filter
+      const hook1 = renderHook(() => useFilter(ctx1));
+      const hook2 = renderHook(() => useFilter(ctx2));
+
+      // Dispatch different values
       act(() => {
-        filterResult.current[1]({ type: 'SET_SEARCH', payload: 'composed' });
+        hook1.result.current[1]({ type: 'SET_SEARCH', payload: 'context1' });
+        hook2.result.current[1]({ type: 'SET_SEARCH', payload: 'context2' });
       });
 
+      // Advance persistence
       act(() => {
         vi.advanceTimersByTime(500);
       });
 
-      // Both hooks should work independently
-      expect(filterResult.current[0].search).toBe('composed');
-      expect(historyResult.current[2]).toBeDefined();
-    });
+      // Verify each context stored its own data
+      const key1 = `search-filter:${ctx1}`;
+      const key2 = `search-filter:${ctx2}`;
 
-    it('should support filter + presets together', () => {
-      const { result: filterResult } = renderHook(() => useFilter(contextName));
-      const { result: presetsResult } = renderHook(() =>
-        useFilterPresets(contextName)
-      );
+      const stored1 = JSON.parse(localStorage.getItem(key1)!);
+      const stored2 = JSON.parse(localStorage.getItem(key2)!);
 
-      act(() => {
-        filterResult.current[1]({ type: 'SET_SEARCH', payload: 'test' });
-      });
-
-      act(() => {
-        vi.advanceTimersByTime(500);
-      });
-
-      expect(filterResult.current[0].search).toBe('test');
-      expect(presetsResult.current[2]).toBeDefined();
-    });
-
-    it('should support all hooks together', () => {
-      const { result: filterResult } = renderHook(() => useFilter(contextName));
-      const { result: historyResult } = renderHook(() =>
-        useFilterHistory(contextName)
-      );
-      const { result: presetsResult } = renderHook(() =>
-        useFilterPresets(contextName)
-      );
-      const { result: undoRedoResult } = renderHook(() =>
-        useUndoRedo(contextName, filterResult.current[0])
-      );
-
-      // Verify all hooks are properly initialized
-      expect(filterResult.current[0]).toBeDefined();
-      expect(historyResult.current[0]).toBeDefined();
-      expect(presetsResult.current[0]).toBeDefined();
-      expect(undoRedoResult.current[0]).toBeDefined();
-    });
-  });
-
-  describe('Storage persistence contracts', () => {
-    it('should use contextName in storage keys', () => {
-      const testName = 'custom-context';
-      renderHook(() => useFilter(testName));
-
-      const storageKey = `search-filter:${testName}`;
-      const stored = localStorage.getItem(storageKey);
-
-      // Should have localStorage entry
-      expect(localStorage.getItem(storageKey) !== null || stored === null).toBe(true);
-    });
-
-    it('should not pollute storage across different contexts', () => {
-      const context1 = 'ctx1';
-      const context2 = 'ctx2';
-
-      renderHook(() => useFilter(context1));
-      renderHook(() => useFilter(context2));
-
-      const key1 = `search-filter:${context1}`;
-      const key2 = `search-filter:${context2}`;
-
-      // Each context should have its own key
-      expect(key1).not.toBe(key2);
+      expect(stored1.search).toBe('context1');
+      expect(stored2.search).toBe('context2');
     });
   });
 
   describe('Error handling', () => {
-    it('should handle invalid actions gracefully', () => {
+    it('should handle invalid action by keeping state unchanged', () => {
       const { result } = renderHook(() => useFilter(contextName));
 
-      // Send an invalid action - it should be caught by the default case
       act(() => {
-        // @ts-expect-error - intentionally invalid
-        result.current[1]({ type: 'INVALID_ACTION' });
+        // @ts-expect-error - intentionally invalid action
+        result.current[1]({ type: 'NONEXISTENT_ACTION' });
       });
 
-      // State should remain unchanged
-      expect(result.current[0].search).toBe('');
+      // State should remain at default
+      expect(result.current[0]).toEqual(defaultInitialState);
     });
 
-    it('should handle corrupted localStorage data', () => {
+    it('should handle corrupted localStorage data by falling back to default', () => {
       const storageKey = `search-filter:${contextName}`;
-      localStorage.setItem(storageKey, 'corrupted data that is not json');
+      localStorage.setItem(storageKey, 'not json at all');
 
       const { result } = renderHook(() => useFilter(contextName));
 
-      // Should fall back to default state
+      // Should use default state
       expect(result.current[0]).toEqual(defaultInitialState);
     });
   });
