@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { filterReducer, FilterState, FilterAction, defaultInitialState } from './hooks/useFilter';
+import React, { createContext, useContext, ReactNode } from 'react';
+import { FilterState, FilterAction, defaultInitialState, useFilter } from './hooks/useFilter';
 
 /**
  * Search/Filter context for managing search state across components
@@ -16,6 +16,7 @@ export const SearchContext = createContext<{
  */
 export interface SearchProviderProps {
   children: ReactNode;
+  contextName?: string;
   initialState?: FilterState;
 }
 
@@ -23,23 +24,29 @@ export interface SearchProviderProps {
  * SearchProvider Component - Context provider for search/filter functionality
  *
  * Provides SearchContext to child components for centralized search state management.
- * Wraps the useFilter reducer to expose state and dispatch via context.
+ * Uses useFilter hook for localStorage-backed state management and auto-persistence.
  *
  * Features:
  * - Provides FilterState and dispatch via context
- * - Initializes with optional custom state
+ * - Automatic localStorage persistence (500ms debounce)
+ * - Initializes from storage or provided initialState
  * - Fail-fast error on missing provider
  *
  * @example
- * <SearchProvider contextName="build-search" initialState={{ search: '' }}>
+ * <SearchProvider contextName="build-search">
  *   <App />
  * </SearchProvider>
  */
 export const SearchProvider: React.FC<SearchProviderProps> = ({
   children,
+  contextName = 'search',
   initialState = defaultInitialState,
 }) => {
-  const [state, dispatch] = useReducer(filterReducer, initialState);
+  // Use useFilter for automatic localStorage persistence
+  const [baseState, dispatch] = useFilter(contextName);
+
+  // Merge stored state with initialState seed: stored ?? initialState ?? defaults
+  const state: FilterState = baseState || initialState || defaultInitialState;
 
   return (
     <SearchContext.Provider value={{ state, dispatch }}>

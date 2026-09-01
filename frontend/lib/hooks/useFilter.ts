@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 
 // Hardcoded available statuses for multi-select
 export const AVAILABLE_STATUSES = ['Active', 'Idle', 'Failed', 'Completed'] as const;
@@ -366,11 +366,41 @@ export function useFilter(
   contextName: string
 ): [FilterState, React.Dispatch<FilterAction>] {
   const storageKey = `search-filter:${contextName}`;
+  const isFirstRender = useRef(true);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize from localStorage
   const [state, dispatch] = useReducer(filterReducer, undefined, () =>
     loadFromStorage(storageKey)
   );
+
+  // Debounced auto-save to localStorage on state change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Skip first render to prevent hydration issues
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Clear any pending timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new debounced timer
+    debounceTimerRef.current = setTimeout(() => {
+      saveToStorage(storageKey, state);
+    }, 500);
+
+    // Cleanup on unmount or when effect runs again
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [state, storageKey]);
 
   // Return state and dispatch
   return [state, dispatch];
