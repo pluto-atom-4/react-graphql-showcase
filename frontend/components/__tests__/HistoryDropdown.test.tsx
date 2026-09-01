@@ -132,7 +132,7 @@ describe('HistoryDropdown Component', () => {
       );
 
       expect(screen.getByText('Search for test1')).toBeInTheDocument();
-      expect(screen.getByText(/Status: FAILED/)).toBeInTheDocument();
+      expect(screen.getByText(/Status: Failed/)).toBeInTheDocument();
     });
 
     it('should display user-provided label for items', () => {
@@ -162,7 +162,7 @@ describe('HistoryDropdown Component', () => {
         />
       );
 
-      expect(screen.getByText(/Status: FAILED/)).toBeInTheDocument();
+      expect(screen.getByText(/Status: Failed/)).toBeInTheDocument();
       expect(screen.getByText(/Dates:/)).toBeInTheDocument();
     });
 
