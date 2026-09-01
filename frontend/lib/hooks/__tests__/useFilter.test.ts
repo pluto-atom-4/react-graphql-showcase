@@ -719,6 +719,27 @@ describe('useFilter Hook', () => {
       expect(parsed.lastSynced).toBe(12345);
     });
 
+    it('should flush pending writes on unmount', () => {
+      const { result, unmount } = renderHook(() => useFilter(contextName));
+
+      // Dispatch a change
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'test-query' });
+      });
+
+      // Before timer fires, storage should be empty
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Unmount immediately (before 500ms debounce completes)
+      unmount();
+
+      // Now storage should have the pending write, even though we didn't wait out the debounce
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('test-query');
+    });
+
   });
 });
 
