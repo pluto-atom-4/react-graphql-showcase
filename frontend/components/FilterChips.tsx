@@ -100,11 +100,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       });
     }
 
-    // Return null if no active filters
-    if (chips.length === 0) {
-      return null;
-    }
-
+    // Always render container in multi-filter mode (empty when no chips)
     return (
       <div className="flex flex-wrap items-center gap-2" data-testid="filter-chips">
         {chips.map((chip) => (

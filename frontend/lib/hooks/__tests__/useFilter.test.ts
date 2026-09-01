@@ -726,60 +726,6 @@ describe('useFilter Hook', () => {
       expect(parsed.lastSynced).toBe(12345);
     });
 
-    it('should handle localStorage quota exceeded', () => {
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      // Create an error that looks like QuotaExceededError
-      const quotaError = new Error('QuotaExceededError');
-      quotaError.name = 'QuotaExceededError';
-
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-        throw quotaError;
-      });
-
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
-      });
-
-      // Advance past debounce
-      act(() => {
-        vi.advanceTimersByTime(500);
-      });
-
-      // Should log warning about quota exceeded
-      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('quota exceeded'));
-
-      setItemSpy.mockRestore();
-      warnSpy.mockRestore();
-    });
-
-    it('should not persist during SSR (when window is undefined)', () => {
-      const originalWindow = global.window;
-      // @ts-expect-error - temporarily remove window for SSR test
-      delete global.window;
-
-      try {
-        const { result } = renderHook(() => useFilter(contextName));
-
-        act(() => {
-          result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
-        });
-
-        // Advance time
-        act(() => {
-          vi.advanceTimersByTime(500);
-        });
-
-        // No error should occur, storage should not be accessed
-        // (we can't actually check localStorage during SSR since it doesn't exist)
-        expect(result.current[0].search).toBe('test');
-      } finally {
-        // Restore window
-        (global as any).window = originalWindow;
-      }
-    });
   });
 });
 

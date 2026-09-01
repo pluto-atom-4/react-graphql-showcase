@@ -173,11 +173,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* Filter Chips - Display active filters */}
-      <div className="w-full">
+      <div className="w-full" data-testid="filter-bar-chips">
         <FilterChips
           filters={filters}
           onRemoveFilter={onFilterChange}
-          data-testid="filter-bar-chips"
         />
       </div>
 

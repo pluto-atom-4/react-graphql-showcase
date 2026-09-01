@@ -42,11 +42,23 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
   contextName = 'search',
   initialState = defaultInitialState,
 }) => {
-  // Use useFilter for automatic localStorage persistence
-  const [baseState, dispatch] = useFilter(contextName);
+  // Seed storage with initialState if it doesn't exist
+  // Resolution order: stored ?? initialState ?? defaults
+  if (typeof window !== 'undefined') {
+    const storageKey = `search-filter:${contextName}`;
+    if (!window.localStorage.getItem(storageKey)) {
+      // Only seed if no stored value exists
+      try {
+        const seedState = initialState || defaultInitialState;
+        window.localStorage.setItem(storageKey, JSON.stringify(seedState));
+      } catch {
+        // Silently ignore storage errors on seed
+      }
+    }
+  }
 
-  // Merge stored state with initialState seed: stored ?? initialState ?? defaults
-  const state: FilterState = baseState || initialState || defaultInitialState;
+  // Use useFilter for automatic localStorage persistence
+  const [state, dispatch] = useFilter(contextName);
 
   return (
     <SearchContext.Provider value={{ state, dispatch }}>

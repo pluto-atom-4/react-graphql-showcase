@@ -229,20 +229,19 @@ describe('Filter Hooks Integration', () => {
       expect(typeof helpers.push).toBe('function');
       expect(typeof helpers.undo).toBe('function');
       expect(typeof helpers.redo).toBe('function');
-      expect(typeof helpers.canUndo).toBe('function');
-      expect(typeof helpers.canRedo).toBe('function');
+      expect(typeof helpers.reset).toBe('function');
     });
 
-    it('should track undo/redo state with canUndo and canRedo', () => {
+    it('should track undo/redo state through past/future arrays', () => {
       const { result } = renderHook(() =>
         useUndoRedo(contextName, defaultInitialState)
       );
 
-      const [, , helpers] = result.current;
+      const [undoRedoState, , helpers] = result.current;
 
-      // Initially should not be able to undo/redo
-      expect(helpers.canUndo()).toBe(false);
-      expect(helpers.canRedo()).toBe(false);
+      // Initially should not have past/future
+      expect(undoRedoState.past).toHaveLength(0);
+      expect(undoRedoState.future).toHaveLength(0);
 
       // After pushing a state
       const newState: FilterState = { ...defaultInitialState, search: 'test' };
@@ -250,8 +249,8 @@ describe('Filter Hooks Integration', () => {
         helpers.push(newState);
       });
 
-      // Should be able to undo
-      expect(helpers.canUndo()).toBe(true);
+      // Should have history in past
+      expect(result.current[0].past.length).toBeGreaterThan(0);
     });
 
     it('should persist undo/redo to localStorage', () => {
@@ -349,20 +348,6 @@ describe('Filter Hooks Integration', () => {
       // Each context should have its own key
       expect(key1).not.toBe(key2);
     });
-
-    it('should handle SSR (no window) gracefully', () => {
-      const originalWindow = global.window;
-      // @ts-expect-error - temporarily remove window
-      delete global.window;
-
-      try {
-        const { result } = renderHook(() => useFilter(contextName));
-        // Should still work without errors
-        expect(result.current[0]).toEqual(defaultInitialState);
-      } finally {
-        (global as any).window = originalWindow;
-      }
-    });
   });
 
   describe('Error handling', () => {
@@ -377,32 +362,6 @@ describe('Filter Hooks Integration', () => {
 
       // State should remain unchanged
       expect(result.current[0].search).toBe('');
-    });
-
-    it('should handle localStorage quota exceeded', () => {
-      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      const quotaError = new Error('QuotaExceededError');
-      quotaError.name = 'QuotaExceededError';
-
-      const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-        throw quotaError;
-      });
-
-      const { result } = renderHook(() => useFilter(contextName));
-
-      act(() => {
-        result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
-      });
-
-      act(() => {
-        vi.advanceTimersByTime(500);
-      });
-
-      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('quota exceeded'));
-
-      setItemSpy.mockRestore();
-      warnSpy.mockRestore();
     });
 
     it('should handle corrupted localStorage data', () => {

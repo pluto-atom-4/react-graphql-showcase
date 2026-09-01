@@ -139,18 +139,22 @@ describe('FilterChips Component', () => {
   });
 
   describe('Multi-Filter Mode', () => {
-    it('should return null when no filters are active', () => {
+    it('should render empty container when no filters are active', () => {
       const handleRemoveFilter = vi.fn();
       const emptyFilters: FilterState = {
         search: '',
         statuses: [],
       };
 
-      const { container } = render(
+      render(
         <FilterChips filters={emptyFilters} onRemoveFilter={handleRemoveFilter} />
       );
 
-      expect(container.firstChild).toBeNull();
+      // Should render container even when empty
+      const container = screen.getByTestId('filter-chips');
+      expect(container).toBeInTheDocument();
+      // But no individual chips should be rendered
+      expect(container.children).toHaveLength(0);
     });
 
     it('should render search term chip when search is active', () => {
