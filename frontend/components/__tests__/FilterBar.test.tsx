@@ -350,4 +350,124 @@ describe('FilterBar Component', () => {
       expect(clearButton).toHaveAttribute('aria-label', 'Clear all filters');
     });
   });
+
+  describe('FilterChips Integration', () => {
+    it('should render FilterChips with current filters', () => {
+      const filters: FilterState = {
+        search: 'test',
+        statuses: ['Active'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-bar-chips')).toBeInTheDocument();
+    });
+
+    it('should display search chip when search is active', () => {
+      const filters: FilterState = {
+        search: 'important',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-search')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-search')).toHaveTextContent('important');
+    });
+
+    it('should display status chips', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active', 'Failed'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-Failed')).toBeInTheDocument();
+    });
+
+    it('should dispatch CLEAR_SEARCH when search chip removed', () => {
+      const filters: FilterState = {
+        search: 'query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const removeButton = screen.getByTestId('filter-chip-remove-search');
+      fireEvent.click(removeButton);
+
+      expect(mockOnFilterChange).toHaveBeenCalledWith({ type: 'CLEAR_SEARCH' });
+    });
+
+    it('should dispatch REMOVE_STATUS when status chip removed', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      fireEvent.click(removeButton);
+
+      expect(mockOnFilterChange).toHaveBeenCalledWith({
+        type: 'REMOVE_STATUS',
+        payload: 'Active',
+      });
+    });
+
+    it('should display date range chips when dates are active', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: [],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-12-31',
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-dateStart')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-dateEnd')).toBeInTheDocument();
+    });
+
+    it('should hide chips when no filters are active', () => {
+      const props: FilterBarProps = {
+        filters: defaultFilters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      const { container } = render(<FilterBar {...props} />);
+
+      const chipsContainer = screen.getByTestId('filter-bar-chips');
+      expect(chipsContainer).toBeInTheDocument();
+      // No individual chips should be rendered
+      expect(container.querySelectorAll('[data-testid^="filter-chip-"]')).toHaveLength(0);
+    });
+  });
 });

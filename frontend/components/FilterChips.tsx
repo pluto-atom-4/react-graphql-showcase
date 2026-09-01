@@ -1,42 +1,137 @@
 'use client';
 
 import React from 'react';
+import type { FilterState, FilterAction, BuildStatus } from '../lib/hooks/useFilter';
 
 /**
  * Props for FilterChips component
  */
 export interface FilterChipsProps {
-  searchTerm: string;
-  onRemove: () => void;
+  searchTerm?: string;
+  onRemove?: () => void;
   maxLength?: number;
+  filters?: FilterState;
+  onRemoveFilter?: (action: FilterAction) => void;
 }
 
 /**
  * FilterChips Component - Display and remove search filters as chips
  *
  * Features:
- * - Display search term as blue chip (if present)
- * - Remove button (×) to clear search
- * - Empty state (null if no search term)
+ * - Legacy mode: Display search term as single chip
+ * - Multi-dimension mode: Display search term, statuses, and date range as chips
+ * - Remove button (×) on each chip to remove that filter
+ * - Empty state (null if no active filters)
  * - Tailwind styling with hover effects
  * - Accessibility: aria-label on remove button
  * - Micro-interactions: smooth transitions
  *
  * @example
+ * // Legacy single search term mode
  * <FilterChips
  *   searchTerm="important"
  *   onRemove={handleClear}
  *   maxLength={30}
  * />
  *
- * Returns null if no searchTerm provided.
+ * // Multi-filter mode
+ * <FilterChips
+ *   filters={{ search: 'query', statuses: ['Active'], dateStart: '2026-01-01' }}
+ *   onRemoveFilter={handleDispatch}
+ * />
+ *
+ * Returns null if no filters are active.
  */
 export const FilterChips: React.FC<FilterChipsProps> = ({
   searchTerm,
   onRemove,
   maxLength = 30,
+  filters,
+  onRemoveFilter,
 }) => {
-  // Return null if no search term
+  // Multi-filter mode: render all active filters
+  if (filters && onRemoveFilter) {
+    const chips: Array<{ id: string; label: string; onRemove: () => void }> = [];
+
+    // Add search term chip
+    if (filters.search) {
+      const displayTerm = filters.search.length > maxLength
+        ? `${filters.search.slice(0, maxLength)}...`
+        : filters.search;
+      chips.push({
+        id: 'search',
+        label: displayTerm,
+        onRemove: () => onRemoveFilter({ type: 'CLEAR_SEARCH' }),
+      });
+    }
+
+    // Add status chips
+    if (filters.statuses && filters.statuses.length > 0) {
+      filters.statuses.forEach((status: BuildStatus) => {
+        chips.push({
+          id: `status-${status}`,
+          label: status,
+          onRemove: () => onRemoveFilter({ type: 'REMOVE_STATUS', payload: status }),
+        });
+      });
+    }
+
+    // Add date start chip
+    if (filters.dateStart) {
+      chips.push({
+        id: 'dateStart',
+        label: `From ${filters.dateStart}`,
+        onRemove: () => onRemoveFilter({
+          type: 'SET_DATE_RANGE',
+          payload: { start: undefined, end: filters.dateEnd },
+        }),
+      });
+    }
+
+    // Add date end chip
+    if (filters.dateEnd) {
+      chips.push({
+        id: 'dateEnd',
+        label: `Until ${filters.dateEnd}`,
+        onRemove: () => onRemoveFilter({
+          type: 'SET_DATE_RANGE',
+          payload: { start: filters.dateStart, end: undefined },
+        }),
+      });
+    }
+
+    // Return null if no active filters
+    if (chips.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="flex flex-wrap items-center gap-2" data-testid="filter-chips">
+        {chips.map((chip) => (
+          <div
+            key={chip.id}
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-900 rounded-full text-sm font-medium border border-blue-200 transition-all duration-150 hover:bg-blue-50"
+            data-testid={`filter-chip-${chip.id}`}
+            title={chip.label}
+          >
+            <span className="truncate">{chip.label}</span>
+            <button
+              type="button"
+              onClick={chip.onRemove}
+              className="ml-1 flex items-center justify-center w-5 h-5 text-blue-600 hover:text-blue-800 focus:outline-none rounded transition-colors duration-150 hover:bg-blue-200"
+              aria-label={`Remove filter: ${chip.label}`}
+              title="Remove filter"
+              data-testid={`filter-chip-remove-${chip.id}`}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Legacy mode: single search term only
   if (!searchTerm) {
     return null;
   }

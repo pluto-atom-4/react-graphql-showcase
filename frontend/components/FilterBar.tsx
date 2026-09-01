@@ -6,7 +6,8 @@ import { StatusFilter } from './StatusFilter';
 import { DateRangeFilter } from './DateRangeFilter';
 import { HistoryDropdown } from './HistoryDropdown';
 import { PresetsManager } from './PresetsManager';
-import { FilterState, BuildStatus } from '../lib/hooks/useFilter';
+import { FilterChips } from './FilterChips';
+import { FilterState, BuildStatus, FilterAction } from '../lib/hooks/useFilter';
 import { FilterHistoryState, FilterHistoryItem } from '../lib/hooks/useFilterHistory';
 import { FilterPresetsState, FilterPreset } from '../lib/hooks/useFilterPresets';
 import { UndoRedoState } from '../lib/hooks/useUndoRedo';
@@ -19,7 +20,7 @@ export interface FilterBarProps {
   /** Current filter state */
   filters: FilterState;
   /** Callback to dispatch filter actions */
-  onFilterChange: (action: any) => void;
+  onFilterChange: (action: FilterAction) => void;
   /** Optional placeholder for search bar */
   searchPlaceholder?: string;
   /** Whether filters are disabled */
@@ -168,6 +169,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           placeholder={searchPlaceholder}
           disabled={disabled}
           data-testid="filter-bar-search"
+        />
+      </div>
+
+      {/* Filter Chips - Display active filters */}
+      <div className="w-full">
+        <FilterChips
+          filters={filters}
+          onRemoveFilter={onFilterChange}
+          data-testid="filter-bar-chips"
         />
       </div>
 
