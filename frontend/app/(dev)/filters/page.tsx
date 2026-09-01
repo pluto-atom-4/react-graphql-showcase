@@ -34,6 +34,7 @@ function FilterDemoContent(): ReactElement {
         filters={state}
         onFilterChange={dispatch}
         searchPlaceholder="Search builds, parts, test runs..."
+        contextName="demo"
       />
 
       <div className="mt-8 p-4 bg-gray-100 rounded-lg">

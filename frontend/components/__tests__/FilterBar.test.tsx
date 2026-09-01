@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FilterBar, FilterBarProps } from '../FilterBar';
 import { FilterState } from '../../lib/hooks/useFilter';
@@ -468,6 +468,95 @@ describe('FilterBar Component', () => {
       expect(chipsContainer).toBeInTheDocument();
       // No individual chips should be rendered
       expect(container.querySelectorAll('[data-testid^="filter-chip-"]')).toHaveLength(0);
+    });
+  });
+
+  describe('Search Bar Blur-to-Flush (with contextName)', () => {
+    const contextName = 'test-blur-flush';
+    const storageKey = `search-filter:${contextName}`;
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('should flush to localStorage immediately on search blur when contextName is provided', () => {
+      const filters: FilterState = {
+        search: 'test query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        contextName,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the search input
+      fireEvent.blur(input);
+
+      // Storage should have the state immediately (no waiting for 500ms debounce)
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('test query');
+    });
+
+    it('should not flush on blur when contextName is not provided', () => {
+      const filters: FilterState = {
+        search: 'test query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        // No contextName provided
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the search input
+      fireEvent.blur(input);
+
+      // Storage should still be empty because no contextName
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).toBeNull();
+    });
+
+    it('should flush before the 500ms debounce completes', () => {
+      const filters: FilterState = {
+        search: 'early flush test',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        contextName,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the input (should immediately flush)
+      fireEvent.blur(input);
+
+      // Storage should be populated immediately
+      expect(localStorage.getItem(storageKey)).not.toBeNull();
+
+      // Verify the timestamp is recent (within the test)
+      const parsed = JSON.parse(localStorage.getItem(storageKey)!);
+      expect(parsed.lastSynced).toBeDefined();
+      expect(typeof parsed.lastSynced).toBe('number');
+      expect(parsed.search).toBe('early flush test');
     });
   });
 });
