@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { FilterChips } from '../components/FilterChips';
-import type { FilterState, FilterAction } from '../lib/hooks/useFilter';
+import type { FilterState } from '../lib/hooks/useFilter';
 
 describe('FilterChips Component', () => {
   describe('Rendering', () => {
