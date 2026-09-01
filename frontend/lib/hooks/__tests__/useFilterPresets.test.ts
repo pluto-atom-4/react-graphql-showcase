@@ -382,6 +382,31 @@ describe('useFilterPresets Hook', () => {
       expect(result.current[0].presets[0].name).toBe('Loaded Preset');
     });
 
+    it('should drop unknown statuses from a rehydrated preset and keep the rest', () => {
+      localStorageMock.setItem(
+        'filter-presets:legacy-vocab',
+        JSON.stringify({
+          maxPresets: 10,
+          presets: [
+            {
+              id: 'preset-legacy',
+              name: 'Legacy Preset',
+              createdAt: 1000,
+              state: { search: 'x', statuses: ['Active', 'FAILED'], dateEnd: '2026-06-30' },
+            },
+          ],
+        })
+      );
+
+      const { result } = renderHook(() => useFilterPresets('legacy-vocab'));
+
+      expect(result.current[0].presets).toHaveLength(1);
+      expect(result.current[0].presets[0].name).toBe('Legacy Preset');
+      expect(result.current[0].presets[0].state.statuses).toEqual([BuildStatus.Failed]);
+      expect(result.current[0].presets[0].state.search).toBe('x');
+      expect(result.current[0].presets[0].state.dateEnd).toBe('2026-06-30');
+    });
+
     it('should handle invalid localStorage data gracefully', () => {
       localStorageMock.setItem('filter-presets:test', 'invalid json');
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useCallback, useEffect } from 'react';
-import { FilterState } from './useFilter';
+import { FilterState, sanitizeFilterState } from './useFilter';
 
 /**
  * Single history entry with timestamp
@@ -197,9 +197,17 @@ const loadFromStorage = (storageKey: string): FilterHistoryState => {
   try {
     const stored = window.localStorage.getItem(storageKey);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
       if (isValidFilterHistoryState(parsed)) {
-        return parsed;
+        // Drop statuses that are no longer part of the schema vocabulary
+        // rather than discarding the whole history. See sanitizeFilterState.
+        return {
+          ...parsed,
+          items: parsed.items.map((item) => ({
+            ...item,
+            state: sanitizeFilterState(item.state),
+          })),
+        };
       }
       console.warn(`[useFilterHistory] Invalid stored state for key "${storageKey}"`);
     }

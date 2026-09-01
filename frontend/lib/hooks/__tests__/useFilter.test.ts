@@ -6,6 +6,7 @@ import {
   FilterState,
   FilterAction,
   defaultInitialState,
+  sanitizeFilterState,
 } from '../useFilter';
 import { BuildStatus } from '../../status-vocabulary';
 
@@ -540,6 +541,48 @@ describe('useFilter Hook', () => {
     });
   });
 
+  describe('sanitizeFilterState', () => {
+    it('drops statuses outside the canonical vocabulary', () => {
+      const state = { search: 'x', statuses: ['Active', 'FAILED'] } as unknown as FilterState;
+
+      expect(sanitizeFilterState(state).statuses).toEqual([BuildStatus.Failed]);
+    });
+
+    it('preserves every other field while dropping statuses', () => {
+      const state = {
+        search: 'x',
+        statuses: ['Active'],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-06-30',
+        lastSynced: 999,
+      } as unknown as FilterState;
+
+      expect(sanitizeFilterState(state)).toEqual({
+        search: 'x',
+        statuses: [],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-06-30',
+        lastSynced: 999,
+      });
+    });
+
+    it('returns the same reference when nothing has to be dropped', () => {
+      const state: FilterState = {
+        search: 'x',
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
+      };
+
+      expect(sanitizeFilterState(state)).toBe(state);
+    });
+
+    it('coerces a non-array statuses field to an empty array', () => {
+      const state = { search: 'x', statuses: 'FAILED' } as unknown as FilterState;
+
+      expect(sanitizeFilterState(state).statuses).toEqual([]);
+      expect(sanitizeFilterState(state).search).toBe('x');
+    });
+  });
+
   // localStorage Tests (Phase 2 with extended state)
   describe('useFilter Hook: localStorage with Multiple Filters', () => {
     it('should hydrate statuses from localStorage', () => {
@@ -587,18 +630,92 @@ describe('useFilter Hook', () => {
       expect(result.current[0]).toEqual(storedState);
     });
 
-    it('should handle invalid statuses in stored state gracefully', () => {
-      const invalidState = {
+    it('should drop unrecognized statuses and keep the recognized ones', () => {
+      const storedState = {
         search: 'test',
         statuses: [BuildStatus.Running, 'InvalidStatus'],
         lastSynced: 12345,
       };
-      localStorage.setItem(storageKey, JSON.stringify(invalidState));
+      localStorage.setItem(storageKey, JSON.stringify(storedState));
 
       const { result } = renderHook(() => useFilter(contextName));
 
-      // Should fall back to default because validation fails
-      expect(result.current[0]).toEqual(defaultInitialState);
+      expect(result.current[0].statuses).toEqual([BuildStatus.Running]);
+      expect(result.current[0].search).toBe('test');
+      expect(result.current[0].lastSynced).toBe(12345);
+    });
+
+    it('should preserve the rest of the state when every status is unrecognized', () => {
+      // The pre-#347 vocabulary, as written by an older build.
+      const storedState = {
+        search: 'x',
+        statuses: ['Active', 'Idle', 'Completed'],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-06-30',
+        lastSynced: 12345,
+      };
+      localStorage.setItem(storageKey, JSON.stringify(storedState));
+
+      const { result } = renderHook(() => useFilter(contextName));
+
+      expect(result.current[0].statuses).toEqual([]);
+      expect(result.current[0].search).toBe('x');
+      expect(result.current[0].dateStart).toBe('2026-01-01');
+      expect(result.current[0].dateEnd).toBe('2026-06-30');
+    });
+
+    it('should load {search:"x", statuses:["Active","FAILED"]} as {search:"x", statuses:["FAILED"]}', () => {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ search: 'x', statuses: ['Active', 'FAILED'] })
+      );
+
+      const { result } = renderHook(() => useFilter(contextName));
+
+      expect(result.current[0].search).toBe('x');
+      expect(result.current[0].statuses).toEqual([BuildStatus.Failed]);
+    });
+
+    it('should warn when statuses are dropped during rehydration', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ search: 'x', statuses: ['Active', 'FAILED'] })
+      );
+
+      renderHook(() => useFilter(contextName));
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Dropped unrecognized status values')
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it('should not warn when every stored status is recognized', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ search: 'x', statuses: [BuildStatus.Failed] })
+      );
+
+      renderHook(() => useFilter(contextName));
+
+      expect(warnSpy).not.toHaveBeenCalled();
+
+      warnSpy.mockRestore();
+    });
+
+    it('should coerce a non-array statuses field to an empty array', () => {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({ search: 'x', statuses: 'FAILED' })
+      );
+
+      const { result } = renderHook(() => useFilter(contextName));
+
+      expect(result.current[0].statuses).toEqual([]);
+      expect(result.current[0].search).toBe('x');
     });
 
     it('should reset to default with empty statuses array', () => {
