@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AVAILABLE_STATUSES, BuildStatus } from '../lib/status-vocabulary';
+import { AVAILABLE_STATUSES, STATUS_LABELS, BuildStatus } from '../lib/status-vocabulary';
 
 /**
  * Props for StatusFilter component
@@ -63,6 +63,9 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
     <div className={containerClasses} data-testid={dataTestId} role="group" aria-label="Status filter">
       {availableStatuses.map((status) => {
         const isSelected = selectedStatuses.includes(status);
+        // Display copy comes from STATUS_LABELS; the data-testid below stays
+        // keyed on the wire value so it survives copy changes.
+        const label = STATUS_LABELS[status];
 
         // Selected: blue background, unselected: gray background
         const pillClasses = isSelected
@@ -84,10 +87,10 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
               ${pillClasses}
             `}
             aria-pressed={isSelected}
-            aria-label={`${status} status filter ${isSelected ? 'selected' : 'not selected'}`}
+            aria-label={`${label} status filter ${isSelected ? 'selected' : 'not selected'}`}
             data-testid={`status-filter-pill-${status.toLowerCase()}`}
           >
-            {status}
+            {label}
           </button>
         );
       })}

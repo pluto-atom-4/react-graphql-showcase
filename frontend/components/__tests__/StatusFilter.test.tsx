@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StatusFilter, StatusFilterProps } from '../StatusFilter';
-import { AVAILABLE_STATUSES, BuildStatus } from '../../lib/status-vocabulary';
+import { AVAILABLE_STATUSES, STATUS_LABELS, BuildStatus } from '../../lib/status-vocabulary';
 
 describe('StatusFilter Component', () => {
   const mockOnToggle = vi.fn();
@@ -19,8 +19,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
+      // Pills show the display label, not the wire value.
       AVAILABLE_STATUSES.forEach((status) => {
-        expect(screen.getByText(status)).toBeInTheDocument();
+        expect(screen.getByText(STATUS_LABELS[status])).toBeInTheDocument();
+        expect(screen.queryByText(status)).not.toBeInTheDocument();
       });
     });
 
@@ -90,10 +92,12 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      expect(screen.getByLabelText(/RUNNING status filter/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/PENDING status filter/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/FAILED status filter/)).toBeInTheDocument();
-      expect(screen.getByLabelText(/COMPLETE status filter/)).toBeInTheDocument();
+      // aria-label uses the display label, matching the visible pill text.
+      AVAILABLE_STATUSES.forEach((status) => {
+        expect(
+          screen.getByLabelText(`${STATUS_LABELS[status]} status filter not selected`)
+        ).toBeInTheDocument();
+      });
     });
   });
 
@@ -290,10 +294,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      expect(screen.getByText(BuildStatus.Running)).toBeInTheDocument();
-      expect(screen.getByText(BuildStatus.Pending)).toBeInTheDocument();
-      expect(screen.queryByText(BuildStatus.Failed)).not.toBeInTheDocument();
-      expect(screen.queryByText(BuildStatus.Complete)).not.toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Running])).toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Pending])).toBeInTheDocument();
+      expect(screen.queryByText(STATUS_LABELS[BuildStatus.Failed])).not.toBeInTheDocument();
+      expect(screen.queryByText(STATUS_LABELS[BuildStatus.Complete])).not.toBeInTheDocument();
     });
   });
 

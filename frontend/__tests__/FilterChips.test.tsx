@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { FilterChips } from '../components/FilterChips';
 import type { FilterState } from '../lib/hooks/useFilter';
-import { BuildStatus } from '../lib/status-vocabulary';
+import { BuildStatus, STATUS_LABELS } from '../lib/status-vocabulary';
 
 describe('FilterChips Component', () => {
   describe('Rendering', () => {
@@ -188,10 +188,13 @@ describe('FilterChips Component', () => {
       const runningChip = screen.getByTestId('filter-chip-status-RUNNING');
       const failedChip = screen.getByTestId('filter-chip-status-FAILED');
 
+      // Chip data-testid is keyed on the wire value; the text is the label.
       expect(runningChip).toBeInTheDocument();
-      expect(runningChip).toHaveTextContent(BuildStatus.Running);
+      expect(runningChip).toHaveTextContent(STATUS_LABELS[BuildStatus.Running]);
+      expect(runningChip).not.toHaveTextContent(BuildStatus.Running);
       expect(failedChip).toBeInTheDocument();
-      expect(failedChip).toHaveTextContent(BuildStatus.Failed);
+      expect(failedChip).toHaveTextContent(STATUS_LABELS[BuildStatus.Failed]);
+      expect(failedChip).not.toHaveTextContent(BuildStatus.Failed);
     });
 
     it('should render date range chips', () => {
