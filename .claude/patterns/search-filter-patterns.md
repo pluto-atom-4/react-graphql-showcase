@@ -20,14 +20,20 @@ import { useFilter } from '@/lib/hooks/useFilter';
 import { useFilterHistory } from '@/lib/hooks/useFilterHistory';
 import { useFilterPresets } from '@/lib/hooks/useFilterPresets';
 import { useUndoRedo } from '@/lib/hooks/useUndoRedo';
-import { useKeyboardNav } from '@/lib/hooks/useKeyboardNav';
 import { FilterBar } from '@/components/FilterBar';
 
 export function SearchExample() {
-  const { state: filters, dispatch } = useFilter();
-  const { state: history, ...historyMethods } = useFilterHistory();
-  const { state: presets, ...presetsMethods } = useFilterPresets();
-  const { state: undoRedo, ...undoRedoMethods } = useUndoRedo();
+  // Returns: [FilterState, Dispatch<FilterAction>]
+  const [filters, dispatch] = useFilter('my-filters');
+  
+  // Returns: [FilterHistoryState, Dispatch, { addToHistory, removeFromHistory, clearHistory }]
+  const [history, historyDispatch, historyHelpers] = useFilterHistory('my-filters');
+  
+  // Returns: [FilterPresetsState, Dispatch, { createPreset, deletePreset, renamePreset, ... }]
+  const [presets, presetsDispatch, presetsHelpers] = useFilterPresets('my-filters');
+  
+  // Returns: [UndoRedoState, Dispatch, { push, undo, redo, canUndo, canRedo, reset }]
+  const [undoRedo, undoRedoDispatch, undoRedoHelpers] = useUndoRedo('my-filters', filters);
 
   return (
     <FilterBar
@@ -36,11 +42,11 @@ export function SearchExample() {
       history={history}
       presets={presets}
       undoRedo={undoRedo}
-      onSelectFromHistory={(item) => dispatch({ type: 'RESTORE_FROM_HISTORY', payload: item.filters })}
-      onSelectPreset={(preset) => dispatch({ type: 'RESTORE_FROM_PRESET', payload: preset.filters })}
-      onCreatePreset={(name) => presetsMethods.createPreset(name, filters)}
-      onUndo={() => undoRedoMethods.undo()}
-      onRedo={() => undoRedoMethods.redo()}
+      onSelectFromHistory={(item) => dispatch({ type: 'UPDATE_STATE', payload: item.filters })}
+      onSelectPreset={(preset) => dispatch({ type: 'UPDATE_STATE', payload: preset.filters })}
+      onCreatePreset={(name) => presetsHelpers.createPreset(name)}
+      onUndo={() => undoRedoHelpers.undo()}
+      onRedo={() => undoRedoHelpers.redo()}
     />
   );
 }
@@ -131,7 +137,7 @@ Filter history automatically tracks all filter changes, enabling users to recall
 import { useFilterHistory } from '@/lib/hooks/useFilterHistory';
 
 export function FilterHistoryExample() {
-  const { state: history, addToHistory, selectFromHistory } = useFilterHistory();
+  const [history, dispatch, { addToHistory }] = useFilterHistory('my-filters');
 
   const handleFilterChange = (newFilters: FilterState) => {
     // History automatically prevents duplicates
@@ -140,7 +146,11 @@ export function FilterHistoryExample() {
 
   return (
     <>
-      <button onClick={() => selectFromHistory(history.items[0]?.id || '')}>
+      <button onClick={() => {
+        if (history.items[0]) {
+          dispatch({ type: 'RESTORE_FROM_HISTORY', payload: history.items[0].filters });
+        }
+      }}>
         Restore Previous
       </button>
       <div>History Items: {history.items.length}</div>
@@ -197,12 +207,13 @@ Presets allow users to save and restore frequently used filter combinations with
 import { useFilterPresets } from '@/lib/hooks/useFilterPresets';
 
 export function PresetsExample() {
-  const { state: presets, createPreset, deletePreset, renamePreset } = 
-    useFilterPresets();
+  const [presets, dispatch, { createPreset, deletePreset, renamePreset }] = 
+    useFilterPresets('my-filters');
 
-  const handleSavePreset = async (name: string) => {
-    const created = await createPreset(name, currentFilters);
-    if (created) console.log('Preset saved');
+  const handleSavePreset = (name: string) => {
+    // createPreset returns void, preset is saved via dispatch
+    createPreset(name);
+    console.log('Preset saved');
   };
 
   return (
@@ -246,7 +257,7 @@ const selectPreset = (preset: FilterPreset) => {
     return false;
   }
 
-  dispatch({ type: 'RESTORE_PRESET', payload: preset });
+  dispatch({ type: 'UPDATE_STATE', payload: preset.filters });
   return true;
 };
 ```
@@ -268,9 +279,10 @@ Complete keyboard support including undo/redo functionality for accessibility an
 
 ```tsx
 import { useUndoRedo } from '@/lib/hooks/useUndoRedo';
+import { defaultInitialState } from '@/lib/hooks/useFilter';
 
 export function UndoRedoExample() {
-  const { state: undoRedo, push, undo, redo } = useUndoRedo();
+  const [undoRedo, dispatch, { push, undo, redo, canUndo, canRedo }] = useUndoRedo('my-filters', defaultInitialState);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -314,17 +326,21 @@ export function UndoRedoExample() {
 
 ```tsx
 import { useKeyboardNav } from '@/lib/hooks/useKeyboardNav';
+import { useRef } from 'react';
 
 export function KeyboardNavExample() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   const {
     focusedIndex,
     focusNext,
     focusPrevious,
     focusFirst,
     focusLast,
-  } = useKeyboardNav(containerRef, {
-    loopAtBoundaries: true,
-    customSelectors: ['button', 'input', '[role="option"]'],
+  } = useKeyboardNav({
+    containerRef,
+    focusableSelectors: ['button', 'input', '[role="option"]'],
+    loopFocus: true,
   });
 
   useEffect(() => {
@@ -479,20 +495,26 @@ All operations should complete in the specified timeframes:
 ```
 frontend/
 ├── lib/
-│   └── hooks/
-│       ├── useFilter.ts
-│       ├── useSearchHighlight.ts
-│       ├── useFilterHistory.ts
-│       ├── useFilterPresets.ts
-│       ├── useUndoRedo.ts
-│       ├── useKeyboardNav.ts
+│   ├── hooks/
+│   │   ├── useFilter.ts
+│   │   ├── useSearchHighlight.ts
+│   │   ├── useFilterHistory.ts
+│   │   ├── useFilterPresets.ts
+│   │   ├── useUndoRedo.ts
+│   │   ├── useKeyboardNav.ts
+│   │   └── __tests__/
+│   │       ├── useFilter.test.ts
+│   │       ├── useSearchHighlight.test.ts
+│   │       ├── useFilterHistory.test.ts
+│   │       ├── useFilterPresets.test.ts
+│   │       ├── useUndoRedo.test.ts
+│   │       └── useKeyboardNav.test.ts
+│   └── utils/
+│       ├── filterComposers.ts
+│       ├── dateRangeValidators.ts
 │       └── __tests__/
-│           ├── useFilter.test.ts
-│           ├── useSearchHighlight.test.ts
-│           ├── useFilterHistory.test.ts
-│           ├── useFilterPresets.test.ts
-│           ├── useUndoRedo.test.ts
-│           └── useKeyboardNav.test.ts
+│           ├── filterComposers.test.ts
+│           └── dateRangeValidators.test.ts
 ├── components/
 │   ├── SearchBar.tsx
 │   ├── StatusFilter.tsx
@@ -507,12 +529,10 @@ frontend/
 │       ├── HistoryDropdown.test.tsx
 │       ├── PresetsManager.test.tsx
 │       └── ...
-└── utils/
-    ├── filterComposers.ts
-    ├── dateRangeValidators.ts
-    └── __tests__/
-        ├── filterComposers.test.ts
-        └── dateRangeValidators.test.ts
+└── __tests__/
+    ├── FilterChips.test.tsx
+    ├── filter-hooks.integration.test.ts
+    └── filter-ui.integration.test.tsx
 ```
 
 ## Testing Strategy
@@ -540,7 +560,11 @@ pnpm test:frontend -- HistoryDropdown.test.tsx
 Test multiple features working together:
 
 ```bash
-pnpm test:frontend -- phase-3-integration.test.ts
+# Test hook composition and contracts
+pnpm test:frontend -- filter-hooks.integration.test.ts
+
+# Test UI components and user interactions
+pnpm test:frontend -- filter-ui.integration.test.tsx
 ```
 
 ### E2E Tests (Future)
@@ -552,7 +576,7 @@ Test full user workflows through the application.
 ### History not persisting
 
 - Check localStorage is enabled
-- Verify localStorage key matches: `filter-history`
+- Verify localStorage key matches: `filter-history:${contextName}` (e.g., `filter-history:search`)
 - Check browser storage quota
 
 ### Presets disappearing
@@ -560,12 +584,14 @@ Test full user workflows through the application.
 - Verify JSON serialization of complex filter objects
 - Check localStorage isn't cleared on app close
 - Validate preset structure on load
+- Storage key: `filter-presets:${contextName}`
 
 ### Undo/Redo not working
 
 - Verify `useUndoRedo` is integrated with filter dispatch
 - Check keyboard event listeners are attached
 - Verify maxLevels isn't too restrictive
+- Storage key: `filter-undo-redo:${contextName}`
 
 ### Accessibility issues
 
@@ -573,6 +599,10 @@ Test full user workflows through the application.
 - Test with screen readers (NVDA, JAWS)
 - Verify keyboard navigation works without mouse
 - Check aria-labels and roles
+
+### Status vocabulary mismatch
+
+**Note**: Issue #347 tracks a vocabulary mismatch where `AVAILABLE_STATUSES` in useFilter.ts uses ['Active','Idle','Failed','Completed'] but the generated BuildStatus enum uses ['COMPLETE','FAILED','PENDING','RUNNING']. For now, use the hook's AVAILABLE_STATUSES. This will be unified in #347.
 
 ## See Also
 

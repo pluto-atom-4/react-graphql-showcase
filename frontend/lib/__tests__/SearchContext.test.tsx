@@ -45,7 +45,7 @@ describe('SearchContext', () => {
 
     it('should accept custom initial state', () => {
       render(
-        <SearchProvider initialState={{ search: 'custom' }}>
+        <SearchProvider initialState={{ search: 'custom', statuses: [] }}>
           <TestComponent />
         </SearchProvider>
       );
@@ -91,7 +91,7 @@ describe('SearchContext', () => {
 
     it('should dispatch CLEAR_SEARCH action', () => {
       render(
-        <SearchProvider initialState={{ search: 'initial' }}>
+        <SearchProvider initialState={{ search: 'initial', statuses: [] }}>
           <TestComponent />
         </SearchProvider>
       );
@@ -130,6 +130,48 @@ describe('SearchContext', () => {
 
       const searchTerm = screen.getByTestId('search-term');
       expect(searchTerm).toBeInTheDocument();
+    });
+  });
+
+  describe('SearchProvider persistence', () => {
+    it('should persist state across remount', () => {
+      vi.useFakeTimers();
+
+      try {
+        const { unmount } = render(
+          <SearchProvider contextName="persist-test">
+            <TestComponent />
+          </SearchProvider>
+        );
+
+        const setButton = screen.getByTestId('set-btn');
+        act(() => {
+          setButton.click();
+        });
+
+        let searchTerm = screen.getByTestId('search-term');
+        expect(searchTerm).toHaveTextContent('test');
+
+        // Advance past debounce window to ensure persistence
+        act(() => {
+          vi.advanceTimersByTime(500);
+        });
+
+        // Unmount
+        unmount();
+
+        // Re-render with same contextName - should restore persisted state
+        render(
+          <SearchProvider contextName="persist-test">
+            <TestComponent />
+          </SearchProvider>
+        );
+
+        searchTerm = screen.getByTestId('search-term');
+        expect(searchTerm).toHaveTextContent('test');
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });

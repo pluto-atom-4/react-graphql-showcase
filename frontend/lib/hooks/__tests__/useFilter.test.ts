@@ -314,15 +314,6 @@ describe('useFilter Hook', () => {
 
     it('should reject 11th filter with console warning', () => {
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      const state: FilterState = {
-        search: 'a',
-        statuses: ['Active', 'Idle', 'Failed', 'Completed'],
-        dateStart: '2026-01-01',
-        dateEnd: '2026-12-31',
-      };
-      // Current: 1 + 4 + 2 = 7, adding would make 8 (OK)
-      // But let's create a scenario with 10 filters already
-
       // Create max state with 10 filters
       const maxState: FilterState = {
         search: 'test query',
@@ -333,7 +324,7 @@ describe('useFilter Hook', () => {
       // This is 1 + 4 + 2 = 7, need 3 more to hit 10
 
       // Simplified: just verify the warning is called when we'd exceed 10
-      const result = filterReducer(maxState, {
+      filterReducer(maxState, {
         type: 'ADD_STATUS',
         payload: 'Active' as BuildStatus,
       });
@@ -611,11 +602,6 @@ describe('useFilter Hook', () => {
     });
 
     it('should reset to default with empty statuses array', () => {
-      const state: FilterState = {
-        search: 'query',
-        statuses: ['Active', 'Idle'],
-      };
-
       act(() => {
         renderHook(() => useFilter(contextName));
       });
@@ -628,6 +614,132 @@ describe('useFilter Hook', () => {
       expect(result2.current[0].statuses).toEqual([]);
       expect(result2.current[0].search).toBe('');
     });
+  });
+
+  describe('useFilter debounced persistence', () => {
+    const contextName = 'test-debounce';
+    const storageKey = `search-filter:${contextName}`;
+
+    beforeEach(() => {
+      localStorage.clear();
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.runOnlyPendingTimers();
+      vi.useRealTimers();
+    });
+
+    it('should coalesce multiple dispatches into single write within debounce window', () => {
+      const { result } = renderHook(() => useFilter(contextName));
+
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'first' });
+      });
+
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'second' });
+      });
+
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'final' });
+      });
+
+      // Before timer fires, storage should be empty (not persisted yet)
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Advance time past debounce window
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      // Now storage should have the final state
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('final');
+    });
+
+    it('should persist state 500ms after last state change', () => {
+      const { result } = renderHook(() => useFilter(contextName));
+
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
+      });
+
+      // Should not persist immediately
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Advance 400ms - still no persist
+      act(() => {
+        vi.advanceTimersByTime(400);
+      });
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Advance 100ms more (total 500ms)
+      act(() => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(localStorage.getItem(storageKey)).not.toBeNull();
+    });
+
+    it('should clear timer on unmount', () => {
+      const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
+      const { result, unmount } = renderHook(() => useFilter(contextName));
+
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'test' });
+      });
+
+      // Unmount should clear the timeout
+      unmount();
+      expect(clearTimeoutSpy).toHaveBeenCalled();
+      clearTimeoutSpy.mockRestore();
+    });
+
+    it('should skip first render to avoid hydration issues', () => {
+      localStorage.setItem(storageKey, JSON.stringify({
+        search: 'stored',
+        statuses: [],
+        lastSynced: 12345,
+      }));
+
+      renderHook(() => useFilter(contextName));
+
+      // Advance past debounce window
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      // Storage should still have the original lastSynced from load, not updated to Date.now()
+      // This verifies first render was skipped
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.lastSynced).toBe(12345);
+    });
+
+    it('should flush pending writes on unmount', () => {
+      const { result, unmount } = renderHook(() => useFilter(contextName));
+
+      // Dispatch a change
+      act(() => {
+        result.current[1]({ type: 'SET_SEARCH', payload: 'test-query' });
+      });
+
+      // Before timer fires, storage should be empty
+      expect(localStorage.getItem(storageKey)).toBeNull();
+
+      // Unmount immediately (before 500ms debounce completes)
+      unmount();
+
+      // Now storage should have the pending write, even though we didn't wait out the debounce
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('test-query');
+    });
+
   });
 });
 

@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { FilterChips } from '../components/FilterChips';
+import type { FilterState } from '../lib/hooks/useFilter';
 
 describe('FilterChips Component', () => {
   describe('Rendering', () => {
@@ -134,6 +135,214 @@ describe('FilterChips Component', () => {
 
       const chip = screen.getByTestId('filter-chip');
       expect(chip).toHaveTextContent('a');
+    });
+  });
+
+  describe('Multi-Filter Mode', () => {
+    it('should render empty container when no filters are active', () => {
+      const handleRemoveFilter = vi.fn();
+      const emptyFilters: FilterState = {
+        search: '',
+        statuses: [],
+      };
+
+      render(
+        <FilterChips filters={emptyFilters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      // Should render container even when empty
+      const container = screen.getByTestId('filter-chips');
+      expect(container).toBeInTheDocument();
+      // But no individual chips should be rendered
+      expect(container.children).toHaveLength(0);
+    });
+
+    it('should render search term chip when search is active', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: 'query',
+        statuses: [],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const searchChip = screen.getByTestId('filter-chip-search');
+      expect(searchChip).toBeInTheDocument();
+      expect(searchChip).toHaveTextContent('query');
+    });
+
+    it('should render status chips for each selected status', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active', 'Failed'],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const activeChip = screen.getByTestId('filter-chip-status-Active');
+      const failedChip = screen.getByTestId('filter-chip-status-Failed');
+
+      expect(activeChip).toBeInTheDocument();
+      expect(activeChip).toHaveTextContent('Active');
+      expect(failedChip).toBeInTheDocument();
+      expect(failedChip).toHaveTextContent('Failed');
+    });
+
+    it('should render date range chips', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: '',
+        statuses: [],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-12-31',
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const startChip = screen.getByTestId('filter-chip-dateStart');
+      const endChip = screen.getByTestId('filter-chip-dateEnd');
+
+      expect(startChip).toBeInTheDocument();
+      expect(startChip).toHaveTextContent('From 2026-01-01');
+      expect(endChip).toBeInTheDocument();
+      expect(endChip).toHaveTextContent('Until 2026-12-31');
+    });
+
+    it('should render all active dimensions together', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: 'important',
+        statuses: ['Active', 'Idle'],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-12-31',
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      // Verify all chips are rendered
+      expect(screen.getByTestId('filter-chip-search')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-Idle')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-dateStart')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-dateEnd')).toBeInTheDocument();
+    });
+
+    it('should dispatch CLEAR_SEARCH action when search chip remove clicked', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: 'query',
+        statuses: [],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const removeButton = screen.getByTestId('filter-chip-remove-search');
+      fireEvent.click(removeButton);
+
+      expect(handleRemoveFilter).toHaveBeenCalledWith({ type: 'CLEAR_SEARCH' });
+    });
+
+    it('should dispatch REMOVE_STATUS action when status chip remove clicked', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active', 'Failed'],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      fireEvent.click(removeButton);
+
+      expect(handleRemoveFilter).toHaveBeenCalledWith({
+        type: 'REMOVE_STATUS',
+        payload: 'Active',
+      });
+    });
+
+    it('should dispatch SET_DATE_RANGE action when date chip remove clicked', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: '',
+        statuses: [],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-12-31',
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const removeButton = screen.getByTestId('filter-chip-remove-dateStart');
+      fireEvent.click(removeButton);
+
+      expect(handleRemoveFilter).toHaveBeenCalledWith({
+        type: 'SET_DATE_RANGE',
+        payload: { start: undefined, end: '2026-12-31' },
+      });
+    });
+
+    it('should truncate long status names and search terms in multi-filter mode', () => {
+      const handleRemoveFilter = vi.fn();
+      const longSearch = 'a'.repeat(40);
+      const filters: FilterState = {
+        search: longSearch,
+        statuses: ['Active'],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} maxLength={30} />
+      );
+
+      const searchChip = screen.getByTestId('filter-chip-search');
+      expect(searchChip).toHaveTextContent('a'.repeat(30) + '...');
+    });
+
+    it('should render with correct styling classes', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: 'test',
+        statuses: ['Active'],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const searchChip = screen.getByTestId('filter-chip-search');
+      expect(searchChip).toHaveClass('bg-blue-100');
+      expect(searchChip).toHaveClass('text-blue-900');
+      expect(searchChip).toHaveClass('rounded-full');
+    });
+
+    it('should render flex container for multiple chips', () => {
+      const handleRemoveFilter = vi.fn();
+      const filters: FilterState = {
+        search: 'query',
+        statuses: ['Active'],
+      };
+
+      render(
+        <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
+      );
+
+      const container = screen.getByTestId('filter-chips');
+      expect(container).toHaveClass('flex');
+      expect(container).toHaveClass('flex-wrap');
+      expect(container).toHaveClass('gap-2');
     });
   });
 });

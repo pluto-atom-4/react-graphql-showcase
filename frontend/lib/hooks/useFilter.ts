@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 
 // Hardcoded available statuses for multi-select
 export const AVAILABLE_STATUSES = ['Active', 'Idle', 'Failed', 'Completed'] as const;
@@ -283,7 +283,7 @@ const loadFromStorage = (storageKey: string): FilterState => {
   try {
     const stored = window.localStorage.getItem(storageKey);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
       if (isValidFilterState(parsed)) {
         // Migrate Phase 1 format to Phase 2 if needed
         const migrated: FilterState = {
@@ -351,6 +351,7 @@ export const saveToStorage = (storageKey: string, state: FilterState): void => {
  * - No external dependencies
  *
  * @param contextName Unique identifier for this filter context (used in localStorage key)
+ * @param seed Optional initial state to use if localStorage is empty (used by SearchProvider)
  * @returns Tuple of [state, dispatch] similar to useReducer
  *
  * @example
@@ -361,16 +362,85 @@ export const saveToStorage = (storageKey: string, state: FilterState): void => {
  *
  * // Clear search
  * dispatch({ type: 'CLEAR_SEARCH' });
+ *
+ * // With custom seed (used by SearchProvider)
+ * const [state, dispatch] = useFilter('search', { search: 'initial', statuses: [] });
  */
 export function useFilter(
-  contextName: string
+  contextName: string,
+  seed?: FilterState
 ): [FilterState, React.Dispatch<FilterAction>] {
   const storageKey = `search-filter:${contextName}`;
+  const isFirstRender = useRef(true);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stateRef = useRef<FilterState>(defaultInitialState);
 
-  // Initialize from localStorage
-  const [state, dispatch] = useReducer(filterReducer, undefined, () =>
-    loadFromStorage(storageKey)
-  );
+  // Initialize from localStorage with seed fallback
+  const [state, dispatch] = useReducer(filterReducer, undefined, () => {
+    // Try to load from storage first
+    const stored = loadFromStorage(storageKey);
+
+    // If storage returned the default state (nothing found or invalid),
+    // check if we should use the seed instead
+    if (stored === defaultInitialState && seed !== undefined) {
+      // Check if storage actually has the key (not just validation failure)
+      if (typeof window !== 'undefined') {
+        const storageKey = `search-filter:${contextName}`;
+        if (!window.localStorage.getItem(storageKey)) {
+          // Key doesn't exist and seed is provided, use seed
+          return seed;
+        }
+      }
+    }
+
+    // Use stored value (either has content or key exists with invalid data)
+    return stored;
+  });
+
+  // Update ref with latest state (for use in unmount cleanup)
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  // Debounced auto-save to localStorage on state change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Skip first render to prevent hydration issues
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // Clear any pending timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new debounced timer
+    debounceTimerRef.current = setTimeout(() => {
+      saveToStorage(storageKey, state);
+    }, 500);
+
+    // Cleanup: only clear the timer, don't save here
+    // (flushing pending writes is handled by the unmount effect below)
+    return (): void => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [state, storageKey]);
+
+  // Flush pending writes on unmount
+  useEffect(() => {
+    return (): void => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+        // Flush the pending write with the latest state
+        saveToStorage(storageKey, stateRef.current);
+      }
+    };
+  }, [storageKey]);
 
   // Return state and dispatch
   return [state, dispatch];

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FilterBar, FilterBarProps } from '../FilterBar';
 import { FilterState } from '../../lib/hooks/useFilter';
@@ -178,11 +178,11 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      const startInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
-      const endInput = screen.getByTestId('date-range-filter-end') as HTMLInputElement;
+      const startInput = screen.getByTestId('date-range-filter-start');
+      const endInput = screen.getByTestId('date-range-filter-end');
 
-      expect(startInput.value).toBe('2026-01-01');
-      expect(endInput.value).toBe('2026-12-31');
+      expect((startInput as HTMLInputElement).value).toBe('2026-01-01');
+      expect((endInput as HTMLInputElement).value).toBe('2026-12-31');
     });
   });
 
@@ -307,14 +307,14 @@ describe('FilterBar Component', () => {
       render(<FilterBar {...props} />);
 
       // Verify all filters are displayed
-      const searchInput = screen.getByRole('textbox') as HTMLInputElement;
-      expect(searchInput.value).toBe('important');
+      const searchInput = screen.getByRole('textbox');
+      expect((searchInput as HTMLInputElement).value).toBe('important');
 
       const activeButton = screen.getByTestId('status-filter-pill-active');
       expect(activeButton).toHaveAttribute('aria-pressed', 'true');
 
-      const startDateInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
-      expect(startDateInput.value).toBe('2026-01-01');
+      const startDateInput = screen.getByTestId('date-range-filter-start');
+      expect((startDateInput as HTMLInputElement).value).toBe('2026-01-01');
 
       // Clear All should be visible
       expect(screen.getByTestId('filter-bar-clear-all')).toBeInTheDocument();
@@ -348,6 +348,215 @@ describe('FilterBar Component', () => {
 
       const clearButton = screen.getByTestId('filter-bar-clear-all');
       expect(clearButton).toHaveAttribute('aria-label', 'Clear all filters');
+    });
+  });
+
+  describe('FilterChips Integration', () => {
+    it('should render FilterChips with current filters', () => {
+      const filters: FilterState = {
+        search: 'test',
+        statuses: ['Active'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-bar-chips')).toBeInTheDocument();
+    });
+
+    it('should display search chip when search is active', () => {
+      const filters: FilterState = {
+        search: 'important',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-search')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-search')).toHaveTextContent('important');
+    });
+
+    it('should display status chips', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active', 'Failed'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-Failed')).toBeInTheDocument();
+    });
+
+    it('should dispatch CLEAR_SEARCH when search chip removed', () => {
+      const filters: FilterState = {
+        search: 'query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const removeButton = screen.getByTestId('filter-chip-remove-search');
+      fireEvent.click(removeButton);
+
+      expect(mockOnFilterChange).toHaveBeenCalledWith({ type: 'CLEAR_SEARCH' });
+    });
+
+    it('should dispatch REMOVE_STATUS when status chip removed', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: ['Active'],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      fireEvent.click(removeButton);
+
+      expect(mockOnFilterChange).toHaveBeenCalledWith({
+        type: 'REMOVE_STATUS',
+        payload: 'Active',
+      });
+    });
+
+    it('should display date range chips when dates are active', () => {
+      const filters: FilterState = {
+        search: '',
+        statuses: [],
+        dateStart: '2026-01-01',
+        dateEnd: '2026-12-31',
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      render(<FilterBar {...props} />);
+
+      expect(screen.getByTestId('filter-chip-dateStart')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-dateEnd')).toBeInTheDocument();
+    });
+
+    it('should hide chips when no filters are active', () => {
+      const props: FilterBarProps = {
+        filters: defaultFilters,
+        onFilterChange: mockOnFilterChange,
+      };
+
+      const { container } = render(<FilterBar {...props} />);
+
+      const chipsContainer = screen.getByTestId('filter-bar-chips');
+      expect(chipsContainer).toBeInTheDocument();
+      // No individual chips should be rendered
+      expect(container.querySelectorAll('[data-testid^="filter-chip-"]')).toHaveLength(0);
+    });
+  });
+
+  describe('Search Bar Blur-to-Flush (with contextName)', () => {
+    const contextName = 'test-blur-flush';
+    const storageKey = `search-filter:${contextName}`;
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('should flush to localStorage immediately on search blur when contextName is provided', () => {
+      const filters: FilterState = {
+        search: 'test query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        contextName,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the search input
+      fireEvent.blur(input);
+
+      // Storage should have the state immediately (no waiting for 500ms debounce)
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed.search).toBe('test query');
+    });
+
+    it('should not flush on blur when contextName is not provided', () => {
+      const filters: FilterState = {
+        search: 'test query',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        // No contextName provided
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the search input
+      fireEvent.blur(input);
+
+      // Storage should still be empty because no contextName
+      const stored = localStorage.getItem(storageKey);
+      expect(stored).toBeNull();
+    });
+
+    it('should flush before the 500ms debounce completes', () => {
+      const filters: FilterState = {
+        search: 'early flush test',
+        statuses: [],
+      };
+      const props: FilterBarProps = {
+        filters,
+        onFilterChange: mockOnFilterChange,
+        contextName,
+      };
+
+      render(<FilterBar {...props} />);
+
+      const input = screen.getByRole('textbox');
+
+      // Blur the input (should immediately flush)
+      fireEvent.blur(input);
+
+      // Storage should be populated immediately
+      expect(localStorage.getItem(storageKey)).not.toBeNull();
+
+      // Verify the timestamp is recent (within the test)
+      const parsed = JSON.parse(localStorage.getItem(storageKey)!);
+      expect(parsed.lastSynced).toBeDefined();
+      expect(typeof parsed.lastSynced).toBe('number');
+      expect(parsed.search).toBe('early flush test');
     });
   });
 });

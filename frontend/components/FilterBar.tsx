@@ -6,7 +6,8 @@ import { StatusFilter } from './StatusFilter';
 import { DateRangeFilter } from './DateRangeFilter';
 import { HistoryDropdown } from './HistoryDropdown';
 import { PresetsManager } from './PresetsManager';
-import { FilterState, BuildStatus } from '../lib/hooks/useFilter';
+import { FilterChips } from './FilterChips';
+import { FilterState, BuildStatus, FilterAction, saveToStorage } from '../lib/hooks/useFilter';
 import { FilterHistoryState, FilterHistoryItem } from '../lib/hooks/useFilterHistory';
 import { FilterPresetsState, FilterPreset } from '../lib/hooks/useFilterPresets';
 import { UndoRedoState } from '../lib/hooks/useUndoRedo';
@@ -19,7 +20,7 @@ export interface FilterBarProps {
   /** Current filter state */
   filters: FilterState;
   /** Callback to dispatch filter actions */
-  onFilterChange: (action: any) => void;
+  onFilterChange: (action: FilterAction) => void;
   /** Optional placeholder for search bar */
   searchPlaceholder?: string;
   /** Whether filters are disabled */
@@ -52,6 +53,8 @@ export interface FilterBarProps {
   onUndo?: () => void;
   /** Optional callback for redo action */
   onRedo?: () => void;
+  /** Optional context name for persistence (enables blur-to-flush behavior) */
+  contextName?: string;
 }
 
 /**
@@ -103,9 +106,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   undoRedo,
   onUndo,
   onRedo,
+  contextName,
 }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPresetsOpen, setIsPresetsOpen] = useState(false);
+
   // Handle search change
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -118,6 +123,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const handleSearchClear = useCallback(() => {
     onFilterChange({ type: 'CLEAR_SEARCH' });
   }, [onFilterChange]);
+
+  // Handle search blur - flush to localStorage immediately if contextName is provided
+  const handleSearchBlur = useCallback(() => {
+    if (contextName) {
+      const storageKey = `search-filter:${contextName}`;
+      saveToStorage(storageKey, filters);
+    }
+  }, [filters, contextName]);
 
   // Handle status toggle
   const handleStatusToggle = useCallback(
@@ -165,9 +178,18 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           value={filters.search}
           onChange={handleSearchChange}
           onClear={handleSearchClear}
+          onBlur={contextName ? handleSearchBlur : undefined}
           placeholder={searchPlaceholder}
           disabled={disabled}
           data-testid="filter-bar-search"
+        />
+      </div>
+
+      {/* Filter Chips - Display active filters */}
+      <div className="w-full" data-testid="filter-bar-chips">
+        <FilterChips
+          filters={filters}
+          onRemoveFilter={onFilterChange}
         />
       </div>
 
@@ -316,9 +338,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     onSelectPreset?.(preset);
                     setIsPresetsOpen(false);
                   }}
-                  onCreatePreset={onCreatePreset || (() => {})}
-                  onDeletePreset={onDeletePreset || (() => {})}
-                  onRenamePreset={onRenamePreset || (() => {})}
+                  onCreatePreset={onCreatePreset || ((): void => {})}
+                  onDeletePreset={onDeletePreset || ((): void => {})}
+                  onRenamePreset={onRenamePreset || ((): void => {})}
                   isOpen={isPresetsOpen}
                   onToggleOpen={setIsPresetsOpen}
                   data-testid="filter-bar-presets-dropdown"
@@ -375,8 +397,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     onSelectFromHistory?.(item);
                     setIsHistoryOpen(false);
                   }}
-                  onRemoveHistory={onRemoveFromHistory || (() => {})}
-                  onClearHistory={() => {
+                  onRemoveHistory={onRemoveFromHistory || ((): void => {})}
+                  onClearHistory={(): void => {
                     onClearHistory?.();
                     setIsHistoryOpen(false);
                   }}

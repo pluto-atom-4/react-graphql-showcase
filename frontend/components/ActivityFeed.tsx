@@ -148,7 +148,7 @@ export function ActivityFeed({
     return (
       <div className={`space-y-4 ${className}`}>
         {/* Filter section */}
-        <FilterBar
+        <EventTypeFilterBar
           eventTypes={eventTypes}
           selectedEventTypes={selectedEventTypes}
           onToggleEventType={handleToggleEventType}
@@ -167,7 +167,7 @@ export function ActivityFeed({
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Filter section */}
-      <FilterBar
+      <EventTypeFilterBar
         eventTypes={eventTypes}
         selectedEventTypes={selectedEventTypes}
         onToggleEventType={handleToggleEventType}
@@ -229,9 +229,9 @@ export function ActivityFeed({
 }
 
 /**
- * Filter bar component
+ * Event type filter bar component
  */
-interface FilterBarProps {
+interface EventTypeFilterBarProps {
   eventTypes: BuildEventType[];
   selectedEventTypes: Set<BuildEventType>;
   onToggleEventType: (eventType: BuildEventType) => void;
@@ -239,13 +239,13 @@ interface FilterBarProps {
   onDateRangeChange: (start: Date | null, end: Date | null) => void;
 }
 
-function FilterBar({
+function EventTypeFilterBar({
   eventTypes,
   selectedEventTypes,
   onToggleEventType,
   dateRange,
   onDateRangeChange,
-}: FilterBarProps): ReactElement {
+}: EventTypeFilterBarProps): ReactElement {
   const eventTypeLabels: Record<BuildEventType, string> = {
     status_change: 'Status Changes',
     test_run: 'Test Runs',
