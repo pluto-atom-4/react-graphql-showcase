@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { HistoryDropdown } from '../HistoryDropdown';
 import { FilterHistoryState, FilterHistoryItem } from '../../lib/hooks/useFilterHistory';
 import { FilterState } from '../../lib/hooks/useFilter';
@@ -556,6 +556,116 @@ describe('HistoryDropdown Component', () => {
       );
 
       expect(screen.getByText('No filters')).toBeInTheDocument();
+    });
+  });
+  describe('Exit animation', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const renderDropdown = (isOpen: boolean): ReturnType<typeof render> =>
+      render(
+        <HistoryDropdown
+          history={mockHistoryState}
+          onSelectHistory={vi.fn()}
+          onRemoveHistory={vi.fn()}
+          onClearHistory={vi.fn()}
+          isOpen={isOpen}
+          onToggleOpen={vi.fn()}
+        />
+      );
+
+    it('should keep the menu mounted at 199ms after closing and remove it at 200ms', () => {
+      const { rerender } = renderDropdown(true);
+
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      rerender(
+        <HistoryDropdown
+          history={mockHistoryState}
+          onSelectHistory={vi.fn()}
+          onRemoveHistory={vi.fn()}
+          onClearHistory={vi.fn()}
+          isOpen={false}
+          onToggleOpen={vi.fn()}
+        />
+      );
+
+      // Still mounted immediately after close so the fade-out can run
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(199);
+      });
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
+
+    it('should fade the menu out by switching to opacity-0 while still mounted', () => {
+      const { rerender } = renderDropdown(true);
+
+      expect(screen.getByRole('menu').className).toContain('opacity-100');
+
+      rerender(
+        <HistoryDropdown
+          history={mockHistoryState}
+          onSelectHistory={vi.fn()}
+          onRemoveHistory={vi.fn()}
+          onClearHistory={vi.fn()}
+          isOpen={false}
+          onToggleOpen={vi.fn()}
+        />
+      );
+
+      const menu = screen.getByRole('menu');
+      expect(menu.className).toContain('opacity-0');
+      expect(menu.className).toContain('transition-opacity');
+      expect(menu.className).toContain('duration-200');
+    });
+
+    it('should cancel the pending hide when reopened before the delay elapses', () => {
+      const { rerender } = renderDropdown(true);
+
+      rerender(
+        <HistoryDropdown
+          history={mockHistoryState}
+          onSelectHistory={vi.fn()}
+          onRemoveHistory={vi.fn()}
+          onClearHistory={vi.fn()}
+          isOpen={false}
+          onToggleOpen={vi.fn()}
+        />
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+
+      rerender(
+        <HistoryDropdown
+          history={mockHistoryState}
+          onSelectHistory={vi.fn()}
+          onRemoveHistory={vi.fn()}
+          onClearHistory={vi.fn()}
+          isOpen={true}
+          onToggleOpen={vi.fn()}
+        />
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      expect(screen.getByRole('menu').className).toContain('opacity-100');
     });
   });
 });
