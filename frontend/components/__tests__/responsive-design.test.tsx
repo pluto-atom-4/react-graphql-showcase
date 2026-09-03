@@ -6,6 +6,7 @@ import { MetricCard } from '../MetricCard';
 import { ActivityTimeline } from '../ActivityTimeline';
 import { DASHBOARD_METRICS_QUERY } from '../../lib/graphql-queries';
 import { BuildStatus } from '../../lib/generated/graphql';
+import { STATUS_LABELS } from '../../lib/status-vocabulary';
 import type { ActivityEntry } from '../../lib/dashboard-utils';
 
 /**
@@ -276,7 +277,7 @@ describe('DashboardMetrics - Responsive Design', () => {
     render(<ActivityTimeline entries={entries} />);
 
     // Find the status badge by checking for the status text
-    const statusBadge = screen.getByText('Completed');
+    const statusBadge = screen.getByText(STATUS_LABELS[BuildStatus.Complete]);
     expect(statusBadge).toHaveClass('inline-flex');
     expect(statusBadge).toHaveClass('px-2');
     expect(statusBadge).toHaveClass('py-0.5');

@@ -3,6 +3,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 import { useDashboardMetrics } from '../lib/hooks/useDashboardMetrics';
+import { BuildStatus, STATUS_LABELS } from '../lib/status-vocabulary';
 import { MetricCard } from './MetricCard';
 import { ActivityTimeline } from './ActivityTimeline';
 
@@ -18,7 +19,7 @@ export interface DashboardMetricsProps {
  * DashboardMetrics Component
  *
  * Main container for dashboard metrics, displaying:
- * - Four metric cards: Total Builds, In Progress, Completed, Failed
+ * - Four metric cards: Total Builds, Running, Complete, Failed
  * - Completion rate percentage
  * - Recent activity timeline
  * - Loading and error states
@@ -105,22 +106,22 @@ function DashboardMetricsComponent({
           aria-label={`Total Builds: ${metrics.totalBuilds}`}
         />
 
-        {/* In Progress Card */}
+        {/* Running Card */}
         <MetricCard
           icon={icons.inProgress}
-          label="In Progress"
+          label={STATUS_LABELS[BuildStatus.Running]}
           value={metrics.inProgress}
           trend={metrics.inProgress > 0 ? 'up' : 'neutral'}
-          aria-label={`In Progress Builds: ${metrics.inProgress}`}
+          aria-label={`${STATUS_LABELS[BuildStatus.Running]} Builds: ${metrics.inProgress}`}
         />
 
-        {/* Completed Card */}
+        {/* Complete Card */}
         <MetricCard
           icon={icons.completed}
-          label="Completed"
+          label={STATUS_LABELS[BuildStatus.Complete]}
           value={metrics.completed}
           trend={metrics.completed > 0 ? 'up' : 'neutral'}
-          aria-label={`Completed Builds: ${metrics.completed}`}
+          aria-label={`${STATUS_LABELS[BuildStatus.Complete]} Builds: ${metrics.completed}`}
         />
 
         {/* Failed Card */}

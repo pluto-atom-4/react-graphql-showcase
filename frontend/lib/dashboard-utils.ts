@@ -7,6 +7,7 @@
 
 import type { BuildStatus } from './generated/graphql';
 import { BuildStatus as BuildStatusEnum } from './generated/graphql';
+import { STATUS_LABELS } from './status-vocabulary';
 
 /**
  * Aggregated metrics for the dashboard
@@ -235,11 +236,11 @@ export function getRecentActivity(builds: BuildData[], limit: number = 10): Acti
 }
 
 /**
- * Status display labels
+ * Status display labels.
+ *
+ * Re-exported from `./status-vocabulary`, the canonical source of truth. This
+ * module previously owned a divergent copy ('In Progress' / 'Completed') that
+ * disagreed with the badge shown beside it — see
+ * `.claude/patterns/search-filter-patterns.md` ("Single source of truth for status").
  */
-export const STATUS_LABELS: Record<BuildStatus, string> = {
-  [BuildStatusEnum.Complete]: 'Completed',
-  [BuildStatusEnum.Running]: 'In Progress',
-  [BuildStatusEnum.Failed]: 'Failed',
-  [BuildStatusEnum.Pending]: 'Pending',
-};
+export { STATUS_LABELS };

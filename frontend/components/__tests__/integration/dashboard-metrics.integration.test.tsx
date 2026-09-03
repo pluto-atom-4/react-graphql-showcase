@@ -4,6 +4,7 @@ import { MockedProvider } from '@apollo/client/testing/react';
 import { DashboardMetrics } from '../../DashboardMetrics';
 import { DASHBOARD_METRICS_QUERY } from '../../../lib/graphql-queries';
 import { BuildStatus } from '../../../lib/generated/graphql';
+import { STATUS_LABELS } from '../../../lib/status-vocabulary';
 
 /* global performance */
 
@@ -90,8 +91,12 @@ describe('DashboardMetrics - Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText('Total Builds: 2')).toBeInTheDocument();
-      expect(screen.getByLabelText('In Progress Builds: 1')).toBeInTheDocument();
-      expect(screen.getByLabelText('Completed Builds: 1')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Running]} Builds: 1`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Complete]} Builds: 1`)
+      ).toBeInTheDocument();
     });
   });
 
@@ -199,8 +204,12 @@ describe('DashboardMetrics - Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText('Total Builds: 5')).toBeInTheDocument();
-      expect(screen.getByLabelText('Completed Builds: 2')).toBeInTheDocument();
-      expect(screen.getByLabelText('In Progress Builds: 1')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Complete]} Builds: 2`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Running]} Builds: 1`)
+      ).toBeInTheDocument();
       expect(screen.getByLabelText('Failed Builds: 1')).toBeInTheDocument();
       // 2 complete + 1 failed = 3/5 = 60%
       expect(screen.getByText('60% complete')).toBeInTheDocument();
@@ -476,7 +485,9 @@ describe('DashboardMetrics - Integration Tests', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText('In Progress Builds: 1')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Running]} Builds: 1`)
+      ).toBeInTheDocument();
     });
 
     // Update cache with new data
@@ -487,7 +498,9 @@ describe('DashboardMetrics - Integration Tests', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Completed Builds: 1')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Complete]} Builds: 1`)
+      ).toBeInTheDocument();
     });
   });
 });
