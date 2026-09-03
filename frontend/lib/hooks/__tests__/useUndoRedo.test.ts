@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useUndoRedo, undoRedoReducer, UndoRedoState, saveUndoRedoToStorage } from '../useUndoRedo';
 import { FilterState } from '../useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 /**
  * Mock initial filter state for testing
@@ -28,7 +29,7 @@ const mockFilterStateWithSearch: FilterState = {
  */
 const mockFilterStateWithStatus: FilterState = {
   search: '',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
   dateStart: undefined,
   dateEnd: undefined,
 };
@@ -451,6 +452,35 @@ describe('useUndoRedo Hook', () => {
 
       expect(result.current[0].present.state).toEqual(mockFilterStateWithSearch);
       expect(result.current[0].present.label).toBe('Persisted state');
+    });
+
+    it('should drop unknown statuses from past, present and future on rehydration', () => {
+      localStorage.setItem(
+        'undo-redo:legacy-vocab',
+        JSON.stringify({
+          maxLevels: 20,
+          past: [
+            { id: 'p1', timestamp: 1, state: { search: 'past', statuses: ['Idle', 'PENDING'] } },
+          ],
+          present: {
+            id: 'n1',
+            timestamp: 2,
+            state: { search: 'present', statuses: ['Active', 'FAILED'] },
+          },
+          future: [
+            { id: 'f1', timestamp: 3, state: { search: 'future', statuses: ['Completed'] } },
+          ],
+        })
+      );
+
+      const { result } = renderHook(() => useUndoRedo('legacy-vocab', mockFilterState));
+
+      expect(result.current[0].past[0].state.statuses).toEqual([BuildStatus.Pending]);
+      expect(result.current[0].past[0].state.search).toBe('past');
+      expect(result.current[0].present.state.statuses).toEqual([BuildStatus.Failed]);
+      expect(result.current[0].present.state.search).toBe('present');
+      expect(result.current[0].future[0].state.statuses).toEqual([]);
+      expect(result.current[0].future[0].state.search).toBe('future');
     });
 
     it('should handle invalid localStorage data gracefully', () => {

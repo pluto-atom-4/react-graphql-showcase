@@ -1,10 +1,7 @@
 'use client';
 
 import { useReducer, useEffect, useRef } from 'react';
-
-// Hardcoded available statuses for multi-select
-export const AVAILABLE_STATUSES = ['Active', 'Idle', 'Failed', 'Completed'] as const;
-export type BuildStatus = typeof AVAILABLE_STATUSES[number];
+import { sanitizeStatuses, type BuildStatus } from '../status-vocabulary';
 
 /**
  * State shape for filter management
@@ -232,10 +229,39 @@ export const filterReducer = (state: FilterState, action: FilterAction): FilterS
 };
 
 /**
+ * Drop statuses that are not part of the canonical vocabulary, keeping the rest
+ * of the state intact.
+ *
+ * Rehydration must fail *open*, not closed. Builds before #347 persisted
+ * 'Active' / 'Idle' / 'Completed', which no longer exist. Rejecting the whole
+ * blob would silently throw away the user's search term and date range too, so
+ * only the unrecognised statuses are removed.
+ *
+ * Returns the input unchanged (same reference) when nothing had to be dropped.
+ *
+ * @param state Filter state, possibly rehydrated from an older schema
+ * @returns State whose `statuses` contains only known BuildStatus members
+ *
+ * @example
+ * sanitizeFilterState({ search: 'x', statuses: ['Active', 'FAILED'] });
+ * // { search: 'x', statuses: ['FAILED'] }
+ */
+export const sanitizeFilterState = (state: FilterState): FilterState => {
+  const statuses = sanitizeStatuses(state.statuses);
+  if (Array.isArray(state.statuses) && statuses.length === state.statuses.length) {
+    return state;
+  }
+  return { ...state, statuses };
+};
+
+/**
  * Validate filter state schema
  *
  * Handles both Phase 1 (search only) and Phase 2 (search + statuses + dates) formats.
  * Automatically upgrades old format to new format.
+ *
+ * Unknown status values are NOT a validation failure - `loadFromStorage` drops
+ * them via `sanitizeFilterState` instead. See that function for why.
  *
  * @param state State to validate
  * @returns true if valid, false otherwise
@@ -249,15 +275,6 @@ const isValidFilterState = (state: unknown): state is FilterState => {
 
   // Required fields
   if (typeof obj.search !== 'string') return false;
-
-  // Handle backward compatibility: statuses may be missing from old Phase 1 format
-  // Default to empty array if missing
-  const statuses = Array.isArray(obj.statuses) ? obj.statuses : [];
-
-  // Validate each status is in AVAILABLE_STATUSES
-  if (!statuses.every((s: unknown) => AVAILABLE_STATUSES.includes(s as BuildStatus))) {
-    return false;
-  }
 
   // Optional fields
   if (obj.lastSynced !== undefined && typeof obj.lastSynced !== 'number') return false;
@@ -285,10 +302,17 @@ const loadFromStorage = (storageKey: string): FilterState => {
     if (stored) {
       const parsed: unknown = JSON.parse(stored);
       if (isValidFilterState(parsed)) {
-        // Migrate Phase 1 format to Phase 2 if needed
+        // Migrate Phase 1 format (search only) to Phase 2, and drop any status
+        // value that is no longer part of the schema vocabulary.
+        const statuses = sanitizeStatuses(parsed.statuses);
+        if (Array.isArray(parsed.statuses) && statuses.length !== parsed.statuses.length) {
+          console.warn(
+            `[useFilter] Dropped unrecognized status values for key "${storageKey}"`
+          );
+        }
         const migrated: FilterState = {
           search: parsed.search,
-          statuses: parsed.statuses ?? [],
+          statuses,
           lastSynced: parsed.lastSynced,
           dateStart: parsed.dateStart,
           dateEnd: parsed.dateEnd,

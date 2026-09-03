@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useCallback, useEffect } from 'react';
-import { FilterState } from './useFilter';
+import { FilterState, sanitizeFilterState } from './useFilter';
 
 /**
  * Single preset entry with metadata
@@ -279,9 +279,17 @@ const loadFromStorage = (storageKey: string): FilterPresetsState => {
   try {
     const stored = window.localStorage.getItem(storageKey);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
       if (isValidFilterPresetsState(parsed)) {
-        return parsed;
+        // Drop statuses that are no longer part of the schema vocabulary
+        // rather than discarding the whole preset. See sanitizeFilterState.
+        return {
+          ...parsed,
+          presets: parsed.presets.map((preset) => ({
+            ...preset,
+            state: sanitizeFilterState(preset.state),
+          })),
+        };
       }
       console.warn(`[useFilterPresets] Invalid stored state for key "${storageKey}"`);
     }

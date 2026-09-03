@@ -1,7 +1,7 @@
 'use client';
 
 import { useReducer, useCallback, useEffect } from 'react';
-import { FilterState } from './useFilter';
+import { FilterState, sanitizeFilterState } from './useFilter';
 
 /**
  * Single undo/redo stack entry with state snapshot
@@ -256,9 +256,20 @@ const loadFromStorage = (storageKey: string, initialState: FilterState): UndoRed
   try {
     const stored = window.localStorage.getItem(storageKey);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      const parsed: unknown = JSON.parse(stored);
       if (isValidUndoRedoState(parsed)) {
-        return parsed;
+        // Drop statuses that are no longer part of the schema vocabulary
+        // rather than discarding the whole stack. See sanitizeFilterState.
+        const sanitizeItem = (item: UndoRedoItem): UndoRedoItem => ({
+          ...item,
+          state: sanitizeFilterState(item.state),
+        });
+        return {
+          ...parsed,
+          past: parsed.past.map(sanitizeItem),
+          present: sanitizeItem(parsed.present),
+          future: parsed.future.map(sanitizeItem),
+        };
       }
       console.warn(`[useUndoRedo] Invalid stored state for key "${storageKey}"`);
     }

@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { FilterChips } from '../components/FilterChips';
 import type { FilterState } from '../lib/hooks/useFilter';
+import { BuildStatus, STATUS_LABELS } from '../lib/status-vocabulary';
 
 describe('FilterChips Component', () => {
   describe('Rendering', () => {
@@ -177,20 +178,23 @@ describe('FilterChips Component', () => {
       const handleRemoveFilter = vi.fn();
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
       };
 
       render(
         <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
       );
 
-      const activeChip = screen.getByTestId('filter-chip-status-Active');
-      const failedChip = screen.getByTestId('filter-chip-status-Failed');
+      const runningChip = screen.getByTestId('filter-chip-status-RUNNING');
+      const failedChip = screen.getByTestId('filter-chip-status-FAILED');
 
-      expect(activeChip).toBeInTheDocument();
-      expect(activeChip).toHaveTextContent('Active');
+      // Chip data-testid is keyed on the wire value; the text is the label.
+      expect(runningChip).toBeInTheDocument();
+      expect(runningChip).toHaveTextContent(STATUS_LABELS[BuildStatus.Running]);
+      expect(runningChip).not.toHaveTextContent(BuildStatus.Running);
       expect(failedChip).toBeInTheDocument();
-      expect(failedChip).toHaveTextContent('Failed');
+      expect(failedChip).toHaveTextContent(STATUS_LABELS[BuildStatus.Failed]);
+      expect(failedChip).not.toHaveTextContent(BuildStatus.Failed);
     });
 
     it('should render date range chips', () => {
@@ -219,7 +223,7 @@ describe('FilterChips Component', () => {
       const handleRemoveFilter = vi.fn();
       const filters: FilterState = {
         search: 'important',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -230,8 +234,8 @@ describe('FilterChips Component', () => {
 
       // Verify all chips are rendered
       expect(screen.getByTestId('filter-chip-search')).toBeInTheDocument();
-      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
-      expect(screen.getByTestId('filter-chip-status-Idle')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-RUNNING')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-PENDING')).toBeInTheDocument();
       expect(screen.getByTestId('filter-chip-dateStart')).toBeInTheDocument();
       expect(screen.getByTestId('filter-chip-dateEnd')).toBeInTheDocument();
     });
@@ -257,19 +261,19 @@ describe('FilterChips Component', () => {
       const handleRemoveFilter = vi.fn();
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
       };
 
       render(
         <FilterChips filters={filters} onRemoveFilter={handleRemoveFilter} />
       );
 
-      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      const removeButton = screen.getByTestId('filter-chip-remove-status-RUNNING');
       fireEvent.click(removeButton);
 
       expect(handleRemoveFilter).toHaveBeenCalledWith({
         type: 'REMOVE_STATUS',
-        payload: 'Active',
+        payload: BuildStatus.Running,
       });
     });
 
@@ -300,7 +304,7 @@ describe('FilterChips Component', () => {
       const longSearch = 'a'.repeat(40);
       const filters: FilterState = {
         search: longSearch,
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
 
       render(
@@ -315,7 +319,7 @@ describe('FilterChips Component', () => {
       const handleRemoveFilter = vi.fn();
       const filters: FilterState = {
         search: 'test',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
 
       render(
@@ -332,7 +336,7 @@ describe('FilterChips Component', () => {
       const handleRemoveFilter = vi.fn();
       const filters: FilterState = {
         search: 'query',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
 
       render(

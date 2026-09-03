@@ -3,16 +3,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { HistoryDropdown } from '../HistoryDropdown';
 import { FilterHistoryState, FilterHistoryItem } from '../../lib/hooks/useFilterHistory';
 import { FilterState } from '../../lib/hooks/useFilter';
+import { BuildStatus } from '../../lib/status-vocabulary';
 
 describe('HistoryDropdown Component', () => {
   const mockFilterState1: FilterState = {
     search: 'test1',
-    statuses: ['Active'],
+    statuses: [BuildStatus.Running],
   };
 
   const mockFilterState2: FilterState = {
     search: 'test2',
-    statuses: ['Failed'],
+    statuses: [BuildStatus.Failed],
     dateStart: '2024-01-01',
     dateEnd: '2024-12-31',
   };

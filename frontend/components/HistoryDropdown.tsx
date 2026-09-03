@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { FilterHistoryItem, FilterHistoryState } from '../lib/hooks/useFilterHistory';
 import { FilterState } from '../lib/hooks/useFilter';
+import { STATUS_LABELS } from '../lib/status-vocabulary';
 
 /**
  * Props for HistoryDropdown component
@@ -65,7 +66,8 @@ const summarizeFilters = (state: FilterState): string => {
   }
 
   if (state.statuses && state.statuses.length > 0) {
-    parts.push(`Status: ${state.statuses.join(', ')}`);
+    // Display labels, not wire values: this string is read by a human.
+    parts.push(`Status: ${state.statuses.map((s) => STATUS_LABELS[s]).join(', ')}`);
   }
 
   if (state.dateStart || state.dateEnd) {

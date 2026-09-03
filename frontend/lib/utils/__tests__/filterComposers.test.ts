@@ -7,6 +7,7 @@ import {
   Filterable,
 } from '../filterComposers';
 import { FilterState } from '../../hooks/useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 describe('Filter Composers', () => {
   // Mock build items for testing
@@ -15,28 +16,28 @@ describe('Filter Composers', () => {
       id: '1',
       name: 'Build A',
       title: 'Important Build',
-      status: 'Active',
+      status: BuildStatus.Running,
       createdAt: '2026-01-15',
     },
     {
       id: '2',
       name: 'Build B',
       title: 'Regular Build',
-      status: 'Idle',
+      status: BuildStatus.Pending,
       createdAt: '2026-06-01',
     },
     {
       id: '3',
       name: 'Build C',
       title: 'Failed Build',
-      status: 'Failed',
+      status: BuildStatus.Failed,
       createdAt: '2026-03-10',
     },
     {
       id: '4',
       name: 'Build D',
       title: 'Completed Build',
-      status: 'Completed',
+      status: BuildStatus.Complete,
       createdAt: '2026-12-20',
     },
   ];
@@ -83,17 +84,17 @@ describe('Filter Composers', () => {
     });
 
     it('should filter by single status', () => {
-      const filters: FilterState = { search: '', statuses: ['Active'] };
+      const filters: FilterState = { search: '', statuses: [BuildStatus.Running] };
       const result = applyFilters(mockBuilds, filters);
       expect(result).toHaveLength(1);
-      expect(result[0].status).toBe('Active');
+      expect(result[0].status).toBe(BuildStatus.Running);
     });
 
     it('should filter by multiple statuses (OR within status, AND with other filters)', () => {
-      const filters: FilterState = { search: '', statuses: ['Active', 'Idle'] };
+      const filters: FilterState = { search: '', statuses: [BuildStatus.Running, BuildStatus.Pending] };
       const result = applyFilters(mockBuilds, filters);
       expect(result).toHaveLength(2);
-      expect(result.map((b) => b.status)).toEqual(expect.arrayContaining(['Active', 'Idle']));
+      expect(result.map((b) => b.status)).toEqual(expect.arrayContaining([BuildStatus.Running, BuildStatus.Pending]));
     });
   });
 
@@ -132,7 +133,7 @@ describe('Filter Composers', () => {
     it('should apply search AND status filters', () => {
       const filters: FilterState = {
         search: 'Build',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
       };
       const result = applyFilters(mockBuilds, filters);
       expect(result).toHaveLength(2);
@@ -153,7 +154,7 @@ describe('Filter Composers', () => {
     it('should apply status AND date filters', () => {
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-06-01',
       };
       const result = applyFilters(mockBuilds, filters);
@@ -164,7 +165,7 @@ describe('Filter Composers', () => {
     it('should apply all filters together (search AND status AND date)', () => {
       const filters: FilterState = {
         search: 'Build',
-        statuses: ['Active', 'Idle', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending, BuildStatus.Failed],
         dateStart: '2026-01-01',
         dateEnd: '2026-06-30',
       };
@@ -176,7 +177,7 @@ describe('Filter Composers', () => {
     it('should return empty when filters match nothing', () => {
       const filters: FilterState = {
         search: 'NonExistent',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -197,7 +198,7 @@ describe('Filter Composers', () => {
     it('should compose with all filter types', () => {
       const filters: FilterState = {
         search: 'Build',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -219,7 +220,7 @@ describe('Filter Composers', () => {
     });
 
     it('should return true when statuses are selected', () => {
-      const filters: FilterState = { search: '', statuses: ['Active'] };
+      const filters: FilterState = { search: '', statuses: [BuildStatus.Running] };
       expect(hasActiveFilters(filters)).toBe(true);
     });
 
@@ -236,7 +237,7 @@ describe('Filter Composers', () => {
     it('should return true when any filter is active', () => {
       const filters: FilterState = {
         search: 'test',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -256,7 +257,7 @@ describe('Filter Composers', () => {
     });
 
     it('should count each status as 1 filter', () => {
-      const filters: FilterState = { search: '', statuses: ['Active', 'Idle'] };
+      const filters: FilterState = { search: '', statuses: [BuildStatus.Running, BuildStatus.Pending] };
       expect(countActiveFilters(filters)).toBe(2);
     });
 
@@ -273,7 +274,7 @@ describe('Filter Composers', () => {
     it('should count all filters together', () => {
       const filters: FilterState = {
         search: 'test',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -283,7 +284,7 @@ describe('Filter Composers', () => {
 
   describe('Performance and Edge Cases', () => {
     it('should handle empty item array', () => {
-      const filters: FilterState = { search: 'test', statuses: ['Active'] };
+      const filters: FilterState = { search: 'test', statuses: [BuildStatus.Running] };
       const result = applyFilters([], filters);
       expect(result).toHaveLength(0);
     });
@@ -301,10 +302,10 @@ describe('Filter Composers', () => {
 
     it('should handle items with null/undefined values', () => {
       const itemsWithNull: Filterable[] = [
-        { id: '1', name: null as unknown as string, status: 'Active', createdAt: '2026-01-01' },
-        { id: '2', name: undefined as unknown as string, status: 'Idle', createdAt: '2026-01-01' },
+        { id: '1', name: null as unknown as string, status: BuildStatus.Running, createdAt: '2026-01-01' },
+        { id: '2', name: undefined as unknown as string, status: BuildStatus.Pending, createdAt: '2026-01-01' },
       ];
-      const filters: FilterState = { search: '', statuses: ['Active', 'Idle'] };
+      const filters: FilterState = { search: '', statuses: [BuildStatus.Running, BuildStatus.Pending] };
       const result = applyFilters(itemsWithNull, filters);
       expect(result).toHaveLength(2);
     });

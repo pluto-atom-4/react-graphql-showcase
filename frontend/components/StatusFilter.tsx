@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AVAILABLE_STATUSES, BuildStatus } from '../lib/hooks/useFilter';
+import { AVAILABLE_STATUSES, STATUS_LABELS, BuildStatus } from '../lib/status-vocabulary';
 
 /**
  * Props for StatusFilter component
@@ -25,7 +25,7 @@ export interface StatusFilterProps {
  * StatusFilter Component - Multi-select status filter with pill UI
  *
  * Features:
- * - Renders pills for each available status
+ * - Renders pills for each available status, labelled via STATUS_LABELS
  * - Selected statuses highlighted with blue background (bg-blue-500)
  * - Unselected statuses shown as solid gray (bg-gray-200)
  * - Click to toggle selection
@@ -36,7 +36,7 @@ export interface StatusFilterProps {
  *
  * @example
  * <StatusFilter
- *   selectedStatuses={['Active', 'Idle']}
+ *   selectedStatuses={[BuildStatus.Running, BuildStatus.Pending]}
  *   onToggle={(status) => dispatch({ type: 'TOGGLE_STATUS', payload: status })}
  *   disabled={false}
  * />
@@ -63,6 +63,9 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
     <div className={containerClasses} data-testid={dataTestId} role="group" aria-label="Status filter">
       {availableStatuses.map((status) => {
         const isSelected = selectedStatuses.includes(status);
+        // Display copy comes from STATUS_LABELS; the data-testid below stays
+        // keyed on the wire value so it survives copy changes.
+        const label = STATUS_LABELS[status];
 
         // Selected: blue background, unselected: gray background
         const pillClasses = isSelected
@@ -84,10 +87,10 @@ export const StatusFilter: React.FC<StatusFilterProps> = ({
               ${pillClasses}
             `}
             aria-pressed={isSelected}
-            aria-label={`${status} status filter ${isSelected ? 'selected' : 'not selected'}`}
+            aria-label={`${label} status filter ${isSelected ? 'selected' : 'not selected'}`}
             data-testid={`status-filter-pill-${status.toLowerCase()}`}
           >
-            {status}
+            {label}
           </button>
         );
       })}

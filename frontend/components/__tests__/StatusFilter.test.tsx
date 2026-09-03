@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StatusFilter, StatusFilterProps } from '../StatusFilter';
-import { AVAILABLE_STATUSES, BuildStatus } from '../../lib/hooks/useFilter';
+import { AVAILABLE_STATUSES, STATUS_LABELS, BuildStatus } from '../../lib/status-vocabulary';
 
 describe('StatusFilter Component', () => {
   const mockOnToggle = vi.fn();
@@ -19,39 +19,41 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
+      // Pills show the display label, not the wire value.
       AVAILABLE_STATUSES.forEach((status) => {
-        expect(screen.getByText(status)).toBeInTheDocument();
+        expect(screen.getByText(STATUS_LABELS[status])).toBeInTheDocument();
+        expect(screen.queryByText(status)).not.toBeInTheDocument();
       });
     });
 
     it('should render selected statuses with blue background', () => {
       const props: StatusFilterProps = {
-        selectedStatuses: ['Active', 'Idle'],
+        selectedStatuses: [BuildStatus.Running, BuildStatus.Pending],
         onToggle: mockOnToggle,
       };
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      const idleButton = screen.getByTestId('status-filter-pill-idle');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      const pendingButton = screen.getByTestId('status-filter-pill-pending');
 
-      expect(activeButton).toHaveClass('bg-blue-500');
-      expect(idleButton).toHaveClass('bg-blue-500');
+      expect(runningButton).toHaveClass('bg-blue-500');
+      expect(pendingButton).toHaveClass('bg-blue-500');
     });
 
     it('should render unselected statuses with gray background', () => {
       const props: StatusFilterProps = {
-        selectedStatuses: ['Active'],
+        selectedStatuses: [BuildStatus.Running],
         onToggle: mockOnToggle,
       };
 
       render(<StatusFilter {...props} />);
 
       const failedButton = screen.getByTestId('status-filter-pill-failed');
-      const completedButton = screen.getByTestId('status-filter-pill-completed');
+      const completeButton = screen.getByTestId('status-filter-pill-complete');
 
       expect(failedButton).toHaveClass('bg-gray-200');
-      expect(completedButton).toHaveClass('bg-gray-200');
+      expect(completeButton).toHaveClass('bg-gray-200');
     });
 
     it('should render with custom className', () => {
@@ -69,17 +71,17 @@ describe('StatusFilter Component', () => {
 
     it('should have correct accessibility attributes on pills', () => {
       const props: StatusFilterProps = {
-        selectedStatuses: ['Active'],
+        selectedStatuses: [BuildStatus.Running],
         onToggle: mockOnToggle,
       };
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      const idleButton = screen.getByTestId('status-filter-pill-idle');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      const pendingButton = screen.getByTestId('status-filter-pill-pending');
 
-      expect(activeButton).toHaveAttribute('aria-pressed', 'true');
-      expect(idleButton).toHaveAttribute('aria-pressed', 'false');
+      expect(runningButton).toHaveAttribute('aria-pressed', 'true');
+      expect(pendingButton).toHaveAttribute('aria-pressed', 'false');
     });
 
     it('should render with correct aria-label on each pill', () => {
@@ -90,10 +92,12 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      expect(screen.getByLabelText(/Active status filter/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Idle status filter/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Failed status filter/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Completed status filter/i)).toBeInTheDocument();
+      // aria-label uses the display label, matching the visible pill text.
+      AVAILABLE_STATUSES.forEach((status) => {
+        expect(
+          screen.getByLabelText(`${STATUS_LABELS[status]} status filter not selected`)
+        ).toBeInTheDocument();
+      });
     });
   });
 
@@ -106,10 +110,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.click(activeButton);
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.click(runningButton);
 
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
       expect(mockOnToggle).toHaveBeenCalledTimes(1);
     });
 
@@ -121,14 +125,14 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      fireEvent.click(screen.getByTestId('status-filter-pill-active'));
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      fireEvent.click(screen.getByTestId('status-filter-pill-running'));
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
 
-      fireEvent.click(screen.getByTestId('status-filter-pill-idle'));
-      expect(mockOnToggle).toHaveBeenCalledWith('Idle');
+      fireEvent.click(screen.getByTestId('status-filter-pill-pending'));
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Pending);
 
       fireEvent.click(screen.getByTestId('status-filter-pill-failed'));
-      expect(mockOnToggle).toHaveBeenCalledWith('Failed');
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Failed);
 
       expect(mockOnToggle).toHaveBeenCalledTimes(3);
     });
@@ -138,19 +142,19 @@ describe('StatusFilter Component', () => {
         <StatusFilter selectedStatuses={[]} onToggle={mockOnToggle} />
       );
 
-      fireEvent.click(screen.getByTestId('status-filter-pill-active'));
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      fireEvent.click(screen.getByTestId('status-filter-pill-running'));
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
 
       // Simulate state update
       rerender(
         <StatusFilter
-          selectedStatuses={['Active']}
+          selectedStatuses={[BuildStatus.Running]}
           onToggle={mockOnToggle}
         />
       );
 
-      fireEvent.click(screen.getByTestId('status-filter-pill-idle'));
-      expect(mockOnToggle).toHaveBeenLastCalledWith('Idle');
+      fireEvent.click(screen.getByTestId('status-filter-pill-pending'));
+      expect(mockOnToggle).toHaveBeenLastCalledWith(BuildStatus.Pending);
 
       expect(mockOnToggle).toHaveBeenCalledTimes(2);
     });
@@ -165,10 +169,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.keyDown(activeButton, { key: 'Enter' });
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.keyDown(runningButton, { key: 'Enter' });
 
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
     });
 
     it('should toggle status on Space key', () => {
@@ -179,10 +183,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.keyDown(activeButton, { key: ' ' });
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.keyDown(runningButton, { key: ' ' });
 
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
     });
 
     it('should prevent default behavior on keyboard events', () => {
@@ -193,13 +197,13 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
 
-      fireEvent.keyDown(activeButton, { key: 'Enter' });
+      fireEvent.keyDown(runningButton, { key: 'Enter' });
 
       // Note: fireEvent doesn't fully support preventing default,
       // so we just verify the callback was called
-      expect(mockOnToggle).toHaveBeenCalledWith('Active');
+      expect(mockOnToggle).toHaveBeenCalledWith(BuildStatus.Running);
     });
 
     it('should not toggle on other keys', () => {
@@ -210,8 +214,8 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.keyDown(activeButton, { key: 'ArrowLeft' });
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.keyDown(runningButton, { key: 'ArrowLeft' });
 
       expect(mockOnToggle).not.toHaveBeenCalled();
     });
@@ -244,8 +248,8 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.click(activeButton);
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.click(runningButton);
 
       expect(mockOnToggle).not.toHaveBeenCalled();
     });
@@ -259,8 +263,8 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.keyDown(activeButton, { key: 'Enter' });
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.keyDown(runningButton, { key: 'Enter' });
 
       expect(mockOnToggle).not.toHaveBeenCalled();
     });
@@ -274,14 +278,14 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      expect(activeButton).toHaveClass('disabled:opacity-50');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      expect(runningButton).toHaveClass('disabled:opacity-50');
     });
   });
 
   describe('Custom Available Statuses', () => {
     it('should render custom available statuses', () => {
-      const customStatuses: BuildStatus[] = ['Active', 'Idle'];
+      const customStatuses: BuildStatus[] = [BuildStatus.Running, BuildStatus.Pending];
       const props: StatusFilterProps = {
         selectedStatuses: [],
         availableStatuses: customStatuses,
@@ -290,10 +294,10 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      expect(screen.getByText('Active')).toBeInTheDocument();
-      expect(screen.getByText('Idle')).toBeInTheDocument();
-      expect(screen.queryByText('Failed')).not.toBeInTheDocument();
-      expect(screen.queryByText('Completed')).not.toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Running])).toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Pending])).toBeInTheDocument();
+      expect(screen.queryByText(STATUS_LABELS[BuildStatus.Failed])).not.toBeInTheDocument();
+      expect(screen.queryByText(STATUS_LABELS[BuildStatus.Complete])).not.toBeInTheDocument();
     });
   });
 
@@ -330,9 +334,9 @@ describe('StatusFilter Component', () => {
 
       render(<StatusFilter {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      expect(activeButton).toHaveClass('focus:ring-2');
-      expect(activeButton).toHaveClass('focus:ring-blue-500');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      expect(runningButton).toHaveClass('focus:ring-2');
+      expect(runningButton).toHaveClass('focus:ring-blue-500');
     });
   });
 });

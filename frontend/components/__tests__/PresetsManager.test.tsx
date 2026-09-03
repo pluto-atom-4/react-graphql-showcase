@@ -4,16 +4,17 @@ import userEvent from '@testing-library/user-event';
 import { PresetsManager } from '../PresetsManager';
 import { FilterPresetsState, FilterPreset } from '../../lib/hooks/useFilterPresets';
 import { FilterState } from '../../lib/hooks/useFilter';
+import { BuildStatus } from '../../lib/status-vocabulary';
 
 // Test data
 const mockFilterState: FilterState = {
   search: 'test',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
 };
 
 const mockFilterState2: FilterState = {
   search: 'test2',
-  statuses: ['Failed'],
+  statuses: [BuildStatus.Failed],
   dateStart: '2024-01-01',
   dateEnd: '2024-01-31',
 };
@@ -57,6 +58,26 @@ describe('PresetsManager Component', () => {
   });
 
   describe('Rendering', () => {
+    it('should summarize preset statuses using display labels, not wire values', () => {
+      render(
+        <PresetsManager
+          presets={mockPresetsState}
+          currentFilterState={mockFilterState}
+          isOpen={true}
+          onToggleOpen={mockCallbacks.onToggleOpen}
+          onSelectPreset={mockCallbacks.onSelectPreset}
+          onCreatePreset={mockCallbacks.onCreatePreset}
+          onDeletePreset={mockCallbacks.onDeletePreset}
+          onRenamePreset={mockCallbacks.onRenamePreset}
+          data-testid="test-presets"
+        />
+      );
+
+      // mockFilterState uses BuildStatus.Running, whose label is 'Running'.
+      expect(screen.getByText(/Status: Running/)).toBeInTheDocument();
+      expect(screen.queryByText(/Status: RUNNING/)).not.toBeInTheDocument();
+    });
+
     it('should render closed by default', () => {
       render(
         <PresetsManager

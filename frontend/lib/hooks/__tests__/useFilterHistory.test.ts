@@ -8,6 +8,7 @@ import {
   FilterHistoryItem,
 } from '../useFilterHistory';
 import { FilterState } from '../useFilter';
+import { BuildStatus } from '../../status-vocabulary';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -34,12 +35,12 @@ Object.defineProperty(window, 'localStorage', {
 // Test data
 const mockFilterState1: FilterState = {
   search: 'test1',
-  statuses: ['Active'],
+  statuses: [BuildStatus.Running],
 };
 
 const mockFilterState2: FilterState = {
   search: 'test2',
-  statuses: ['Failed', 'Idle'],
+  statuses: [BuildStatus.Failed, BuildStatus.Pending],
   dateStart: '2024-01-01',
 };
 
@@ -435,6 +436,29 @@ describe('useFilterHistory Hook', () => {
       expect(result.current[0].items).toEqual([]);
     });
 
+    it('should drop unknown statuses from a rehydrated item and keep the rest', () => {
+      window.localStorage.setItem(
+        'filter-history:legacy-vocab',
+        JSON.stringify({
+          maxItems: 20,
+          items: [
+            {
+              id: 'h1',
+              timestamp: 1000,
+              state: { search: 'x', statuses: ['Active', 'FAILED'], dateStart: '2026-01-01' },
+            },
+          ],
+        })
+      );
+
+      const { result } = renderHook(() => useFilterHistory('legacy-vocab'));
+
+      expect(result.current[0].items).toHaveLength(1);
+      expect(result.current[0].items[0].state.statuses).toEqual([BuildStatus.Failed]);
+      expect(result.current[0].items[0].state.search).toBe('x');
+      expect(result.current[0].items[0].state.dateStart).toBe('2026-01-01');
+    });
+
     it('should use contextName in localStorage key', () => {
       const { result } = renderHook(() => useFilterHistory('my-filters'));
 
@@ -453,7 +477,7 @@ describe('useFilterHistory Hook', () => {
 
       const largeFilterState: FilterState = {
         search: 'x'.repeat(1000),
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2024-01-01',
         dateEnd: '2024-12-31',
       };

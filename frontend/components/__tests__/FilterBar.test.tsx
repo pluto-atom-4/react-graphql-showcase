@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FilterBar, FilterBarProps } from '../FilterBar';
 import { FilterState } from '../../lib/hooks/useFilter';
+import { BuildStatus } from '../../lib/status-vocabulary';
 
 describe('FilterBar Component', () => {
   const mockOnFilterChange = vi.fn();
@@ -117,19 +118,19 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      fireEvent.click(activeButton);
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      fireEvent.click(runningButton);
 
       expect(mockOnFilterChange).toHaveBeenCalledWith({
         type: 'TOGGLE_STATUS',
-        payload: 'Active',
+        payload: BuildStatus.Running,
       });
     });
 
     it('should show selected statuses', () => {
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
       };
       const props: FilterBarProps = {
         filters,
@@ -138,11 +139,11 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      const idleButton = screen.getByTestId('status-filter-pill-idle');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      const pendingButton = screen.getByTestId('status-filter-pill-pending');
 
-      expect(activeButton).toHaveAttribute('aria-pressed', 'true');
-      expect(idleButton).toHaveAttribute('aria-pressed', 'true');
+      expect(runningButton).toHaveAttribute('aria-pressed', 'true');
+      expect(pendingButton).toHaveAttribute('aria-pressed', 'true');
     });
   });
 
@@ -190,7 +191,7 @@ describe('FilterBar Component', () => {
     it('should dispatch RESET_FILTERS on Clear All click', () => {
       const filters: FilterState = {
         search: 'test',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -242,7 +243,7 @@ describe('FilterBar Component', () => {
       render(<FilterBar {...props} />);
 
       const searchInput = screen.getByRole('textbox');
-      const statusButton = screen.getByTestId('status-filter-pill-active');
+      const statusButton = screen.getByTestId('status-filter-pill-running');
       const dateInput = screen.getByTestId('date-range-filter-start');
 
       expect(searchInput).toBeDisabled();
@@ -295,7 +296,7 @@ describe('FilterBar Component', () => {
     it('should handle complex filter combinations', () => {
       const filters: FilterState = {
         search: 'important',
-        statuses: ['Active', 'Idle'],
+        statuses: [BuildStatus.Running, BuildStatus.Pending],
         dateStart: '2026-01-01',
         dateEnd: '2026-12-31',
       };
@@ -310,8 +311,8 @@ describe('FilterBar Component', () => {
       const searchInput = screen.getByRole('textbox');
       expect((searchInput as HTMLInputElement).value).toBe('important');
 
-      const activeButton = screen.getByTestId('status-filter-pill-active');
-      expect(activeButton).toHaveAttribute('aria-pressed', 'true');
+      const runningButton = screen.getByTestId('status-filter-pill-running');
+      expect(runningButton).toHaveAttribute('aria-pressed', 'true');
 
       const startDateInput = screen.getByTestId('date-range-filter-start');
       expect((startDateInput as HTMLInputElement).value).toBe('2026-01-01');
@@ -355,7 +356,7 @@ describe('FilterBar Component', () => {
     it('should render FilterChips with current filters', () => {
       const filters: FilterState = {
         search: 'test',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
       const props: FilterBarProps = {
         filters,
@@ -386,7 +387,7 @@ describe('FilterBar Component', () => {
     it('should display status chips', () => {
       const filters: FilterState = {
         search: '',
-        statuses: ['Active', 'Failed'],
+        statuses: [BuildStatus.Running, BuildStatus.Failed],
       };
       const props: FilterBarProps = {
         filters,
@@ -395,8 +396,8 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      expect(screen.getByTestId('filter-chip-status-Active')).toBeInTheDocument();
-      expect(screen.getByTestId('filter-chip-status-Failed')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-RUNNING')).toBeInTheDocument();
+      expect(screen.getByTestId('filter-chip-status-FAILED')).toBeInTheDocument();
     });
 
     it('should dispatch CLEAR_SEARCH when search chip removed', () => {
@@ -420,7 +421,7 @@ describe('FilterBar Component', () => {
     it('should dispatch REMOVE_STATUS when status chip removed', () => {
       const filters: FilterState = {
         search: '',
-        statuses: ['Active'],
+        statuses: [BuildStatus.Running],
       };
       const props: FilterBarProps = {
         filters,
@@ -429,12 +430,12 @@ describe('FilterBar Component', () => {
 
       render(<FilterBar {...props} />);
 
-      const removeButton = screen.getByTestId('filter-chip-remove-status-Active');
+      const removeButton = screen.getByTestId('filter-chip-remove-status-RUNNING');
       fireEvent.click(removeButton);
 
       expect(mockOnFilterChange).toHaveBeenCalledWith({
         type: 'REMOVE_STATUS',
-        payload: 'Active',
+        payload: BuildStatus.Running,
       });
     });
 

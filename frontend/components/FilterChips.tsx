@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import type { FilterState, FilterAction, BuildStatus } from '../lib/hooks/useFilter';
+import type { FilterState, FilterAction } from '../lib/hooks/useFilter';
+import { STATUS_LABELS, type BuildStatus } from '../lib/status-vocabulary';
 
 /**
  * Props for FilterChips component
@@ -36,7 +37,7 @@ export interface FilterChipsProps {
  *
  * // Multi-filter mode
  * <FilterChips
- *   filters={{ search: 'query', statuses: ['Active'], dateStart: '2026-01-01' }}
+ *   filters={{ search: 'query', statuses: [BuildStatus.Running], dateStart: '2026-01-01' }}
  *   onRemoveFilter={handleDispatch}
  * />
  *
@@ -69,8 +70,10 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
     if (filters.statuses && filters.statuses.length > 0) {
       filters.statuses.forEach((status: BuildStatus) => {
         chips.push({
+          // id (and therefore data-testid) stays keyed on the wire value;
+          // only the visible label comes from STATUS_LABELS.
           id: `status-${status}`,
-          label: status,
+          label: STATUS_LABELS[status],
           onRemove: () => onRemoveFilter({ type: 'REMOVE_STATUS', payload: status }),
         });
       });

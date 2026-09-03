@@ -18,6 +18,11 @@ import { FilterBar } from '@/components/FilterBar';
  * 3. Watch chips appear below the search bar
  * 4. Reload the page (F5)
  * 5. Verify that all filters are restored from localStorage
+ *
+ * Note: status pills show display labels (Pending / Running / Complete /
+ * Failed) while the state dump below shows the GraphQL wire values
+ * (PENDING / RUNNING / COMPLETE / FAILED). Both come from
+ * lib/status-vocabulary.ts; see #347.
  */
 
 function FilterDemoContent(): ReactElement {
@@ -39,6 +44,10 @@ function FilterDemoContent(): ReactElement {
 
       <div className="mt-8 p-4 bg-gray-100 rounded-lg">
         <h2 className="font-bold mb-2">Current Filter State:</h2>
+        <p className="text-xs text-gray-600 mb-2">
+          Statuses are shown as GraphQL wire values; the pills above show their
+          display labels.
+        </p>
         <pre className="text-sm overflow-auto max-h-64">
           {JSON.stringify(state, null, 2)}
         </pre>
