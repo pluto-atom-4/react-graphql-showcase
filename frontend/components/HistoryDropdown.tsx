@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { FilterHistoryItem, FilterHistoryState } from '../lib/hooks/useFilterHistory';
 import { FilterState } from '../lib/hooks/useFilter';
+import { useDelayedVisibility } from '../lib/hooks/useDelayedVisibility';
 import { STATUS_LABELS } from '../lib/status-vocabulary';
 
 /**
@@ -112,7 +113,8 @@ export const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
   'data-testid': dataTestId = 'history-dropdown',
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // Keeps the menu mounted for the 200ms exit fade (see useDelayedVisibility)
+  const isVisible = useDelayedVisibility(isOpen);
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -139,17 +141,6 @@ export const HistoryDropdown: React.FC<HistoryDropdownProps> = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onToggleOpen]);
-
-  // Update visibility with a small delay for animation
-  useEffect(() => {
-    if (isOpen) {
-      setIsVisible(true);
-      return;
-    }
-
-    const timer = setTimeout(() => setIsVisible(false), 200);
-    return () => clearTimeout(timer);
-  }, [isOpen]);
 
   const hasHistory = history.items.length > 0;
 

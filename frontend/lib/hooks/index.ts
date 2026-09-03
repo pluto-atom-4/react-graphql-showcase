@@ -10,3 +10,4 @@ export { useFilterHistory, filterHistoryReducer, defaultFilterHistoryState, save
 export { useFilterPresets, filterPresetsReducer, defaultFilterPresetsState, savePresetsToStorage, type FilterPresetsState, type FilterPresetsAction, type FilterPreset } from './useFilterPresets';
 export { useUndoRedo, undoRedoReducer, saveUndoRedoToStorage, type UndoRedoState, type UndoRedoAction, type UndoRedoItem } from './useUndoRedo';
 export { useKeyboardNav, type KeyboardNavConfig } from './useKeyboardNav';
+export { useDelayedVisibility } from './useDelayedVisibility';

@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PresetsManager } from '../PresetsManager';
 import { FilterPresetsState, FilterPreset } from '../../lib/hooks/useFilterPresets';
@@ -523,6 +523,82 @@ describe('PresetsManager Component', () => {
 
       const menuItems = screen.getAllByRole('menuitem');
       expect(menuItems.length).toBeGreaterThan(0);
+    });
+  });
+  describe('Exit animation', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    const managerWith = (isOpen: boolean): React.ReactElement => (
+      <PresetsManager
+        presets={mockPresetsState}
+        currentFilterState={mockFilterState}
+        isOpen={isOpen}
+        onToggleOpen={mockCallbacks.onToggleOpen}
+        onSelectPreset={mockCallbacks.onSelectPreset}
+        onCreatePreset={mockCallbacks.onCreatePreset}
+        onDeletePreset={mockCallbacks.onDeletePreset}
+        onRenamePreset={mockCallbacks.onRenamePreset}
+        data-testid="test-presets"
+      />
+    );
+
+    it('should keep the menu mounted at 199ms after closing and remove it at 200ms', () => {
+      const { rerender } = render(managerWith(true));
+
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      rerender(managerWith(false));
+
+      // Still mounted immediately after close so the fade-out can run
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(199);
+      });
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
+
+    it('should fade the menu out by switching to opacity-0 while still mounted', () => {
+      const { rerender } = render(managerWith(true));
+
+      expect(screen.getByRole('menu').className).toContain('opacity-100');
+
+      rerender(managerWith(false));
+
+      const menu = screen.getByRole('menu');
+      expect(menu.className).toContain('opacity-0');
+      expect(menu.className).toContain('transition-opacity');
+      expect(menu.className).toContain('duration-200');
+    });
+
+    it('should cancel the pending hide when reopened before the delay elapses', () => {
+      const { rerender } = render(managerWith(true));
+
+      rerender(managerWith(false));
+
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+
+      rerender(managerWith(true));
+
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      expect(screen.getByRole('menu').className).toContain('opacity-100');
     });
   });
 });

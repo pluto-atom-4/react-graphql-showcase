@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { FilterPreset, FilterPresetsState } from '../lib/hooks/useFilterPresets';
 import { FilterState } from '../lib/hooks/useFilter';
+import { useDelayedVisibility } from '../lib/hooks/useDelayedVisibility';
 import { STATUS_LABELS } from '../lib/status-vocabulary';
 
 /**
@@ -123,7 +124,8 @@ export const PresetsManager: React.FC<PresetsManagerProps> = ({
   'data-testid': dataTestId = 'presets-manager',
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // Keeps the menu mounted for the 200ms exit fade (see useDelayedVisibility)
+  const isVisible = useDelayedVisibility(isOpen);
   const [isCreating, setIsCreating] = useState(false);
   const [newPresetName, setNewPresetName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -158,17 +160,6 @@ export const PresetsManager: React.FC<PresetsManagerProps> = ({
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onToggleOpen]);
-
-  // Update visibility with a small delay for animation
-  useEffect(() => {
-    if (isOpen) {
-      setIsVisible(true);
-      return;
-    }
-
-    const timer = setTimeout(() => setIsVisible(false), 200);
-    return () => clearTimeout(timer);
-  }, [isOpen]);
 
   const handleCreatePreset = () => {
     const name = newPresetName.trim();

@@ -562,13 +562,15 @@ frontend/
 │   │   ├── useFilterPresets.ts
 │   │   ├── useUndoRedo.ts
 │   │   ├── useKeyboardNav.ts
+│   │   ├── useDelayedVisibility.ts
 │   │   └── __tests__/
 │   │       ├── useFilter.test.ts
 │   │       ├── useSearchHighlight.test.ts
 │   │       ├── useFilterHistory.test.ts
 │   │       ├── useFilterPresets.test.ts
 │   │       ├── useUndoRedo.test.ts
-│   │       └── useKeyboardNav.test.ts
+│   │       ├── useKeyboardNav.test.ts
+│   │       └── useDelayedVisibility.test.ts
 │   └── utils/
 │       ├── filterComposers.ts
 │       ├── dateRangeValidators.ts
@@ -594,6 +596,46 @@ frontend/
     ├── filter-hooks.integration.test.ts
     └── filter-ui.integration.test.tsx
 ```
+
+## Dropdown Exit Animations
+
+`HistoryDropdown` and `PresetsManager` fade out over 200ms: the element must stay
+mounted while its opacity transitions. That "still rendering" flag comes from
+`useDelayedVisibility(isOpen, exitDelayMs = 200)` — never from a local
+`useState` + `useEffect` pair.
+
+```tsx
+import { useDelayedVisibility } from '@/lib/hooks/useDelayedVisibility';
+
+const isVisible = useDelayedVisibility(isOpen);
+
+return isVisible ? (
+  <div className={`transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0'}`} role="menu">
+    ...
+  </div>
+) : null;
+```
+
+### Rules
+
+- **Exit animations go through `useDelayedVisibility`.** One implementation, one
+  place to test.
+- **Never a bare `setState` inside an effect** to flip visibility
+  (`useEffect(() => { if (isOpen) setIsVisible(true); ... })`). Both
+  `react-hooks/set-state-in-effect` and `react-hooks/set-state-in-render` are
+  error-level in `frontend/eslint.config.js`; only the conditional
+  adjust-during-render form inside the hook satisfies both.
+- **Never unmount on close** (`if (!isOpen) return null`). It passes lint and every
+  static-prop test while silently deleting the fade. That fix is correct for
+  modals with no exit transition (see `create-build-modal.tsx`), not for these
+  dropdowns.
+- **Cover it with fake timers.** A visibility change is invisible to tests that
+  render with a static `isOpen`. Assert mounted at `delay - 1`, unmounted at
+  `delay`, and `opacity-0` while fading — see
+  `lib/hooks/__tests__/useDelayedVisibility.test.ts` and the `Exit animation`
+  blocks in both dropdown test files.
+
+Reference: issue #351.
 
 ## Testing Strategy
 
