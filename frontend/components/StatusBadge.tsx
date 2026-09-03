@@ -1,8 +1,7 @@
 'use client';
 
 import type { ReactElement } from 'react';
-
-export type BuildStatus = 'PENDING' | 'RUNNING' | 'COMPLETE' | 'FAILED';
+import { BuildStatus, STATUS_LABELS } from '../lib/status-vocabulary';
 
 interface StatusBadgeProps {
   status: BuildStatus;
@@ -21,8 +20,8 @@ interface StatusBadgeProps {
  * - FAILED: Red background with dark text (accessibility: 8.3:1)
  *
  * @example
- * <StatusBadge status="COMPLETE" />
- * <StatusBadge status="PENDING" className="inline-block" />
+ * <StatusBadge status={BuildStatus.Complete} />
+ * <StatusBadge status={BuildStatus.Pending} className="inline-block" />
  */
 export function StatusBadge({
   status,
@@ -38,19 +37,12 @@ export function StatusBadge({
     FAILED: 'bg-red-100 text-red-800 border-red-200',
   };
 
-  const statusLabels: Record<BuildStatus, string> = {
-    PENDING: 'Pending',
-    RUNNING: 'Running',
-    COMPLETE: 'Complete',
-    FAILED: 'Failed',
-  };
-
   return (
     <span 
       role="status"
       className={`${baseClasses} ${statusStyles[status]} ${className}`}
     >
-      {statusLabels[status]}
+      {STATUS_LABELS[status]}
     </span>
   );
 }

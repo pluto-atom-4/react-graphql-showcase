@@ -6,6 +6,7 @@ import { InMemoryCache } from '@apollo/client';
 import { DashboardMetrics } from '../DashboardMetrics';
 import { DASHBOARD_METRICS_QUERY } from '../../lib/graphql-queries';
 import { BuildStatus } from '../../lib/generated/graphql';
+import { STATUS_LABELS } from '../../lib/status-vocabulary';
 
 /**
  * Mock GraphQL response for testing
@@ -105,8 +106,12 @@ describe('DashboardMetrics Component', () => {
     await waitFor(() => {
       // Check for all metric cards
       expect(screen.getByLabelText('Total Builds: 4')).toBeInTheDocument();
-      expect(screen.getByLabelText('In Progress Builds: 1')).toBeInTheDocument();
-      expect(screen.getByLabelText('Completed Builds: 2')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Running]} Builds: 1`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Complete]} Builds: 2`)
+      ).toBeInTheDocument();
       expect(screen.getByLabelText('Failed Builds: 1')).toBeInTheDocument();
     });
   });
@@ -120,8 +125,8 @@ describe('DashboardMetrics Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Total Builds')).toBeInTheDocument();
-      expect(screen.getByText('In Progress')).toBeInTheDocument();
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Running])).toBeInTheDocument();
+      expect(screen.getByText(STATUS_LABELS[BuildStatus.Complete])).toBeInTheDocument();
       expect(screen.getByText('Failed')).toBeInTheDocument();
     });
   });
@@ -263,8 +268,12 @@ describe('DashboardMetrics Component', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText('Total Builds: 0')).toBeInTheDocument();
-      expect(screen.getByLabelText('In Progress Builds: 0')).toBeInTheDocument();
-      expect(screen.getByLabelText('Completed Builds: 0')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Running]} Builds: 0`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(`${STATUS_LABELS[BuildStatus.Complete]} Builds: 0`)
+      ).toBeInTheDocument();
       expect(screen.getByLabelText('Failed Builds: 0')).toBeInTheDocument();
     });
   });

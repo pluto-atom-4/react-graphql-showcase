@@ -126,7 +126,7 @@ const colorClass = getStatusColor('COMPLETE');
 // Output: 'bg-green-100 text-green-800'
 
 // Use in JSX:
-<span className={colorClass}>Completed</span>
+<span className={colorClass}>Complete</span>
 ```
 
 **Color Mapping**:
@@ -253,16 +253,22 @@ console.log(activity);
 
 Mapping of BuildStatus enum values to display labels.
 
+**Re-exported from `lib/status-vocabulary.ts`** — this module does not own the
+copy. It previously declared its own map with `'In Progress'` / `'Completed'`,
+which disagreed with the badge rendered beside it on the dashboard. Change a
+label in `status-vocabulary.ts` and every consumer follows.
+
 ```typescript
+// lib/status-vocabulary.ts — the single source of truth
 const STATUS_LABELS: Record<BuildStatus, string> = {
-  'COMPLETE': 'Completed',
-  'RUNNING': 'In Progress',
-  'FAILED': 'Failed',
-  'PENDING': 'Pending',
+  [BuildStatus.Pending]: 'Pending',
+  [BuildStatus.Running]: 'Running',
+  [BuildStatus.Complete]: 'Complete',
+  [BuildStatus.Failed]: 'Failed',
 };
 
-console.log(STATUS_LABELS['RUNNING']);
-// Output: 'In Progress'
+console.log(STATUS_LABELS[BuildStatus.Running]);
+// Output: 'Running'
 ```
 
 ---

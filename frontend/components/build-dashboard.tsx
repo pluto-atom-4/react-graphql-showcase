@@ -11,6 +11,7 @@ import { EmptyState } from './EmptyState';
 import { StatusBadge } from './StatusBadge';
 import { DashboardMetrics } from './DashboardMetrics';
 import type { Build } from '@/lib/generated/graphql';
+import { BuildStatus } from '@/lib/status-vocabulary';
 
 interface BuildsTableProps {
   initialBuilds?: Build[];
@@ -171,7 +172,7 @@ function BuildsTable({ initialBuilds }: BuildsTableProps): ReactElement {
                   <td className="px-4 py-4 border-b border-gray-100" data-testid="build-name">{build.name}</td>
                   <td className="px-4 py-4 border-b border-gray-100">
                     <StatusBadge 
-                      status={build.status || 'PENDING'} 
+                      status={build.status ?? BuildStatus.Pending} 
                     />
                   </td>
                   <td className="px-4 py-4 border-b border-gray-100">{new Date(build.createdAt as string | number).toLocaleDateString()}</td>

@@ -519,6 +519,42 @@ Three rules make the #347 class of bug visible rather than silent:
    tuple guarded by a type-level exhaustiveness check: adding a member to the
    schema enum without ordering and labelling it is a `tsc` error.
 
+#### The former owners now re-export (#352)
+
+Three modules used to declare their own status vocabulary, and they disagreed.
+`dashboard-utils` labelled `RUNNING` as "In Progress" and `COMPLETE` as
+"Completed" while the badge rendered directly beside it said "Running" and
+"Complete" — the same status, two words, one screen. `StatusBadge` also
+re-declared `BuildStatus` as a local string union, so its call sites passed raw
+literals that the generated enum would have rejected.
+
+All three are now thin re-exporters, not owners:
+
+| Module | Was | Now |
+|---|---|---|
+| `lib/status-utils.ts` | own `STATUS_LABELS` (values matched) | re-exports from `status-vocabulary` |
+| `lib/dashboard-utils.ts` | own `STATUS_LABELS` (values **diverged**) | re-exports from `status-vocabulary` |
+| `components/StatusBadge.tsx` | own `BuildStatus` union + private label map | imports both from `status-vocabulary` |
+
+Consequences worth knowing:
+
+- A re-export needs a **local binding** (`import { STATUS_LABELS } from
+  './status-vocabulary'; export { STATUS_LABELS };`), not a bare
+  `export ... from`, wherever the module also uses the value itself —
+  `status-utils.formatStatusTransition` does.
+- **Assert against `STATUS_LABELS[BuildStatus.X]`, not a fresh string literal.**
+  A test that hardcodes "Running" re-creates the duplication in the test suite
+  and lets the copy drift again silently.
+- **A label change is not visible to vitest alone.** Because the generated
+  `BuildStatus` is a real (non-const) string enum, passing `"PENDING"` where a
+  `BuildStatus` is expected is a `TS2322` assignability error that the test
+  runner never sees. Run the type checker on any commit that touches status
+  types.
+- `status-utils.ts`'s transition-phrase map (`'RUNNING:COMPLETE': 'Completed
+  successfully'`) is **not** status labels — it is prose about a transition, and
+  stays local. Likewise the TestRun domain has its own unrelated "Completed"
+  copy. Do not bulk-rename these words across the repo.
+
 ### 6. Testing
 
 ```typescript

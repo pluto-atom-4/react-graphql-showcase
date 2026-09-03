@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { ActivityTimeline } from '../ActivityTimeline';
 import type { ActivityEntry } from '../../lib/dashboard-utils';
 import { BuildStatus } from '../../lib/generated/graphql';
+import { STATUS_LABELS } from '../../lib/status-vocabulary';
 
 describe('ActivityTimeline Component', () => {
   const mockEntries: ActivityEntry[] = [
@@ -40,9 +41,9 @@ describe('ActivityTimeline Component', () => {
   it('should render status badges with correct labels', () => {
     render(<ActivityTimeline entries={mockEntries} />);
 
-    expect(screen.getByText('Completed')).toBeInTheDocument();
-    expect(screen.getByText('In Progress')).toBeInTheDocument();
-    expect(screen.getByText('Failed')).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Complete])).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Running])).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Failed])).toBeInTheDocument();
   });
 
   it('should render relative timestamps', () => {
@@ -151,10 +152,10 @@ describe('ActivityTimeline Component', () => {
     render(<ActivityTimeline entries={statusEntries} />);
 
     // Check that all status badges are present
-    expect(screen.getByText('Completed')).toBeInTheDocument();
-    expect(screen.getByText('Failed')).toBeInTheDocument();
-    expect(screen.getByText('In Progress')).toBeInTheDocument();
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Complete])).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Failed])).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Running])).toBeInTheDocument();
+    expect(screen.getByText(STATUS_LABELS[BuildStatus.Pending])).toBeInTheDocument();
   });
 
   it('should apply custom className', () => {
@@ -173,8 +174,15 @@ describe('ActivityTimeline Component', () => {
     render(<ActivityTimeline entries={mockEntries} />);
 
     // Each status should have a first letter circle
-    const circles = screen.getAllByTitle(/^(Completed|In Progress|Failed)$/);
-    expect(circles.length).toBeGreaterThan(0);
+    const expectedTitles = [
+      BuildStatus.Complete,
+      BuildStatus.Running,
+      BuildStatus.Failed,
+    ].map(status => STATUS_LABELS[status]);
+    const circles = screen.getAllByTitle(
+      new RegExp(`^(${expectedTitles.join('|')})$`)
+    );
+    expect(circles).toHaveLength(mockEntries.length);
   });
 
   it('should handle single entry', () => {
