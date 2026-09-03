@@ -4,16 +4,16 @@
  */
 
 import type { BuildStatus } from './generated/graphql';
+import { STATUS_LABELS } from './status-vocabulary';
 
 /**
- * Status display labels
+ * Status display labels.
+ *
+ * Re-exported from `./status-vocabulary`, the canonical source of truth. This
+ * module does not own the copy — see
+ * `.claude/patterns/search-filter-patterns.md` ("Single source of truth for status").
  */
-export const STATUS_LABELS: Record<BuildStatus, string> = {
-  PENDING: 'Pending',
-  RUNNING: 'Running',
-  COMPLETE: 'Complete',
-  FAILED: 'Failed',
-};
+export { STATUS_LABELS };
 
 /**
  * Status color mapping (Tailwind classes)
