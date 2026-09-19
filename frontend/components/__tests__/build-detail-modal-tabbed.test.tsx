@@ -9,6 +9,7 @@ import * as apolloHooks from '@/lib/apollo-hooks';
 import { BuildStatus, TestStatus } from '@/lib/apollo-hooks';
 import * as testRunsHook from '@/lib/hooks/useTestRuns';
 import * as activityFeedHook from '@/lib/hooks/useActivityFeed';
+import type { BuildEvent } from '@/lib/types/activity-types';
 import { createMockBuild, createMockTestRun } from './mocks/build';
 
 // Mock the dependencies
@@ -51,14 +52,14 @@ const mockTestRuns = [
   }),
 ];
 
-const mockEvents = [
+const mockEvents: BuildEvent[] = [
   {
     id: 'event-1',
     buildId: 'build-123',
-    eventType: 'status_change' as const,
+    eventType: 'status_change',
     timestamp: new Date('2026-04-16T08:00:00Z'),
     description: 'Build created',
-    metadata: { newStatus: 'PENDING' },
+    metadata: { newStatus: BuildStatus.Pending },
   },
 ];
 
@@ -107,6 +108,7 @@ describe('BuildDetailModal - Tabbed Structure', () => {
       events: mockEvents,
       loading: false,
       error: null,
+      refetch: vi.fn().mockResolvedValue({ data: { events: mockEvents } }),
     });
   });
 
@@ -368,7 +370,7 @@ describe('BuildDetailModal - Tabbed Structure', () => {
   describe('Data Loading States', () => {
     it('should show loading skeleton initially', async (): Promise<void> => {
       vi.mocked(apolloHooks.useBuildDetail).mockReturnValue({
-        build: null,
+        build: undefined,
         loading: true,
         error: null,
         refetch: vi.fn(),
@@ -390,7 +392,7 @@ describe('BuildDetailModal - Tabbed Structure', () => {
     it('should handle data loading errors gracefully', async (): Promise<void> => {
       const errorMessage = 'Failed to load build data';
       vi.mocked(apolloHooks.useBuildDetail).mockReturnValue({
-        build: null,
+        build: undefined,
         loading: false,
         error: new Error(errorMessage),
         refetch: vi.fn(),

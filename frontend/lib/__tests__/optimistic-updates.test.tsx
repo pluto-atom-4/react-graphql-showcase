@@ -12,6 +12,14 @@ import { InMemoryCache, gql } from '@apollo/client';
 import { generateTempId, isTempId } from '../id-utils';
 import { BuildStatus, TestStatus } from '../apollo-hooks';
 
+interface GetBuildsResult {
+  builds: Array<{
+    id: string;
+    name: string;
+    status?: string;
+  }>;
+}
+
 describe('Optimistic Updates', () => {
   describe('Temp ID Generation', () => {
     it('generateTempId creates valid temporary IDs', () => {
@@ -134,7 +142,7 @@ describe('Optimistic Updates', () => {
         },
       });
 
-      const result = cache.readQuery({
+      const result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -168,7 +176,7 @@ describe('Optimistic Updates', () => {
       });
 
       // Verify data exists
-      let result = cache.readQuery({
+      let result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -183,7 +191,7 @@ describe('Optimistic Updates', () => {
       cache.evict({ fieldName: 'builds' });
       cache.gc();
 
-      result = cache.readQuery({
+      result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -338,7 +346,7 @@ describe('Optimistic Updates', () => {
       });
 
       // Verify it's there
-      let result = cache.readQuery({
+      let result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -354,7 +362,7 @@ describe('Optimistic Updates', () => {
       cache.gc();
 
       // Verify it's gone
-      result = cache.readQuery({
+      result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -492,7 +500,7 @@ describe('Optimistic Updates', () => {
       });
 
       // Update cache to add second build (simulate adding to list)
-      const existingData = cache.readQuery({
+      const existingData = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {
@@ -522,7 +530,7 @@ describe('Optimistic Updates', () => {
         });
       }
 
-      const result = cache.readQuery({
+      const result = cache.readQuery<GetBuildsResult>({
         query: gql`
           query GetBuilds {
             builds {

@@ -313,7 +313,7 @@ describe('InlineEditor Accessibility', () => {
   describe('Disabled State Accessibility', () => {
     it('should disable all fields during save', async () => {
       const user = userEvent.setup();
-      const onSave = vi.fn(
+      const onSave = vi.fn<(data: Record<string, string | number>) => Promise<void>>(
         () =>
           new Promise((resolve) => {
             setTimeout(resolve, 100);
@@ -334,7 +334,7 @@ describe('InlineEditor Accessibility', () => {
 
     it('should show loading state in button', async () => {
       const user = userEvent.setup();
-      const onSave = vi.fn(
+      const onSave = vi.fn<(data: Record<string, string | number>) => Promise<void>>(
         () =>
           new Promise((resolve) => {
             setTimeout(resolve, 100);

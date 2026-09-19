@@ -105,5 +105,6 @@ export interface DropZoneRootProps {
  */
 export interface DropZoneInputProps {
   type: 'file';
+  multiple: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

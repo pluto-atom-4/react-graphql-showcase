@@ -13,6 +13,7 @@ expect.extend(toHaveNoViolations);
 describe('TestRunResultViewer Accessibility', () => {
   const mockTestRun: TestRunData = {
     id: 'tr-123',
+    buildId: 'build-789',
     status: 'FAILED',
     result: 'Expected 5 but got 4',
     startedAt: '2026-04-15T10:00:00Z',
@@ -347,7 +348,7 @@ describe('TestRunResultViewer Accessibility', () => {
 
     it('should disable rerun button while rerunning', async () => {
       const user = userEvent.setup();
-      const slowRerun = vi.fn(
+      const slowRerun = vi.fn<(testRunId: string) => Promise<void>>(
         () =>
           new Promise((resolve) => {
             setTimeout(resolve, 100);
@@ -574,7 +575,7 @@ describe('TestRunResultViewer Accessibility', () => {
 
     it('should have no violations during rerun', async () => {
       const user = userEvent.setup();
-      const slowRerun = vi.fn(
+      const slowRerun = vi.fn<(testRunId: string) => Promise<void>>(
         () =>
           new Promise((resolve) => {
             setTimeout(resolve, 50);
