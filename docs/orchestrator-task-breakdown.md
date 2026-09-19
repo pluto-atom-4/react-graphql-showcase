@@ -6,7 +6,7 @@
 
 **Analysis Approach**:
 From the Orchestrator perspective, breaking down version-conflict-free-stack.md into:
-1. **Dependency constraints** (Next.js 16, React 19, Apollo 4, TypeScript 5)
+1. **Dependency constraints** (Next.js 16, React 19, Apollo 4, TypeScript 7.x)
 2. **Integration points** (App Router, DataLoader, SSE, event bus)
 3. **Quality gates** (lint, format, tests, security)
 4. **Deployment strategy** (staging, production, monitoring)
@@ -73,7 +73,7 @@ Issue #2 (Setup)
 - pnpm workspaces for monorepo
 - Next.js 16 LTS (Turbopack)
 - React 19 compatibility layer
-- TypeScript 5 with 'bundler' moduleResolution
+- TypeScript 7.x with 'bundler' moduleResolution
 
 **Exit Criteria**:
 - All workspaces compile
