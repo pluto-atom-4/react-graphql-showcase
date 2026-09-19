@@ -332,7 +332,7 @@ pnpm test --run && pnpm lint && pnpm type-check
 | Testing | Vitest | Latest | Fast, ESM-first, Vue/React integration |
 | Linting | ESLint | v9 | Flat config, modern rules |
 | Formatting | Prettier | Latest | Automatic code formatting |
-| TypeScript | 5+ | Strict mode enabled |
+| TypeScript | 7.x | Strict mode enabled |
 
 ---
 

@@ -73,8 +73,8 @@ git push origin feat/issue-#NNN-description  # PR auto-updates
 ### Technology Stack
 
 - **Frontend**: Next.js 16+, React 19, Apollo Client 4.1.7, Tailwind CSS, Vitest + React Testing Library
-- **GraphQL Backend**: Apollo Server 4, PostgreSQL, Prisma/Drizzle, DataLoader, TypeScript 5
-- **Express Backend**: Express 4.21.1+, Multer (file uploads), TypeScript 5, Vitest
+- **GraphQL Backend**: Apollo Server 4, PostgreSQL, Prisma/Drizzle, DataLoader, TypeScript 7.x
+- **Express Backend**: Express 4.21.1+, Multer (file uploads), TypeScript 7.x, Vitest
 - **Dev Infrastructure**: Docker Compose (PostgreSQL), pnpm workspaces, ESLint, Prettier
 
 ### Apollo Client 4.1.7 Setup
