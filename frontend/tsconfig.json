@@ -4,6 +4,7 @@
     "target": "ES2022",
     "lib": ["es2022", "dom", "dom.iterable"],
     "jsx": "react-jsx",
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "strict": true,
