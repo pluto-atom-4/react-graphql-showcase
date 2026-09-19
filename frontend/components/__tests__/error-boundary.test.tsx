@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -8,7 +9,7 @@ import '@testing-library/jest-dom';
 vi.spyOn(console, 'error').mockImplementation(() => {});
 
 // Component that throws during render
-const ThrowError = ({ shouldThrow = true, message = 'Test error message' }): JSX.Element => {
+const ThrowError = ({ shouldThrow = true, message = 'Test error message' }): React.JSX.Element => {
   if (shouldThrow) {
     throw new Error(message);
   }
@@ -17,7 +18,7 @@ const ThrowError = ({ shouldThrow = true, message = 'Test error message' }): JSX
 
 // Component that throws conditionally for reset testing
 let shouldThrowRef = { value: true };
-const ConditionalThrow = (): JSX.Element => {
+const ConditionalThrow = (): React.JSX.Element => {
   if (shouldThrowRef.value) {
     throw new Error('Conditional error');
   }
@@ -91,7 +92,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('should support custom fallback UI', (): void => {
-    const customFallback = (error: Error, reset: () => void): JSX.Element => (
+    const customFallback = (error: Error, reset: () => void): React.JSX.Element => (
       <div>
         <h2>Custom Error UI</h2>
         <p>{error.message}</p>
@@ -111,7 +112,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('should catch errors from deeply nested components', (): void => {
-    const NestedComponent = (): JSX.Element => (
+    const NestedComponent = (): React.JSX.Element => (
       <div>
         <div>
           <ThrowError message="Nested error" />
@@ -142,7 +143,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('should catch errors from multiple component types', (): void => {
-    const ChildComponent = ({ shouldFail }: { shouldFail: boolean }): JSX.Element => {
+    const ChildComponent = ({ shouldFail }: { shouldFail: boolean }): React.JSX.Element => {
       if (shouldFail) throw new Error('Child component error');
       return <div>Child success</div>;
     };
@@ -190,7 +191,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('should prevent error propagation to parent boundary', (): void => {
-    const OuterComponent = ({ children }: { children: React.ReactNode }): JSX.Element => (
+    const OuterComponent = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
       <div>{children}</div>
     );
 

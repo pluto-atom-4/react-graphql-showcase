@@ -147,11 +147,11 @@ test.describe('API Tests (Using apiClient fixture)', () => {
 
     // Verify response structure
     expect(result.data).toBeDefined();
-    expect(Array.isArray(result.data?.builds)).toBe(true);
+    expect(Array.isArray((result.data as { builds?: unknown[] })?.builds)).toBe(true);
 
     // Verify builds have required fields
-    const builds = result.data?.builds as any[];
-    if (builds.length > 0) {
+    const builds = (result.data as { builds?: unknown[] })?.builds as any[];
+    if (builds && builds.length > 0) {
       const build = builds[0];
       expect(build).toHaveProperty('id');
       expect(build).toHaveProperty('status');

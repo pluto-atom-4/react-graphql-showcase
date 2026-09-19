@@ -10,7 +10,7 @@ import { BuildStatus, TestStatus } from '@/lib/apollo-hooks';
 import * as testRunsHook from '@/lib/hooks/useTestRuns';
 import * as activityFeedHook from '@/lib/hooks/useActivityFeed';
 import { createMockBuild, createMockTestRun } from './mocks/build';
-import type { BuildEvent } from '@/lib/hooks/useActivityFeed';
+import type { BuildEvent } from '@/lib/types/activity-types';
 
 // Mock dependencies
 vi.mock('@/lib/apollo-hooks');
@@ -51,7 +51,7 @@ describe('BuildDetailModal - Phase 6: Event Handlers', () => {
     }),
   ];
 
-  const mockEvents = [];
+  const mockEvents: BuildEvent[] = [];
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -66,29 +66,37 @@ describe('BuildDetailModal - Phase 6: Event Handlers', () => {
     vi.mocked(apolloHooks.useUpdateBuildStatus).mockReturnValue({
       updateStatus: vi.fn().mockResolvedValue({}),
       loading: false,
+      error: null,
     });
 
     vi.mocked(apolloHooks.useAddPart).mockReturnValue({
       addPart: vi.fn().mockResolvedValue({}),
       loading: false,
+      error: null,
     });
 
     vi.mocked(apolloHooks.useSubmitTestRun).mockReturnValue({
       submitTestRun: vi.fn().mockResolvedValue({}),
       loading: false,
+      error: null,
     });
 
     vi.mocked(testRunsHook.useTestRuns).mockReturnValue({
       testRuns: mockTestRuns,
       loading: false,
       error: null,
+      startPolling: vi.fn(),
+      stopPolling: vi.fn(),
+      refetch: vi.fn().mockResolvedValue({ data: { testRuns: mockTestRuns } }),
+      isPolling: false,
+      pollInterval: 2000,
     });
 
     vi.mocked(activityFeedHook.useActivityFeed).mockReturnValue({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      events: mockEvents as BuildEvent[],
+      events: mockEvents,
       loading: false,
       error: null,
+      refetch: vi.fn().mockResolvedValue({ data: { events: mockEvents } }),
     });
   });
 
@@ -331,6 +339,11 @@ describe('BuildDetailModal - Phase 6: Event Handlers', () => {
         testRuns: [],
         loading: false,
         error: null,
+        startPolling: vi.fn(),
+        stopPolling: vi.fn(),
+        refetch: vi.fn().mockResolvedValue({ data: { testRuns: [] } }),
+        isPolling: false,
+        pollInterval: 2000,
       });
 
       renderModal();

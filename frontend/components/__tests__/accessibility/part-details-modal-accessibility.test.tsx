@@ -13,6 +13,7 @@ expect.extend(toHaveNoViolations);
 describe('PartDetailsModal Accessibility', () => {
   const mockPart: PartData = {
     id: 'part-123',
+    buildId: 'build-456',
     name: 'Motor Assembly',
     sku: 'SKU-001',
     quantity: 5,
@@ -399,7 +400,7 @@ describe('PartDetailsModal Accessibility', () => {
 
     it('should disable confirmation buttons while deleting', async () => {
       const user = userEvent.setup();
-      const slowDelete = vi.fn(
+      const slowDelete = vi.fn<(partId: string) => Promise<void>>(
         () =>
           new Promise((resolve) => {
             setTimeout(resolve, 100);

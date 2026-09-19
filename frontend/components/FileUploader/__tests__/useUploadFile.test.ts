@@ -65,8 +65,6 @@ describe('useUploadFile Hook', () => {
     global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
-    const _formData = new FormData();
-    const _abortController = new AbortController();
 
     expect(result.current.uploadFile).toBeDefined();
   });
