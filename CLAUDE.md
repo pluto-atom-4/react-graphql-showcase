@@ -14,7 +14,7 @@ Full-stack React/GraphQL playground for Stoke Space interview prep.
 **Quality**: ESLint v9, Prettier, Vitest (unit + integration)  
 **Containers**: Docker + Docker Compose
 
-**TypeScript 7 Toolchain Note**: typescript-eslint runs on a JS-API-compatible TS 6.0 shim (`.pnpmfile.cjs` redirects it to `@typescript/typescript6@6.0.2`; remove when typescript-eslint supports TS 7). After upgrading TypeScript, re-run `pnpm --filter backend-graphql exec prisma generate` (Prisma client is keyed by TS version). TS 7 incremental cache can serve stale errors; use `--incremental false` when measuring baseline performance.
+**TypeScript 7 Toolchain Note**: typescript-eslint runs on a JS-API-compatible TS 6.0 shim (`.pnpmfile.cjs` redirects it to `@typescript/typescript6@6.0.2`; remove when typescript-eslint supports TS 7). After upgrading TypeScript, re-run `pnpm --filter backend-graphql exec prisma generate` (Prisma client is keyed by TS version). TS 7 incremental cache can serve stale errors; use `--incremental false` when measuring baseline performance. **Critical**: When editing `.pnpmfile.cjs`, regenerate `pnpm-lock.yaml` with `rm pnpm-lock.yaml && pnpm install` to update the lockfile's `pnpmfileChecksum`. Failing to do so will cause CI to reject the commit even if the shim logic is correct, preventing silent drift between local and CI builds.
 
 ## Quick Start
 
