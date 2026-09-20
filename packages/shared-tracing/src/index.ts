@@ -1,3 +1,3 @@
-export * from './trace-context';
-export * from './context-manager';
-export * from './tracing-middleware';
+export * from './trace-context.js';
+export * from './context-manager.js';
+export * from './tracing-middleware.js';

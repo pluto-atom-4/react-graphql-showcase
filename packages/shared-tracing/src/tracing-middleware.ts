@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
-import { parseTraceparent, parseTracestate, type TraceContext } from './trace-context';
-import { runWithTraceContext } from './context-manager';
+import { parseTraceparent, parseTracestate, type TraceContext } from './trace-context.js';
+import { runWithTraceContext } from './context-manager.js';
 
 declare global {
   namespace Express {

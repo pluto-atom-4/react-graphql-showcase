@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import type { TraceContext } from './trace-context';
+import type { TraceContext } from './trace-context.js';
 
 const traceContextStorage = new AsyncLocalStorage<TraceContext>();
 
