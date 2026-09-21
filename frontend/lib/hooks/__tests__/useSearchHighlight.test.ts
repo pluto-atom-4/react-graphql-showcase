@@ -235,7 +235,8 @@ describe('useSearchHighlight Hook', () => {
       };
 
       const result = searchHighlightReducer(state, {
-        type: 'UNKNOWN_ACTION' as any,
+        // @ts-expect-error testing unknown action type
+        type: 'UNKNOWN_ACTION',
       });
 
       expect(result).toEqual(state);

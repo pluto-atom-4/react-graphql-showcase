@@ -302,10 +302,10 @@ describe('useKeyboardNav Hook', () => {
 
   describe('Container Scoping', () => {
     it('should accept containerRef config', () => {
-      const containerRef = { current: document.getElementById('nav-container') as HTMLElement | null };
+      const containerRef = { current: document.getElementById('nav-container') } as React.RefObject<HTMLElement>;
       const config: KeyboardNavConfig = {
         focusableSelectors: ['.focusable-input'],
-        containerRef: containerRef as React.RefObject<HTMLElement>,
+        containerRef,
       };
 
       const { result } = renderHook(() => useKeyboardNav(config));

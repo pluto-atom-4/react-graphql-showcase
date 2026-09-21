@@ -460,18 +460,15 @@ describe('useFilterPresets Hook', () => {
   describe('Reducer Function Directly', () => {
     it('should handle unknown action by returning state unchanged', () => {
       const state = { ...defaultFilterPresetsState };
-      const action = { type: 'UNKNOWN' } as any;
-
-      const newState = filterPresetsReducer(state, action);
+      // @ts-expect-error testing unknown action type
+      const newState = filterPresetsReducer(state, { type: 'UNKNOWN' });
 
       expect(newState).toEqual(state);
     });
 
     it('should handle SET_MAX_PRESETS with minimum enforcement', () => {
       const state = { ...defaultFilterPresetsState };
-      const action = { type: 'SET_MAX_PRESETS', payload: 0 } as any;
-
-      const newState = filterPresetsReducer(state, action);
+      const newState = filterPresetsReducer(state, { type: 'SET_MAX_PRESETS', payload: 0 });
 
       expect(newState.maxPresets).toBe(1);
     });

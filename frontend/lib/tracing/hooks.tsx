@@ -49,7 +49,7 @@ export function useTraceContext(): TraceContext {
     // Fallback: try to get global trace context
     try {
       return getTraceContext()
-    } catch (e) {
+    } catch {
       throw new Error('useTraceContext must be used within a TraceProvider or in a component that has access to global trace context')
     }
   }

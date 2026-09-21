@@ -538,7 +538,7 @@ describe('useUndoRedo Hook', () => {
 
     it('should handle server-side execution gracefully', () => {
       const originalWindow = global.window;
-      // @ts-ignore
+      // @ts-expect-error testing server-side execution
       delete global.window;
 
       const state: UndoRedoState = {
