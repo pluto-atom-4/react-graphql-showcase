@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import type { GraphQLResolveInfo } from 'graphql';
 import { BuildStatus, TestStatus } from '@prisma/client';
-import { wrapResolvers } from '../lib/field-span-wrapper';
-import { withPrismaSpan } from '../lib/prisma-span-bridge';
-import { generateToken } from '../middleware/auth';
-import { emitEvent } from '../services/event-bus';
-import type { BuildContext } from '../types';
-import { EVENT_TYPES, createEventEnvelope } from '../types/events';
+import { wrapResolvers } from '../lib/field-span-wrapper.js';
+import { withPrismaSpan } from '../lib/prisma-span-bridge.js';
+import { generateToken } from '../middleware/auth.js';
+import { emitEvent } from '../services/event-bus.js';
+import type { BuildContext } from '../types.js';
+import { EVENT_TYPES, createEventEnvelope } from '../types/events.js';
 
 const mutationFields = {
       async login(

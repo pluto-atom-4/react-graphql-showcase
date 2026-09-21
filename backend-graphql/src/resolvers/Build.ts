@@ -1,6 +1,6 @@
 import type { GraphQLResolveInfo } from 'graphql';
-import { wrapResolvers } from '../lib/field-span-wrapper';
-import type { BuildParent, GraphQLContext } from '../types';
+import { wrapResolvers } from '../lib/field-span-wrapper.js';
+import type { BuildParent, GraphQLContext } from '../types.js';
 
 const buildFields = {
       async parts(

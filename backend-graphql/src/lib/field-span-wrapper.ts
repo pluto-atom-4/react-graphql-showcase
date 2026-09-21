@@ -4,8 +4,8 @@ import {
   type Context as OtelContext,
   type Tracer,
 } from '@opentelemetry/api';
-import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store';
-import { serializeTraceArgs } from './trace-arg-serializer';
+import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store.js';
+import { serializeTraceArgs } from './trace-arg-serializer.js';
 
 const fallbackTracer = trace.getTracer('apollo-graphql-fields', '1.0.0');
 

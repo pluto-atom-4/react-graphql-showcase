@@ -8,7 +8,7 @@ import {
 } from '@opentelemetry/api';
 import type { ApolloServerPlugin } from '@apollo/server';
 import { getTraceContext } from '@repo/shared-tracing';
-import type { BuildContext } from '../types';
+import type { BuildContext } from '../types.js';
 
 const TRACER_NAME = 'apollo-graphql';
 

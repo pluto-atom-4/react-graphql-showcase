@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import type { Part, PrismaClient, TestRun } from '@prisma/client';
-import { withPrismaSpan } from '../lib/prisma-span-bridge';
+import { withPrismaSpan } from '../lib/prisma-span-bridge.js';
 
 export function createBuildPartLoader(prisma: PrismaClient) {
   return new DataLoader(async (buildIds: readonly string[]) => {

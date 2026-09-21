@@ -1,7 +1,7 @@
 import type { GraphQLResolveInfo } from 'graphql';
-import { withPrismaSpan } from '../lib/prisma-span-bridge';
-import { wrapResolvers } from '../lib/field-span-wrapper';
-import type { BuildContext, PaginationArgs } from '../types';
+import { withPrismaSpan } from '../lib/prisma-span-bridge.js';
+import { wrapResolvers } from '../lib/field-span-wrapper.js';
+import type { BuildContext, PaginationArgs } from '../types.js';
 
 const queryFields = {
       async builds(
