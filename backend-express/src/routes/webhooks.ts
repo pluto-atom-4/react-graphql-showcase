@@ -8,8 +8,8 @@
  */
 
 import { Router, type Router as ExpressRouter } from 'express';
-import { eventBus } from '../services/event-bus';
-import { asyncHandler, AppError } from '../middleware/error';
+import { eventBus } from '../services/event-bus.js';
+import { asyncHandler, AppError } from '../middleware/error.js';
 
 const router: ExpressRouter = Router();
 

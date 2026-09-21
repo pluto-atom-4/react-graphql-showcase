@@ -3,7 +3,7 @@
  * Utilities for emitting events with trace metadata
  */
 
-import type { TraceContext } from './trace-context'
+import type { TraceContext } from './trace-context.js'
 
 /**
  * Event data with optional trace metadata

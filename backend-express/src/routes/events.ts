@@ -25,10 +25,10 @@
 import { Router, type Router as ExpressRouter, Request, Response } from 'express';
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { eventBus, EventBusMetricsCollector } from '../services/event-bus';
-import { EventDeduplicator } from '../services/event-deduplicator';
-import { asyncHandler } from '../middleware/error';
-import { validateEventSecret } from '../middleware/validateEventSecret';
+import { eventBus, EventBusMetricsCollector } from '../services/event-bus.js';
+import { EventDeduplicator } from '../services/event-deduplicator.js';
+import { asyncHandler } from '../middleware/error.js';
+import { validateEventSecret } from '../middleware/validateEventSecret.js';
 
 const router: ExpressRouter = Router();
 
