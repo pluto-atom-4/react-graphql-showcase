@@ -56,7 +56,6 @@ export default [
         process: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
-        NodeJS: 'readonly',
       },
     },
     plugins: {
@@ -89,6 +88,8 @@ export default [
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
+      // TypeScript handles ambient types (e.g., NodeJS from @types/node); ESLint's no-undef is redundant
+      'no-undef': 'off',
     },
   },
   {
