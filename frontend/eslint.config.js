@@ -50,10 +50,13 @@ export default [
         clearTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
+        getComputedStyle: 'readonly',
+        crypto: 'readonly',
         // Node.js globals available in Next.js and config files
         process: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
+        NodeJS: 'readonly',
       },
     },
     plugins: {
