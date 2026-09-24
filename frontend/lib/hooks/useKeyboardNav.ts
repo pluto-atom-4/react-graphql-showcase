@@ -93,9 +93,10 @@ export function useKeyboardNav(config: KeyboardNavConfig): {
     // Collect all elements matching any of the selectors
     focusableSelectors.forEach((selector) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const elements = container.querySelectorAll(selector) as NodeListOf<HTMLElement>;
         allElements.push(...Array.from(elements));
-      } catch (e) {
+      } catch {
         console.warn(`[useKeyboardNav] Invalid selector: ${selector}`);
       }
     });

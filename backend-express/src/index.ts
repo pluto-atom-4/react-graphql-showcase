@@ -1,12 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import uploadRoutes from './routes/upload';
-import webhookRoutes from './routes/webhooks';
-import eventsRoutes from './routes/events';
-import { errorHandler } from './middleware/error';
-import { tracingMiddleware } from './middleware/tracing-middleware';
-import { initializeTracing } from './lib/tracing';
+import uploadRoutes from './routes/upload.js';
+import webhookRoutes from './routes/webhooks.js';
+import eventsRoutes from './routes/events.js';
+import { errorHandler } from './middleware/error.js';
+import { tracingMiddleware } from './middleware/tracing-middleware.js';
+import { initializeTracing } from './lib/tracing.js';
 
 const app = express();
 const PORT = process.env.EXPRESS_PORT || 5000;

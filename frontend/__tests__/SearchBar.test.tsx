@@ -43,6 +43,8 @@ describe('SearchBar Component', () => {
         <SearchBar value="test query" onChange={handleChange} />
       );
 
+      // getByDisplayValue returns HTMLElement, need to assert HTMLInputElement to access .value
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const input = screen.getByDisplayValue('test query') as HTMLInputElement;
       expect(input.value).toBe('test query');
     });
@@ -79,7 +81,7 @@ describe('SearchBar Component', () => {
   });
 
   describe('Debounce', () => {
-    it('should debounce input change (300ms by default)', async () => {
+    it('should debounce input change (300ms by default)', () => {
       const handleChange = vi.fn();
       render(
         <SearchBar value="" onChange={handleChange} />
@@ -155,6 +157,8 @@ describe('SearchBar Component', () => {
         <SearchBar value="" onChange={handleChange} />
       );
 
+      // getByPlaceholderText returns HTMLElement, need to assert HTMLInputElement for fireEvent.change
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'query' } });
 
@@ -179,6 +183,8 @@ describe('SearchBar Component', () => {
         />
       );
 
+      // getByPlaceholderText returns HTMLElement, need to assert HTMLInputElement for fireEvent
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
       fireEvent.change(input, { target: { value: 'new' } });
       fireEvent.keyDown(input, { key: 'Escape' });
@@ -303,6 +309,8 @@ describe('SearchBar Component', () => {
         <SearchBar value="" onChange={handleChange} disabled />
       );
 
+      // getByPlaceholderText returns HTMLElement, need to assert HTMLInputElement to access .disabled
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
       expect(input.disabled).toBe(true);
     });
@@ -328,6 +336,8 @@ describe('SearchBar Component', () => {
         <SearchBar value="initial" onChange={handleChange} />
       );
 
+      // getByDisplayValue returns HTMLElement, need to assert HTMLInputElement to access .value
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       let input = screen.getByDisplayValue('initial') as HTMLInputElement;
       expect(input.value).toBe('initial');
 
@@ -335,6 +345,8 @@ describe('SearchBar Component', () => {
         <SearchBar value="updated" onChange={handleChange} />
       );
 
+      // getByDisplayValue returns HTMLElement, need to assert HTMLInputElement to access .value
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       input = screen.getByDisplayValue('updated') as HTMLInputElement;
       expect(input.value).toBe('updated');
     });

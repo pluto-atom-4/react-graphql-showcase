@@ -299,8 +299,8 @@ describe('useFilterHistory Hook', () => {
         maxItems: 20,
       };
 
-      const unknownAction = { type: 'UNKNOWN_ACTION' } as any;
-      const result = filterHistoryReducer(state, unknownAction);
+      // @ts-expect-error testing unknown action type
+      const result = filterHistoryReducer(state, { type: 'UNKNOWN_ACTION' });
 
       expect(result).toEqual(state);
     });

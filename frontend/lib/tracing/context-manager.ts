@@ -97,13 +97,13 @@ class TraceContextManagerImpl {
 
     try {
       sessionStorage?.removeItem(TraceContextManagerImpl.SESSION_KEY)
-    } catch (e) {
+    } catch {
       // Ignore
     }
 
     try {
       localStorage?.removeItem(TraceContextManagerImpl.LOCAL_KEY)
-    } catch (e) {
+    } catch {
       // Ignore
     }
   }

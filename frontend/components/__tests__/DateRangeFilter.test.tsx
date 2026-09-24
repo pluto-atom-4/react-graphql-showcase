@@ -28,7 +28,10 @@ describe('DateRangeFilter Component', () => {
 
       render(<DateRangeFilter {...props} />);
 
+      // getByTestId returns HTMLElement, need to assert HTMLInputElement to access .value
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const startInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const endInput = screen.getByTestId('date-range-filter-end') as HTMLInputElement;
 
       expect(startInput.value).toBe('');
@@ -44,7 +47,10 @@ describe('DateRangeFilter Component', () => {
 
       render(<DateRangeFilter {...props} />);
 
+      // getByTestId returns HTMLElement, need to assert HTMLInputElement to access .value
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const startInput = screen.getByTestId('date-range-filter-start') as HTMLInputElement;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       const endInput = screen.getByTestId('date-range-filter-end') as HTMLInputElement;
 
       expect(startInput.value).toBe('2026-01-01');

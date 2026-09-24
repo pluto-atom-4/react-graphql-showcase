@@ -2,7 +2,7 @@ import type DataLoader from 'dataloader';
 import type { Part, PrismaClient, TestRun } from '@prisma/client';
 import type { Context as OtelContext, Span, Tracer } from '@opentelemetry/api';
 import type { TraceContext } from '@repo/shared-tracing';
-import type { AuthUser } from './middleware/auth';
+import type { AuthUser } from './middleware/auth.js';
 
 export interface BuildContext {
   user: AuthUser | null;

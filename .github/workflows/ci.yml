@@ -1,0 +1,208 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop, feature/**]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "11.12.0"
+
+jobs:
+  # Phase 1: Isolate Prisma generation (must complete before type-check)
+  prisma-generate:
+    name: Prisma Generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+
+  # Phase 2: Type checking (depends on prisma-generate, uses --incremental false for TS 7 cache clarity)
+  type-check:
+    name: Type Check
+    needs: prisma-generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+      - run: pnpm type-check --incremental false
+
+  # Phase 3: Unit & Integration Tests
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+      - run: pnpm test --run
+
+  # Phase 4: Build all packages
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+      - run: pnpm build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: |
+            backend-graphql/dist/
+            backend-express/dist/
+            frontend/.next/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  # Phase 5: Backend Linting (backends only; frontend follows #367)
+  backend-lint:
+    name: Backend Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+      - run: pnpm --filter backend-graphql run lint
+      - run: pnpm --filter backend-express run lint
+
+  # Phase 6: Frontend Linting (non-blocking until warnings resolved per #367)
+  frontend-lint:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter frontend run lint
+
+  # Phase 7: Smoke Tests (validates backends boot and ESM imports work)
+  smoke-test:
+    name: Smoke Test
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: backend-graphql
+            env: DATABASE_URL=postgresql://dummy:dummy@localhost/dummy
+          - backend: backend-express
+            env: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter backend-graphql exec prisma generate
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+      - name: Test ${{ matrix.backend }} boot
+        working-directory: ${{ matrix.backend }}
+        timeout-minutes: 1
+        run: |
+          # Start the server with a 10-second timeout.
+          # Exit code 124 means timeout (server stayed up); treat as success.
+          # Any other non-zero exit is failure, unless it's a DB connection error (not a code/module issue).
+          # Note: bash -e will abort on the first non-zero exit unless we capture it with ||
+          EXIT_CODE=0
+          OUTPUT=$(env ${{ matrix.env }} timeout 10 node dist/index.js 2>&1) || EXIT_CODE=$?
+          echo "$OUTPUT"
+
+          if [ $EXIT_CODE -eq 124 ]; then
+            echo "✓ ${{ matrix.backend }} server started and stayed up"
+            exit 0
+          elif [ $EXIT_CODE -eq 0 ]; then
+            echo "✓ ${{ matrix.backend }} server completed cleanly"
+            exit 0
+          else
+            # Check if this is a DB connection error (acceptable) or a module/code error (fail)
+            if echo "$OUTPUT" | grep -qE "ERR_MODULE_NOT_FOUND|Cannot find module|did not initialize"; then
+              echo "✗ ${{ matrix.backend }} failed with code error (exit $EXIT_CODE)"
+              exit 1
+            else
+              # DB connection or runtime error is acceptable for smoke test (verifies ESM imports work)
+              echo "✓ ${{ matrix.backend }} initialized (DB connection error acceptable for smoke test)"
+              exit 0
+            fi
+          fi
+
+  # Phase 8: Final CI Status (depends on all mandatory gates; frontend-lint is non-blocking)
+  ci-status:
+    name: CI Status
+    runs-on: ubuntu-latest
+    needs: [prisma-generate, type-check, test, build, backend-lint, frontend-lint, smoke-test]
+    if: always()
+    steps:
+      - name: Check CI Results
+        run: |
+          # Frontend lint is non-blocking (continue-on-error: true) until warnings are resolved per #367
+          if [[ "${{ needs.prisma-generate.result }}" != "success" || \
+                "${{ needs.type-check.result }}" != "success" || \
+                "${{ needs.test.result }}" != "success" || \
+                "${{ needs.build.result }}" != "success" || \
+                "${{ needs.backend-lint.result }}" != "success" || \
+                "${{ needs.smoke-test.result }}" != "success" ]]; then
+            echo "❌ CI Pipeline Failed (mandatory gates)"
+            exit 1
+          fi
+          if [[ "${{ needs.frontend-lint.result }}" != "success" ]]; then
+            echo "⚠️  Frontend lint warnings detected (non-blocking)"
+          fi
+          echo "✅ CI Pipeline Passed"

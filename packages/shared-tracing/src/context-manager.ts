@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import type { TraceContext } from './trace-context';
+import type { TraceContext } from './trace-context.js';
 
 const traceContextStorage = new AsyncLocalStorage<TraceContext>();
 
@@ -15,7 +15,9 @@ export function runWithTraceContext<T>(context: TraceContext, callback: () => T)
   return traceContextStorage.run(context, callback);
 }
 
-export function clearTraceContext(): void {}
+export function clearTraceContext(): void {
+  traceContextStorage.enterWith(undefined as unknown as TraceContext);
+}
 
 export function getOrCreateTraceContext(fallback?: TraceContext): TraceContext {
   const existing = getTraceContext();

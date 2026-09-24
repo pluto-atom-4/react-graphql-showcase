@@ -16,7 +16,7 @@
  */
 
 import { EventEmitter } from 'events';
-import type { EventType } from '../types/events';
+import type { EventType } from '../types/events.js';
 
 /**
  * Metrics interface for monitoring event bus performance

@@ -15,8 +15,8 @@ import { Router, type Router as ExpressRouter, Request, Response, NextFunction }
 import multer, { Multer } from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { eventBus } from '../services/event-bus';
-import { asyncHandler, AppError } from '../middleware/error';
+import { eventBus } from '../services/event-bus.js';
+import { asyncHandler, AppError } from '../middleware/error.js';
 
 const router: ExpressRouter = Router();
 

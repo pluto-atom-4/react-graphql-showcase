@@ -5,7 +5,7 @@ import {
   type Span,
   type Tracer,
 } from '@opentelemetry/api';
-import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store';
+import { getActiveOtelContext, withActiveOtelContext } from './otel-context-store.js';
 
 const TRACER_NAME = 'prisma-otel-bridge';
 
