@@ -62,7 +62,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
 
@@ -80,7 +80,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
@@ -112,7 +112,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
@@ -140,7 +140,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
@@ -152,7 +152,7 @@ describe('useUploadFile Hook', () => {
 
   it('should track progress', async () => {
     const progressCallback = vi.fn();
-    
+
     // Create mock ProgressEvent with proper properties
     const mockProgressEvent = {
       lengthComputable: true,
@@ -173,25 +173,36 @@ describe('useUploadFile Hook', () => {
         }),
       },
       open: vi.fn(),
-      send: vi.fn(),
+      send: vi.fn(function (this: MockXHR) {
+        // Simulate upload completion
+        setTimeout(() => {
+          this.status = 200;
+          this.responseText = JSON.stringify({
+            fileId: 'test-123',
+            fileName: 'test.pdf',
+            fileSize: 1024,
+            mimeType: 'application/pdf',
+            fileUrl: '/files/test-123',
+            uploadedAt: new Date().toISOString(),
+          });
+          this.onload?.();
+        }, 10);
+      }),
       addEventListener: vi.fn(),
       abort: vi.fn(),
       timeout: 0,
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
     const abortController = new AbortController();
 
-    // Start upload
-    void result.current.uploadFile(formData, abortController, progressCallback);
-    
-    // Wait for async operations to complete
-    await new Promise(resolve => setTimeout(resolve, 50));
-    
+    // Start upload and wait for completion
+    await result.current.uploadFile(formData, abortController, progressCallback);
+
     // Verify callback was invoked with correct progress
     expect(progressCallback).toHaveBeenCalled();
     expect(progressCallback).toHaveBeenCalledWith({
@@ -199,7 +210,7 @@ describe('useUploadFile Hook', () => {
       total: 1024,
       percentage: 50,
     });
-    
+
     // Cleanup
     delete (global as Record<string, unknown>).XMLHttpRequest;
   });
@@ -236,24 +247,24 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
     const abortController = new AbortController();
 
     await result.current.uploadFile(formData, abortController, progressCallback);
-    
+
     // Progress callback should not be called when event is undefined
     expect(progressCallback).not.toHaveBeenCalled();
-    
+
     // Cleanup
     delete (global as Record<string, unknown>).XMLHttpRequest;
   });
 
   it('should handle event without lengthComputable property', async () => {
     const progressCallback = vi.fn();
-    
+
     // Event without lengthComputable property
     const incompleteEvent = { loaded: 100, total: 200 } as unknown as ProgressEvent;
 
@@ -286,7 +297,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
@@ -341,24 +352,24 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
     const abortController = new AbortController();
 
     await result.current.uploadFile(formData, abortController, progressCallback);
-    
+
     // Progress callback should not be called when lengthComputable is false
     expect(progressCallback).not.toHaveBeenCalled();
-    
+
     // Cleanup
     delete (global as Record<string, unknown>).XMLHttpRequest;
   });
 
   it('should calculate correct percentage for various progress values', async () => {
     const progressCallback = vi.fn();
-    
+
     // Event with specific progress value
     const progressEvent = {
       lengthComputable: true,
@@ -396,7 +407,7 @@ describe('useUploadFile Hook', () => {
       onload: null,
     };
 
-    global.XMLHttpRequest = vi.fn(() => mockXhr) as unknown as typeof XMLHttpRequest;
+    global.XMLHttpRequest = vi.fn(function () { return mockXhr; }) as unknown as typeof XMLHttpRequest;
 
     const { result } = renderHook(() => useUploadFile());
     const formData = new FormData();
