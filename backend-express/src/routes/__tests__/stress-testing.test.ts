@@ -28,6 +28,8 @@ import { v4 as uuidv4 } from 'uuid';
  * Helper to measure memory usage in MB
  */
 function getHeapUsedMB(): number {
+  // Force garbage collection before measuring to get accurate baseline
+  (globalThis as { gc?: () => void }).gc?.();
   return process.memoryUsage().heapUsed / 1024 / 1024;
 }
 
@@ -226,6 +228,14 @@ describe('Event Bus Stress Testing - Suite 1: High-Throughput', () => {
 
 describe('Event Bus Stress Testing - Suite 2: Memory Leak Detection', () => {
   it('2.1: event bus memory stays stable over sustained load', async () => {
+    // Verify gc is available (exposed via --expose-gc in vitest config)
+    const gcType = typeof (globalThis as { gc?: () => void }).gc;
+    if (gcType !== 'function') {
+      throw new Error(
+        `gc is not available as a function (found: ${gcType}). ` +
+        'Ensure vitest is run with --expose-gc flag (see vitest.config.ts)',
+      );
+    }
     const measurements: Array<{ time: number; memory: number }> = [];
     const metricsCollector = new EventBusMetricsCollector();
 
@@ -234,6 +244,9 @@ describe('Event Bus Stress Testing - Suite 2: Memory Leak Detection', () => {
     const durationSeconds = 300;
     const eventsPerSecond = 100;
     const totalEvents = durationSeconds * eventsPerSecond;
+
+    // Take a real baseline before the loop starts (with forced GC)
+    const baseline = getHeapUsedMB();
 
     for (let i = 0; i < totalEvents; i++) {
       const event = createTestEvent(i);
@@ -262,10 +275,9 @@ describe('Event Bus Stress Testing - Suite 2: Memory Leak Detection', () => {
       memory: endMemory,
     });
 
-    // Verify memory growth is minimal
-    const firstMemory = measurements[0].memory;
+    // Verify memory growth is minimal (using real baseline, not delayed first sample)
     const lastMemory = measurements[measurements.length - 1].memory;
-    const growthPercent = ((lastMemory - firstMemory) / firstMemory) * 100;
+    const growthPercent = ((lastMemory - baseline) / baseline) * 100;
 
     expect(growthPercent).toBeLessThan(20); // Less than 20% growth (realistic for test env)
 
@@ -278,7 +290,7 @@ describe('Event Bus Stress Testing - Suite 2: Memory Leak Detection', () => {
 
     console.warn(`
       ✓ Processed ${totalEvents} events over ${durationSeconds}s
-      ✓ Memory growth: ${growthPercent.toFixed(2)}% (${firstMemory.toFixed(2)}MB → ${lastMemory.toFixed(2)}MB)
+      ✓ Memory growth: ${growthPercent.toFixed(2)}% (${baseline.toFixed(2)}MB → ${lastMemory.toFixed(2)}MB)
       ✓ Memory fluctuation: ${fluctuation.toFixed(2)}MB (range: ${minMemory.toFixed(2)}-${maxMemory.toFixed(2)}MB)
       ✓ Measurements: ${measurements.length} points
     `);
