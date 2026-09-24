@@ -24,4 +24,8 @@ catalog:
   react: '19.x'
   react-dom: '19.x'
   typescript: '7.x'
-  vitest: '^2.x'
+  vite: '^7.0.0'
+  vitest: '^4.1.11'
+
+overrides:
+  vite: '^7.0.0'
