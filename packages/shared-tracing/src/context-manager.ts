@@ -15,7 +15,9 @@ export function runWithTraceContext<T>(context: TraceContext, callback: () => T)
   return traceContextStorage.run(context, callback);
 }
 
-export function clearTraceContext(): void {}
+export function clearTraceContext(): void {
+  traceContextStorage.enterWith(undefined as unknown as TraceContext);
+}
 
 export function getOrCreateTraceContext(fallback?: TraceContext): TraceContext {
   const existing = getTraceContext();

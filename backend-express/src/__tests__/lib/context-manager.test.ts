@@ -3,7 +3,7 @@
  * Tests context isolation, storage, and retrieval
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import {
   getTraceContext,
   setTraceContext,
@@ -15,6 +15,8 @@ import {
 import type { TraceContext } from '../../lib/trace-context'
 
 describe('context-manager', () => {
+  beforeEach(() => clearTraceContext())
+
   const mockContext: TraceContext = {
     version: '00',
     traceId: '4bf92f3577b34da6a3ce929d0e0e4736',
