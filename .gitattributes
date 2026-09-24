@@ -15,3 +15,4 @@
 # but same root cause).
 *.sh text eol=lf
 .husky/* text eol=lf
+.pnpmfile.cjs text eol=lf
