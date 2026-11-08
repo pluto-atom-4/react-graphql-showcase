@@ -6,8 +6,6 @@
     "lastUpdated": "2026-09-07",
     "effortLevel": "medium"
   },
-  "model": "claude-sonnet-5",
-  "modelOverride": "haiku",
   "pathScopes": {
     "frontend": {
       "pattern": "frontend/**",
